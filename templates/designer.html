@@ -7,84 +7,94 @@
 {% endblock %}
 {% block body %}
   {% raw %}
-    <div ng-controller='DesignerCtrl'>
-      <!-- Actual stuff -->
-      <div class="row">
-        <div class="col-md-2">
-          <ul>
-            <li ng-repeat="thegene in gene_to_exon"><a href="" ng-click="setGene($index)">
-              {{ thegene.name }}
-            </a></li>
+
+<div ng-controller='DesignerCtrl' id="full-page">
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+      <div class="container-fluid">
+        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="brand" href="#">Project name</a>
+        <div class="nav-collapse collapse">
+          <p class="navbar-text pull-right">
+            Logged in as <a href="#" class="navbar-link">Username</a>
+          </p>
+          <ul class="nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
           </ul>
-        </div>
-        <div class="col-md-8">
-          <svg height="250" id="exon_graph" width="800" x="20">
-            <g id="background_exon_graph">
-              <rect fill="#eee" height="250" width="850" x="0" y="0"></rect>
-              <text class="gene_name" fill="#111" font-size="25" x="10" y="25">
-                {{ gene.name }}
-              </text>
-            </g>
-            <g id="all_exons">
-              <rect class="connector" fill="#000000" height="3" stroke="#000000" width="800" x="0" y="50"></rect>
-              <g ng-repeat = "exon in gene.exons">
-                <rect class="exon" fill="#ffffff" height="50" stroke="#aaa" ng-attr-width="{{ exon.p_end-exon.p_start }}" ng-attr-x="{{ exon.p_start }}" y="25"></rect>
-                <text class="exon_label" fill="#111" font-size="12" ng-attr-x="{{ exon.p_start+1 }}" y="90">
-                  Exon {{ $index + 1 }}
-                </text>
-                <text class="gRNA_count" fill="#111" font-size="16" ng-attr-x="{{ exon.p_start + (exon.p_end - exon.p_start) / 2 }}" y="55">
-                  {{ exon.gRNAs.length }}
-                </text>
-                <g ng-repeat="guide in exon.gRNAs | filter:{selected:true}">
-                  <rect class="guide" fill="#222" height="4" width="20" ng-attr-x="{{ exon.p_start + guide.p_start }}" y="25">
-                </g>
-              </g>
-            </g>
-          </svg>
-        </div>
-        <div class="col-md-2">
-          <table class="table">
-            <tr>
-              <td></td>
-              <td>ID</td>
-              <td>Start</td>
-              <td>Score</td>
-              <td>Exon</td>
-            </tr>
-            <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:'-score'">
-              <td><input type="checkbox" ng-model="guide.selected" ng-change="guideSelected(guide)"></td>
-              <td>{{$index + 1}}</td>
-              <td>{{ guide.start }}</td>
-              <td>{{ guide.score.toFixed(2) }}</td>
-              <td>{{ guide.exon }}</td>
-            </tr>
-          </table>
-        </div>
+        </div><!--/.nav-collapse -->
       </div>
-      <div class="total_guides">
-        <p>Total selected: {{ countSelectedGuides }}</p>
-        <p><button type="button" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq', 'Start', 'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']">Export</button></p>
-      </div>
-     <!--  <div class="row">
-        <div class="col-md-1">
-          <div ng-repeat="gene in guidesData">
-            hi {{gene}}
-          </div>
-          <ul ng-repeat="gene in guidesData">
-            <li>Name: {{gene.name}}</li>
-            <li>Length: {{gene.length}}</li>
-            <li>Exons: {{gene.exons[1]}}
-              <ol>
-                <li ng-repeat="exon in gene.exons">Exon info:
-                  <ul>
-                    <li>Start: {{exon.start}}</li>
-                    <li>End: {{exon.end}}</li>
-                  </ul>
-                </li>
-              </ol>
-            </li>
-          </ul>
-        <div> -->
     </div>
+  </div>
+  <div id="wrapper">
+    <div id="sidebar-wrapper">
+      <ul class="sidebar-nav">
+        <li ng-repeat="thegene in gene_to_exon"><a href="" ng-click="setGene($index)">
+          {{ thegene.name }}
+        </a></li>
+      </ul>
+    </div>
+    <div id="page-content-wrapper">
+      <div class="page-content">
+        <div class="container-fluid" id='container'>
+          <div class="row">
+            <div class="col-md-9">
+              <svg height="250" id="exon_graph" width="800" x="20">
+                <g id="background_exon_graph">
+                  <rect fill="#eee" height="250" width="850" x="0" y="0"></rect>
+                  <text class="gene_name" fill="#111" font-size="25" x="10" y="25">
+                    {{ gene.name }}
+                  </text>
+                </g>
+                <g id="all_exons">
+                  <rect class="connector" fill="#000000" height="3" stroke="#000000" width="800" x="0" y="50">< /  rect>
+                  <g ng-repeat = "exon in gene.exons">
+                    <rect class="exon" fill="#ffffff" height="50" stroke="#aaa" ng-attr-width="{{ exon.p_end-exon .  p_start }}" ng-attr-x="{{ exon.p_start }}" y="25"></rect>
+                    <text class="exon_label" fill="#111" font-size="12" ng-attr-x="{{ exon.p_start+1 }}" y="90">
+                      Exon {{ $index + 1 }}
+                    </text>
+                    <text class="gRNA_count" fill="#111" font-size="16" ng-attr-x="{{ exon.p_start + (exon.p_end  -  exon.p_start) / 2 }}" y="55">
+                      {{ exon.gRNAs.length }}
+                    </text>
+                    <g ng-repeat="guide in exon.gRNAs | filter:{selected:true}">
+                      <rect class="guide" fill="#222" height="4" width="20" ng-attr-x="{{ exon.p_start + guide.   p_start }}" y="25">
+                    </g>
+                  </g>
+                </g>
+              </svg>
+            </div>
+            <div class="col-md-3">
+              <table class="table">
+                <tr>
+                  <td></td>
+                  <td>ID</td>
+                  <td>Start</td>
+                  <td>Score</td>
+                  <td>Exon</td>
+                </tr>
+                <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:'-score'">
+                  <td><input type="checkbox" ng-model="guide.selected" ng-change="guideSelected(guide)"></td>
+                  <td>{{$index + 1}}</td>
+                  <td>{{ guide.start }}</td>
+                  <td>{{ guide.score.toFixed(2) }}</td>
+                  <td>{{ guide.exon }}</td>
+                </tr>
+              </table>
+            </div>
+          </div>
+          <div class="total_guides">
+            <p>Total selected: {{ countSelectedGuides }}</p>
+            <p><button type="button" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']"> Export</button></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
   {% endraw %}
 {% endblock %}
