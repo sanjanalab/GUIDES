@@ -14,7 +14,7 @@ class Genome():
     """Tools for accessing sequences, coordinates, and exons."""
     def __init__(self, preload = False):
         self.chromosomes = {}
-        self.filename_base = "static/data/GRCh38/Homo_sapiens.GRCh38.dna_rm.chromosome.{}.fa.gz"
+        self.filename_base = "static/data/GRCh37/Homo_sapiens.GRCh37.75.dna.chromosome.{}.fa.gz"
         with open("static/data/pre_processed/exon_info.p", "rb") as f:
             self.df = pickle.load(f)
         
