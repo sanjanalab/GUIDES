@@ -12,11 +12,16 @@ class ExonError(Exception):
 
 class Genome():
     """Tools for accessing sequences, coordinates, and exons."""
-    def __init__(self):
+    def __init__(self, preload = False):
         self.chromosomes = {}
         self.filename_base = "static/data/GRCh38/Homo_sapiens.GRCh38.dna_rm.chromosome.{}.fa.gz"
         with open("static/data/pre_processed/exon_info.p", "rb") as f:
             self.df = pickle.load(f)
+        
+        if preload:
+            chroms = ["1","2","3","4","5","6","7","8","9","10","11","12","12","13","14","15","15","16","17","18","19","20","21","22","MT","X","Y"]
+            for c in chroms:
+                self.chrom_sequence(c)
 
     def chrom_sequence(self, c):
         if c not in self.chromosomes.keys():

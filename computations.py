@@ -35,7 +35,8 @@ class GuideRNA():
 # Species info is not yet incorporated
 class Ranker():
   """Finds and ranks gRNAs from a given gene and species"""
-  def __init__(self, species, tissues):
+  def __init__(self, genome, species, tissues):
+    self.genome = genome
     self.species = species
     self.tissues = tissues
     self.genes = []
@@ -43,9 +44,6 @@ class Ranker():
 
     # Load pre-processed GTEx data
     self.df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
-
-    # Genome info
-    self.genome = seq_generator.Genome()
 
   # ensembl_gene - ensembl encocoding for the gene (grCH37)
   # gene_name - user-friendly name for the gene
@@ -184,7 +182,10 @@ if __name__ == '__main__':
   quantity_per_gene = quantity/len(genes)
 
   # Setup ranker
-  ranker = Ranker(species, tissues)
+  genome = {
+    "human" : seq_generator.Genome()
+  }
+  ranker = Ranker(genome["human"], species, tissues)
 
   # Iterate over genes, finding guides for each
   for (ensembl_gene, gene_name) in genes:

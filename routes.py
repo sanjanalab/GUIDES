@@ -9,6 +9,10 @@ from pyensembl import EnsemblRelease
 import seq_generator
 import computations
 
+genome = {
+  "human" : seq_generator.Genome()
+}
+
 ### Processing
 @app.before_request
 def preprocess_request():
@@ -49,7 +53,7 @@ def generate():
   quantity_per_gene = quantity/len(genes)
 
   # Setup ranker
-  ranker = computations.Ranker(species, tissues)
+  ranker = computations.Ranker(genome["human"], species, tissues)
 
   # Iterate over genes, finding guides for each
   for (ensembl_gene, gene_name) in genes:
