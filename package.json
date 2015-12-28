@@ -1,0 +1,12 @@
+{
+  "name": "CRISPR-Library-Designer",
+  "version": "1.0.0",
+  "homepage": "https://github.com/joshim5",
+  "authors": [
+    "Joshua Meier <jmeier@college.harvard.edu>"
+  ],
+  "dependencies": {
+    "coffee-script": "^1.7.1",
+    "less": "^1.7.5"
+  }
+}

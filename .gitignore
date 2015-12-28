@@ -1,0 +1,4 @@
+*.lprof
+venv
+testing
+testing2
