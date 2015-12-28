@@ -138,8 +138,8 @@ class Ranker():
       # Prepare each exon and add to gene_to_exon[gene_name].exons
       for i in range(gene_info['exonCount']):
         exon = {
-          "start": gene_info['exonStarts'][i],
-          "end": gene_info['exonEnds'][i],
+          "start": gene_info['exonStarts'][i] - gene_info['txStart'],
+          "end": gene_info['exonEnds'][i] - gene_info['txStart'],
           "gRNAs": [] # Gets filled in below
         }
         gene_to_exon[gene_name]['exons'].append(exon)
