@@ -9,7 +9,14 @@
   {% raw %}
     <div ng-controller='DesignerCtrl'>
       <!-- Actual stuff -->
-      <div class="row" ng-repeat="gene in gene_to_exon">
+      <div class="row">
+        <div class="col-md-2">
+          <ul>
+            <li ng-repeat="thegene in gene_to_exon"><a href="" ng-click="setGene($index)">
+              {{ thegene.name }}
+            </a></li>
+          </ul>
+        </div>
         <div class="col-md-8">
           <svg height="250" id="exon_graph" width="800" x="20">
             <g id="background_exon_graph">
@@ -36,7 +43,7 @@
           </svg>
         </div>
         <div class="col-md-2">
-          <table>
+          <table class="table">
             <tr>
               <td></td>
               <td>ID</td>
@@ -48,8 +55,8 @@
               <td><input type="checkbox" ng-model="guide.selected" ng-change="guideSelected(guide)"></td>
               <td>{{$index + 1}}</td>
               <td>{{ guide.start }}</td>
-              <td>{{ guide.score }}</td>
-              <td>{{ guide.exon + 1 }}</td>
+              <td>{{ guide.score.toFixed(2) }}</td>
+              <td>{{ guide.exon }}</td>
             </tr>
           </table>
         </div>

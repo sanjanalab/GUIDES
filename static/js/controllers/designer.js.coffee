@@ -21,9 +21,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
         exon.p_start =  exon.start / gene.length * pixel_width
         exon.p_end = exon.end / gene.length * pixel_width
         angular.forEach exon.gRNAs, (guide, key3) ->
-          guide.selected = false # Change later to only include best guides -> might even come from server
+          # guide.selected = false # Change later to only include best guides -> might even come from server
           guide.p_start = guide.start / gene.length * pixel_width
-          guide.exon = key2
+          guide.exon = key2 + 1
           guide.gene = gene.name
           all_gRNAs[gene.name].push(guide)
           merged_gRNAs.push(guide)
@@ -36,16 +36,22 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     $scope.countSelectedGuides = guide_count
 
     merged_gRNAs = $filter('orderBy')(merged_gRNAs, 'score', true)
-    angular.forEach merged_gRNAs, (guide, key) ->
-      if guide_count > 0
-        guide.selected = true
-        guide_count -= 1
-      else
-        guide.selected = false
+    # angular.forEach merged_gRNAs, (guide, key) ->
+    #   if guide_count > 0
+    #     guide.selected = true
+    #     guide_count -= 1
+    #   else
+    #     guide.selected = false
 
     $scope.gene_to_exon = gene_to_exon
     $scope.all_gRNAs = all_gRNAs
     
+    $scope.gene = gene_to_exon[0]
+    $scope.setGene = (idx) ->
+      $scope.gene = gene_to_exon[idx]
+      console.log $scope.gene
+
+    console.log $scope.gene
 
     $scope.guideSelected = (guide) ->
       if guide.selected == false

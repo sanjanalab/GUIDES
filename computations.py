@@ -19,12 +19,16 @@ class GuideRNA():
     self.ensembl_gene = ensembl_gene
     self.gene_name = gene_name
 
+    # TODO: Make logical
+    self.selected = False
+
   def serialize_for_display(self):
     """Serialize for the way we are returning json"""
     return {
       "score": self.score,
       "start": self.start,
-      "seq": self.seq
+      "seq": self.seq,
+      "selected": self.selected
     }
 
   # Comparison technique - describes ranking DISCUSS (include exon_ranking?)
