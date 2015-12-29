@@ -1,14 +1,15 @@
 {% extends "_base.html" %}
-{% block title %}FlaskStart{% endblock %}
+{% block title %}Designer{% endblock %}
 {% block body %}
   {% raw %}
+  Hello
     <div ng-controller='IndexCtrl'>
       <form role="form">
         <div class="form-group">
           <label for="name">Your Name</label>
-          <input type="text" name='name' class="form-control" ng-model='data.name' placeholder="Ben Bitdiddle">
+          <input type="text" name='name' class="form-control" placeholder="Ben Bitdiddle">
           <label for="from">Your Phone Number</label>
-          <input type="tel" name='number' class="form-control" ng-model='data.number' placeholder="5555555555" pattern='\d{10}'>
+          <input type="tel" name='number' class="form-control" placeholder="5555555555" pattern='\d{10}'>
         </div>
         <div class="form-group">
           <button class='btn btn-default'>Go!</button>

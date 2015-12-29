@@ -20,6 +20,8 @@ for x in order:
 
 coffee_bundle = assets.Bundle(*coffee, filters=['coffeescript'])
 js.append(coffee_bundle)
+js_ng_csv = ['node_modules/angular-sanitize/angular-sanitize.min.js', 'node_modules/ng-csv/build/ng-csv.min.js']
+js.append(js_ng_csv)
 
 css = glob.glob('static/css/*.css')
 less = glob.glob('static/css/*.less')
@@ -31,8 +33,6 @@ for x in order:
 less_bundle = assets.Bundle(*less, filters=['less'])
 css.append(less_bundle)
 
-js_ng_csv = ['node_modules/angular-sanitize/angular-sanitize.min.js', 'node_modules/ng-csv/build/ng-csv.min.js']
-
 js_filters = []
 css_filters = []
 
@@ -40,7 +40,6 @@ if not dev:
   js_filters.append('rjsmin')
   css_filters.append('cssmin')
 
-env.register('js_ng_csv', assets.Bundle(*js_ng_csv, filters=js_filters, output='js/min/ng_csv_scripts.min.js'))
 env.register('js_app', assets.Bundle('static/js/app.js.coffee', filters=['coffeescript'] + js_filters,
                                      output='js/min/app.min.js'))
 env.register('js_all', assets.Bundle(*js, filters=js_filters, output='js/min/scripts.min.js'))

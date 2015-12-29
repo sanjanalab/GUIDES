@@ -1,10 +1,5 @@
 {% extends "_base.html" %}
 {% block title %}Designer{% endblock %}
-{% block more_links %}
-    {% assets "js_ng_csv" %}
-      <script type="text/javascript" src="{{ ASSET_URL }}"></script>
-    {% endassets %}
-{% endblock %}
 {% block body %}
   {% raw %}
 
@@ -15,8 +10,11 @@
         <div class="logo-box">
           <span>CRISPR Library Designer</span>
         </div>
-        <div class="search-box form-group">
-            <input type="text" class="form-control" id="search-str">
+        <div class="search-box form-group"> 
+          <div class="input-group">
+            <input type="text" class="form-control" id="search-str" placeholder="Search for additional genes or tissues...">
+            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+          </div>
         </div>
         <div class="guide-count-box">
           <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']"> Export {{ countSelectedGuides }} guides</button>
@@ -42,16 +40,34 @@
       <div class="page-content">
         <div class="container-fluid" id='container'>
           <div class="row">
-            <div class="col-md-9 .col-md-offset-1">
-              <svg height="250" id="exon_graph" width="800" x="20">
+            <div class="col-md-12">
+              <svg height="250" id="exon_graph" width="100%" x="20">
                 <g id="background_exon_graph">
-                  <rect fill="#eee" height="250" width="850" x="0" y="0"></rect>
-                  <text class="gene_name" fill="#111" font-size="25" x="10" y="25">
-                    {{ gene.name }}
-                  </text>
+                  <rect fill="#eee" height="250" width="100%" x="0" y="0"></rect>
                 </g>
                 <g id="all_exons">
-                  <rect class="connector" fill="#000000" height="3" stroke="#000000" width="800" x="0" y="50">< /  rect>
+                  <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="100" id="connector_rect"></rect>
+
+                  <g ng-repeat="exon in gene.exons">
+                    <rect class="exon" fill="#fff" height="50" ng-attr-width="{{2 * svgUnit()}}" stroke="#aaa" ng-attr-x="{{ svgUnit() + $index*3*svgUnit() }}" y="75"></rect>
+
+                    <text class="gRNA_count" fill="#111" font-size="16" ng-attr-x="{{svgUnit()*1.8  + $index*3*svgUnit() }}" y="108">
+                      {{ (exon.gRNAs | filter:{selected:true}).length }}
+                    </text>
+
+                    <text class="exon_label" fill="#111" font-size="8" ng-attr-x="{{svgUnit()*1.6  + $index*3*svgUnit() }}" y="145">
+                      Exon {{ $index + 1 }}
+                    </text>
+                  </g>
+                </g>
+              </svg>
+
+
+
+
+
+
+<!--                   <rect class="connector" fill="#000000" height="3" stroke="#000000" width="800" x="0" y="50">< /  rect>
                   <g ng-repeat = "exon in gene.exons">
                     <rect class="exon" fill="#ffffff" height="50" stroke="#aaa" ng-attr-width="{{ exon.p_end-exon .  p_start }}" ng-attr-x="{{ exon.p_start }}" y="25"></rect>
                     <text class="exon_label" fill="#111" font-size="12" ng-attr-x="{{ exon.p_start+1 }}" y="90">
@@ -65,22 +81,28 @@
                     </g>
                   </g>
                 </g>
-              </svg>
+              </svg> -->
+
             </div>
           </div>
           <div class="row">
             <div class=".col-md-6 .col-md-offset-3">
+              <div class="table-header">
+                <span>
+                  Choose your guides below...or keep what what our algorithms have chosen!
+                </span>
+              </div>
               <table class="table">
                 <tr>
-                  <td></td>
-                  <td>ID</td>
-                  <td>Start</td>
-                  <td>Score</td>
-                  <td>Exon</td>
+                  <th></th>
+                  <th>Sequence</th>
+                  <th>Start</th>
+                  <th>Score</th>
+                  <th>Exon</th>
                 </tr>
                 <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:'-score'">
                   <td><input type="checkbox" ng-model="guide.selected" ng-change="guideSelected(guide)"></td>
-                  <td>{{$index + 1}}</td>
+                  <td>{{ guide.seq }}</td>
                   <td>{{ guide.start }}</td>
                   <td>{{ guide.score.toFixed(2) }}</td>
                   <td>{{ guide.exon }}</td>

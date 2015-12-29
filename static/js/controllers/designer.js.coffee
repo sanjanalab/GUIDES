@@ -1,7 +1,4 @@
-FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($scope, $filter, GuidesFactory) ->
-  $scope.data = {}
-  $scope.posts = ["hi", "hi2", "hi3"]
-  #$scope.guidesData = ['aa1']
+FlaskStart.controller 'DesignerCtrl', ['$scope', '$element', '$filter', 'GuidesFactory', ($scope, $element, $filter, GuidesFactory) ->
   guidesFactory = new GuidesFactory()
 
   guidesFactory.generateGuides("AAk1").then (guidesData) ->
@@ -36,12 +33,12 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     $scope.countSelectedGuides = guide_count
 
     merged_gRNAs = $filter('orderBy')(merged_gRNAs, 'score', true)
-    # angular.forEach merged_gRNAs, (guide, key) ->
-    #   if guide_count > 0
-    #     guide.selected = true
-    #     guide_count -= 1
-    #   else
-    #     guide.selected = false
+    angular.forEach merged_gRNAs, (guide, key) ->
+      if guide_count > 0
+        guide.selected = true
+        guide_count -= 1
+      else
+        guide.selected = false
 
     $scope.gene_to_exon = gene_to_exon
     $scope.all_gRNAs = all_gRNAs
@@ -54,6 +51,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     console.log $scope.gene
 
     $scope.guideSelected = (guide) ->
+      console.log $scope.svgUnit
       if guide.selected == false
         $scope.countSelectedGuides -= 1
       else
@@ -63,6 +61,10 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
       guidesCSV = $filter('filter')(merged_gRNAs, {selected:true}, true)
       guidesCSV = $filter('orderBy')(guidesCSV, 'score', true)
       guidesCSV
+
+
+    $scope.svgUnit = () -> 
+      $element.find('#connector_rect')[0].getBBox().width / (3 * $scope.gene.exons.length + 1)
 
     # console.log "in filter"
     # console.log gene_length

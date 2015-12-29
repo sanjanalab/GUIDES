@@ -1,3 +1,6 @@
 FlaskStart.controller 'IndexCtrl', ['$scope', ($scope) ->
-  $scope.data = {}
+  $scope.data = {
+  	'name': 'josh',
+  	'number': 201
+  }
 ]
