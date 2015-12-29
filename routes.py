@@ -42,7 +42,7 @@ def generate():
 
   # Validations
   if genes == None:
-    genes = [('ENSG00000115977.14', "AAK1"), ('ENSG00000142168.10', "SOD1")]
+    genes = [('ENSG00000115977.14', "AAK1"), ('ENSG00000142168.10', "SOD1"), ('ENSG00000139618.10', 'BRCA1')]
   if species == None:
     species = "human"
   if quantity == None:

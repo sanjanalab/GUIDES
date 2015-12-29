@@ -8,7 +8,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$element', '$filter', 'GuidesF
     all_gRNAs = {}
     merged_gRNAs = []
 
-
     # Display attributes for data
     # p_ values are pixel values (as opposed ot sequencing data)
     pixel_width = 800

@@ -13,22 +13,25 @@ env.load_path = [os.path.dirname(__file__)]
 
 js = []
 coffee = []
-order = ['services', 'filters', 'directives', 'controllers']
+order = ['libs', 'services', 'filters', 'directives', 'controllers']
 for x in order:
   js.extend(glob.glob('static/js/{}/*.js'.format(x)))
   coffee.extend(glob.glob('static/js/{}/*.js.coffee'.format(x)))
 
 coffee_bundle = assets.Bundle(*coffee, filters=['coffeescript'])
 js.append(coffee_bundle)
-js_ng_csv = ['node_modules/angular-sanitize/angular-sanitize.min.js', 'node_modules/ng-csv/build/ng-csv.min.js']
-js.append(js_ng_csv)
+js_libs = ['node_modules/angular-sanitize/angular-sanitize.min.js', 'node_modules/ng-csv/build/ng-csv.min.js']
+js.append(js_libs)
 
-css = glob.glob('static/css/*.css')
-less = glob.glob('static/css/*.less')
-order = []
+css = []
+less = []
+order = ['libs']
 for x in order:
 	css.extend(glob.glob('static/css/{}/*.css'.format(x)))
 	less.extend(glob.glob('static/css/{}/*.less'.format(x)))
+
+css.extend(glob.glob('static/css/*.css'))
+less.extend(glob.glob('static/css/*.less'))
 
 less_bundle = assets.Bundle(*less, filters=['less'])
 css.append(less_bundle)

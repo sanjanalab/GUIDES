@@ -1,3 +1,213 @@
+// Custom fonts
+// Got these from:
+// http://fontsgeek.com/fonts/ITC-Franklin-Gothic-LT-Book-Com-Regular/download
+
+@font-face {
+  font-family: "franklin-gothic-urw";
+  src: url(../../font/franklin-gothic-book-regular.otf);
+}
+
+@font-face {
+  font-family: "franklin-gothic-urw";
+  src: url(../../font/franklin-gothic-book-condensed.otf);
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "liberation-sans";
+  src: url(../../font/liberation-sans-regular.ttf);
+}
+
+input {
+  border: none;
+}
+
+@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700,400italic,300italic,700italic);
+
+// Styling of entry labels on the home page
+.details-holder {
+  padding-top: 77px;
+}
+.details-holder h2 {
+  color: #fff;
+}
+.details-holder div:first-of-type {
+  padding: 0;
+  margin: 0;
+}
+
+.entry_label {
+  color: #fff;
+  font-weight: 300;
+  font-size: 19px;
+
+      display: block;
+    float: left;
+    overflow: hidden;
+    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+
+}
+
+.entry_text {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+  transition: none;
+  -webkit-transition: none;
+  background-color: transparent;
+  font-size: 16px;
+  border-bottom: 1px solid #fff;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+}
+
+.entry_container {
+  font-family: 'Roboto Condensed', sans-serif;
+  margin-right: 100px;
+}
+
+#ul-container-select-choices {
+  background:none;
+  background-color: transparent;
+  border: none;
+}
+
+// Home page
+
+
+.zlab-logo-container {
+  position: fixed;
+  top: 45px;
+  margin-left: -23px;
+}
+
+.zlab-logo {
+    position: relative;
+    content: url("../../img/zlab-logo.png");
+}
+
+.logo-desc {
+  position: relative;
+  margin-left: -8px;
+    color: #fff;
+}
+
+#hero {
+    width: 100%;
+}
+
+#hero .tagline h2 a svg {
+    display: inline-block;
+    position: relative;
+    top: 8px;
+    left: 6px;
+}
+
+#page {
+  max-width: 1280px;
+    margin: 0 auto;
+}
+
+#home-page-body {
+  font-family: 'Roboto Condensed', sans-serif;
+}
+
+#hero>.container {
+  max-width: 1280px;
+  margin: 0 auto;
+    opacity: 1;
+    transition: all 1s ease-in-out;
+}
+
+#heroBackground {
+      position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: calc(100%);
+    background-color: #00b5ec;
+    transition: all .2s ease-in-out;
+}
+
+#herowrapper {
+      height: 100%;
+    min-height: 100%;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    background: #00b5ec;
+    position: relative;
+}
+
+#hero {
+      background: transparent;
+    min-height: 100%;
+    padding-top: 70px;
+    padding-bottom: 85px;
+}
+
+.overlays-wrapper {
+      opacity: 1;
+    position: absolute;
+    z-index: 2;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: all .2s ease-in-out;
+    background-color: transparent;
+    z-index: -10;
+    pointer-events: none;
+}
+
+#hero .tagline {
+      position: absolute;
+    top: 50%;
+    -webkit-transform: translate3d(0, -50%, 0);
+    transform: translate3d(0, -50%, 0);
+}
+
+#hero .tagline h1 {
+    font-size: 62px;
+    font-weight: 300;
+    color: white;
+    line-height: 1.2;
+    margin-bottom: 74px;
+}
+
+#hero .tagline h2 {
+    font-size: 28px;
+    font-weight: 300;
+    color: #b1edff;
+}
+
+svg path, svg polygon {
+  transition: fill 0.1s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  -webkit-transition: fill 0.2s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  -moz-transition: fill 0.1s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+#hero .tagline h2 a {
+    color: white;
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.1s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    -webkit-transition: color 0.2s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    -moz-transition: color 0.1s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    display: inline-block;
+    margin-left: 7px;
+}
+
+#hero .tagline h2 a svg {
+    display: inline-block;
+    position: relative;
+    top: 8px;
+    left: 6px;
+}
+
+
+// Designer
 .table {
   background-color: #F5F5F5;
   color: #999999;
@@ -203,4 +413,51 @@
       transition: all 0.4s ease 0s;
     }
 
+}
+
+// Arrow stuff
+#hero .down {
+    text-align: center;
+    position: absolute;
+    top: auto;
+    right: auto;
+    bottom: 85px;
+    left: 15px;
+    width: 100%;
+}
+
+@media screen and (max-width: 1440px) {
+  #hero .down span.arrow {
+      width: 60px;
+      height: 60px;
+      line-height: 60px;
+  }
+}
+
+.inner-arrow {
+    position: absolute;
+    top: 0;
+    margin: auto;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    height: 75px;
+    width: 75px;
+}
+
+#hero .down span.arrow {
+  color: #333;
+    display: inline-block;
+    width: 75px;
+    height: 75px;
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+    line-height: 75px;
+    border-radius: 37.5px;
+    border-radius: 50%;
+    background: #fff200;
+    box-shadow: 0 6px 20px 0 rgba(0,0,0,0.09),0 8px 17px 0 rgba(0,0,0,0.08);
+    -webkit-transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
+    transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
 }

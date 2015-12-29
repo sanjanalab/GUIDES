@@ -1,20 +1,122 @@
 {% extends "_base.html" %}
 {% block title %}Designer{% endblock %}
-{% block body %}
+{% block body %} 
   {% raw %}
-  Hello
-    <div ng-controller='IndexCtrl'>
-      <form role="form">
-        <div class="form-group">
-          <label for="name">Your Name</label>
-          <input type="text" name='name' class="form-control" placeholder="Ben Bitdiddle">
-          <label for="from">Your Phone Number</label>
-          <input type="tel" name='number' class="form-control" placeholder="5555555555" pattern='\d{10}'>
-        </div>
-        <div class="form-group">
-          <button class='btn btn-default'>Go!</button>
-        </div>
-      </form>
+
+<div ng-controller='IndexCtrl' id="home-page-body">
+  <div id="heroBackground"></div>
+    <div class="preloader">
+      <div class="bar"></div>
     </div>
+    <div id="page">
+      <div id="heroWrapper" class="container-fluid">
+        <div id="hero" class="container">
+          <div class='zlab-logo-container'><img class="zlab-logo" alt="Logo" title="Zhang Lab"><span class="logo-desc">Zhang Lab</span></div>
+          <div class="overlays-wrapper">
+            <div class="overlay twitter">
+                <span>Twitter</span>
+            </div>
+            <div class="overlay facebook">
+                <span>Facebook</span>
+            </div>
+            <div class="overlay dribbble">
+                <span>Dribbble</span>
+            </div>
+            <div class="overlay instagram">
+                <span>Instagram</span>
+            </div>
+            <div class="overlay vimeo">
+                <span>Vimeo</span>
+            </div>
+          </div>
+          <div class="container">
+            <div class="row top-links">
+              <div class="logo col-xs-3 col-sm-3 col-md-2 col-lg-2">
+              </div>
+              <div class="social col-xs-9 col-sm-9 col-md-10 col-lg-10">
+                <a class="twitter" href="https://twitter.com/Indicius" target="_blank"><img data-src="/assets/TwitterHero@2x-3c3c6d10633f3b4e021255d5715a71a68e9d789fa0f5a29290fe981d63620280.png" alt="" title=""></a><a class="facebook" href="https://www.facebook.com/Indicius" target="_blank"><img data-src="/assets/FBHero@2x-23598dea5970d59e791cb75743a77053514adceb81f4b3eba1affff5a6d87423.png" alt="" title=""></a><a class="dribbble" href="https://dribbble.com/Indicius" target="_blank"><img data-src="/assets/Dribbble_Grid@2x-f289f28941fe3c3221f5227917d9ea3ed26573fa156491a095d2fd0ec7586e2e.png" alt="" title=""></a><a class="instagram" href="https://instagram.com/indiciusar/" target="_blank"><img data-src="/assets/InstagramHero@2x-880ee0e8b1b4e40473997e8121742522970560d3ce77a119812bdca95691bbd2.png" alt="" title=""></a><a class="vimeo" href="https://vimeo.com/indicius" target="_blank"><img data-src="/assets/VimeoHero@2x-fe1518834095075d7cbccafcec5b909df6ddb5f040776d26517fae20cff0dd32.png" alt="" title=""></a>
+              </div>
+            </div>
+            <div class="row tagline">
+              <div class="col-md-7">
+                <h1>
+                    Design your own custom CRISPR libraries.
+                </h1>
+                <h2>
+                  How does it work?<a ng-mouseenter="learn_more_to_black()" ng-mouseleave="learn_more_to_white()" href="mailto:contact+hero@indicius.com?Subject=Let%27s%20talk" style="color: {{ learn_more_fill }}">Learn more 
+                  <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width=" 32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
+                    <g>
+                      <path fill="{{ learn_more_fill }}" d="M15.901,31.355c-8.503,0-15.421-6.918-15.421-15.42c0-8.503,6.918-15.421,15.421-15.421
+                      s15.421,6.918,15.421,15.421C31.322,24.437,24.404,31.355,15.901,31.355L15.901,31.355z M15.901,1.514
+                      C7.949,1.514,1.48,7.983,1.48,15.935s6.469,14.42,14.421,14.42c7.952,0,14.421-6.469,14.421-14.42S23.853,1.514,15.901,1.514
+                      L15.901,1.514z"></path>
+                    </g>
+                    <polygon fill="{{ learn_more_fill }}" points="10.182,15.341 19.12,15.341 15.182,11.403 16.12,10.341 21.62,15.903 21.62,16.403 16.182,21.529
+                    15.182,20.466 19.12,16.403 10.182,16.403 "></polygon>
+                  </svg></a>
+                </h2>
+              </div>
+              <div class="col-md-5">
+                <h2>Step 1) Experimental setup.</h2>
+                <div class="entry_container">
+                  <span class="entry_label">Genes:</span> 
+                  <ui-select multiple ng-model="multipleDemo.selectedPeople" theme="select2" ng-disabled=         "disabled" style="width: 100%; background: none; background-color: transparent">
+                    <ui-select-match placeholder="Select genes...">{{$item.name}} &lt;{{$item.email}}&gt;         </ui-select-match>
+                   <ui-select-choices repeat="person in people | propsFilter: {name: $select.search,          age: $select.search}">
+                      <div ng-bind-html="person.name | highlight: $select.search"></div>
+                      <small>
+                        email: {{person.email}}
+                        age: <span ng-bind-html="''+person.age | highlight: $select.search"></span>
+                      </small>
+                    </ui-select-choices>
+                  </ui-select>
+                </div>
+          
+                <div class="entry_container">
+                  <span class="entry_label">Tissues:</span> 
+                  <ui-select multiple ng-model="multipleDemo.selectedPeople" theme="select2" ng-disabled=         "disabled" style="width: 100%; background: none; background-color: transparent">
+                    <ui-select-match placeholder="Select genes...">{{$item.name}} &lt;{{$item.email}}&gt;         </ui-select-match>
+                   <ui-select-choices repeat="person in people | propsFilter: {name: $select.search,          age: $select.search}">
+                      <div ng-bind-html="person.name | highlight: $select.search"></div>
+                      <small>
+                        email: {{person.email}}
+                        age: <span ng-bind-html="''+person.age | highlight: $select.search"></span>
+                      </small>
+                    </ui-select-choices>
+                  </ui-select>
+                </div>
+          
+                <div class="entry_container">
+                  <span class="entry_label">gRNA count:</span></br>
+                  <div class="the_slider">
+                    <md-content style="margin: 16px 0; padding:16px">
+                    <div layout>
+                      <md-slider flex min="0" max="600" ng-model="color.red" aria-label="red" id="red-            slider" class>
+                      </md-slider>
+                      <div flex="20" layout layout-align="center center">
+                        <input flex type="number" ng-model="color.red" aria-label="red" aria-controls="         red- slider">
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="row down">
+              <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <a href="" ng-click="submitToDesigner()">
+                  <span class="arrow" growshrinkarrow>
+                    <span class="inner-arrow">
+                      <span>Step 2 <i class="fa fa-arrow-right"></i></span>
+                    </span>
+                  </span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
   {% endraw %}
 {% endblock %}
