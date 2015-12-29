@@ -12,38 +12,37 @@
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid">
-        <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="brand" href="#">Project name</a>
-        <div class="nav-collapse collapse">
-          <p class="navbar-text pull-right">
-            Logged in as <a href="#" class="navbar-link">Username</a>
-          </p>
-          <ul class="nav">
-            <li class="active"><a href="#">Home</a></li>
-            <li><a href="#about">About</a></li>
-            <li><a href="#contact">Contact</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
+        <div class="logo-box">
+          <span>CRISPR Library Designer</span>
+        </div>
+        <div class="search-box form-group">
+            <input type="text" class="form-control" id="search-str">
+        </div>
+        <div class="guide-count-box">
+          <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']"> Export {{ countSelectedGuides }} guides</button>
+        </div>
       </div>
     </div>
   </div>
   <div id="wrapper">
     <div id="sidebar-wrapper">
-      <ul class="sidebar-nav">
-        <li ng-repeat="thegene in gene_to_exon"><a href="" ng-click="setGene($index)">
-          {{ thegene.name }}
-        </a></li>
-      </ul>
+      <div class="sidebar-wrapper-inner">
+        <ul class="sidebar-nav">
+          <li ng-repeat="thegene in gene_to_exon" class="sidebar-primary-item-action" ng-class="{ selected_item : thegene == gene }">
+            <a href="" ng-click="setGene($index)" class="sidebar-primary-item-action" ng-class="{ selected_item : thegene == gene }">
+              <span class="sidebar-primary-item-action">
+                <i class="glyphicon glyph-science-atom"></i> {{ thegene.name }}
+              </span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </div>
     <div id="page-content-wrapper">
       <div class="page-content">
         <div class="container-fluid" id='container'>
           <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-9 .col-md-offset-1">
               <svg height="250" id="exon_graph" width="800" x="20">
                 <g id="background_exon_graph">
                   <rect fill="#eee" height="250" width="850" x="0" y="0"></rect>
@@ -68,7 +67,9 @@
                 </g>
               </svg>
             </div>
-            <div class="col-md-3">
+          </div>
+          <div class="row">
+            <div class=".col-md-6 .col-md-offset-3">
               <table class="table">
                 <tr>
                   <td></td>
@@ -86,10 +87,6 @@
                 </tr>
               </table>
             </div>
-          </div>
-          <div class="total_guides">
-            <p>Total selected: {{ countSelectedGuides }}</p>
-            <p><button type="button" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']"> Export</button></p>
           </div>
         </div>
       </div>

@@ -8,7 +8,7 @@
   margin-left: -250px;
   left: 250px;
   width: 250px;
-  background: #CCC;
+  background: #2B333B;
   position: fixed;
   height: 100%;
   overflow-y: auto;
@@ -22,6 +22,11 @@
 
 .page-content {
   padding-top: 15px;
+  background-color: #F7F7F7;
+}
+
+.sidebar-wrapper-inner {
+  margin-right: 12px;
 }
 
 .sidebar-nav {
@@ -31,6 +36,103 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  background: #2B333B;
+  border-bottom: 1px solid #52545b;
+}
+
+#exon_graph {
+  display: block;
+  margin: auto;
+}
+
+// Sidebar: ul - li - a - span - text
+// all have .sidebar-primary-item-action
+
+.sidebar-primary-item-action {
+  display: block;
+  color: #c2c5ca;
+  font-weight: 500;
+  height: 36px;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.sidebar-primary-item-action a {
+  padding: 11px 24px;
+  text-decoration: none;
+}
+
+.sidebar-primary-item-action.selected_item a {
+  background-color: #3D454D;
+}
+
+.sidebar-primary-item-action a:hover {
+  background-color: #3D454D;
+}
+
+.sidebar-primary-item-action span {
+  color: #85898C; // sets color of letters
+}
+
+.sidebar-primary-item-action .selected_item span {
+  color: #FFFFFF
+}
+
+// top header
+
+.navbar-inverse {
+  background-color: #fff;
+  border-color: #EBEBEB;
+}
+
+.logo-box {
+  position: absolute;
+  width: 250px;
+  left: 0px;
+  background-color: #51D2B7;
+  color: #fff;
+  height: 102%;
+  font-family: 'Futura';
+}
+
+.logo-box span {
+  position: relative;
+  top: 25%;
+  left: 12.5%;
+  right: -12.5%;
+}
+
+.search-box {
+  margin-left: auto;
+  margin-right: auto;
+  width: 200px;
+}
+
+.guide-count-box {
+  position: absolute;
+  width: 200px;
+  right: 0px;
+  color: #2B333B;
+  height: 100%;
+  top: 0px;
+}
+
+/*
+.guide-count-box span:first-child {
+  position: relative;
+  top: 25%;
+  left: -12.5%;
+  right: 12.5%;
+  padding: 10px;
+  border: 2px solid #666;
+}
+*/
+
+.guide-count-box button {
+  position: relative;
+  top: 12.5%;
+  left: 12.5%;
+  right: -12.5%;
 }
 
 @media (max-width:767px) {
