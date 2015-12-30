@@ -25,8 +25,8 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
   $http.get('/static/data/pre_processed/genes_list.json').then (res) ->
     $scope.genesAvailable = res.data
     guidesFactory.data.genes = [
-      $scope.genesAvailable[5]
-      $scope.genesAvailable[4]
+      $scope.genesAvailable[28284]
+      $scope.genesAvailable[494]
     ]
 
   $scope.guidesFactory.data.quantity = 60
