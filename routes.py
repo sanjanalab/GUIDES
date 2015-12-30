@@ -30,12 +30,6 @@ def postprocess_request(response):
 def index_view():
   return render_template('index.html')
 
-# @app.route('/genes_list')
-# def static_dir():
-#   print url_for('static', filename='data/pre_processed/genes_list.json')
-#   print os.path.join(APP_STATIC, 'data/pre_processed', 'genes_list.json')
-#   return url_for('static', filename='data/pre_processed/genes_list.json')
-
 ### API
 @app.route('/generate', methods=['POST'])
 def generate():
@@ -59,7 +53,7 @@ def generate():
 
   if len(genes) == 0:
     return jsonify(gene_to_exon={}, guide_count=0)
-  
+
   quantity_per_gene = quantity/len(genes)
 
   # Setup ranker

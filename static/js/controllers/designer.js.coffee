@@ -11,6 +11,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
 
     # Display attributes for data
     # p_ values are pixel values (as opposed ot sequencing data)
+    # was using p_ approach before switching to a directive.
     pixel_width = 800
     $scope.countSelectedGuides = guide_count
     angular.forEach gene_to_exon, (gene, key1) ->
@@ -63,40 +64,4 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
       guidesCSV = $filter('filter')(merged_gRNAs, {selected:true}, true)
       guidesCSV = $filter('orderBy')(guidesCSV, 'score', true)
       guidesCSV
-
-    # console.log "in filter"
-    # console.log gene_length
-    # console.log exon
-    # pixel_width = 900 # length of displayed gene
-    # {
-    #   "start": exon.start / gene_length * pixel_width,
-    #   "end": exon.end / gene_length * pixel_width
-    # }
-
-# exon.start = exon.start / gene_length * pixel_width
-
-# exon.end = exon.end / gene_length * pixel_width
-
-# exon
-
-  # $scope.normalizeExons = (gene_length) -> (exon) ->
-  # 	console.log exon
-  # 	pixel_width = 800 #length of displayed gene
-  # 	exon.start = exon.start / gene_length * pixel_width
-  # 	exon.end = exon.end / gene_length * pixel_width
-  # 	exon
-
-  # getGuides = () ->
-  # 	guidesFactory.generateGuides("AAk1").success((guidesData) ->
-  # 		guidesData
-  # 	)
-
-  # console.log getGuides()
-  # $scope.getGuides = (gene) ->
-  # 	console.log gene
-  # 	#console.log guidesFactory.generateGuides(gene)
-  # 	# guidesFactory.generateGuides(gene).then((guidesData) ->
-  # 	# 	console.log guidesData
-  # 	# 	guidesData
-  # 	# )
 ]
