@@ -47,7 +47,6 @@ class Ranker():
 
     # Load pre-processed GTEx data
     self.df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
-    print os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p')
 
   # ensembl_gene - ensembl encocoding for the gene (grCH37)
   # gene_name - user-friendly name for the gene
@@ -79,11 +78,11 @@ class Ranker():
       gtex_gene_exon = str(df_results.iloc[i]['Id'])
       gtex_exon_num = int(df_results.iloc[i]['exon_num'])
       seq = str(self.genome.sequence_gtex_gene(gtex_gene_exon))
-      print df_results.iloc[i]['Id'], seq
 
       # Search for the NGG PAM, beginning after the 21st base pair. DISCUSS (introns needed?)
       # Makes no sense to run if sequence is too short
       if len(seq) < 30:
+        i += 1
         continue
       for m in re.finditer(r'(?=GG)', seq[21:]):
         end = m.start() + 21 # add 21 because are looking at seq[21:]
