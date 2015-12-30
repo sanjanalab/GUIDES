@@ -4,7 +4,7 @@
 	left:0px;
 	right:0px;
 	bottom:0px;
-    z-index:1001;
+    z-index:2001;
 }
 
 .cg-busy-animation.ng-hide-add,
@@ -51,6 +51,7 @@
 .cg-busy-backdrop {
 	background-color:white;
 	opacity:.7;
+	position: fixed;
 }
 
 .cg-busy-backdrop-animation.ng-hide-add,
@@ -75,7 +76,7 @@
 .cg-busy-default-sign{
 	display: inline-block;
 	position:relative;
-    z-index:1002;
+    z-index:2002;
 	padding-bottom: 6px;
 	color:#333333;
 	text-shadow:0 1px 1px rgba(255, 255, 255, 0.75);

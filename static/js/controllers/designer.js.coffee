@@ -1,7 +1,9 @@
 FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($scope, $filter, GuidesFactory) ->
   guidesFactory = new GuidesFactory()
 
-  guidesFactory.generateGuides("AAk1").then (guidesData) ->
+  $scope.generateGuidesPromise = guidesFactory.generateGuides()
+
+  $scope.generateGuidesPromise.then (guidesData) ->
     console.log guidesData
     $scope.guidesData = guidesData["data"]["gene_to_exon"]
     gene_to_exon = guidesData["data"]["gene_to_exon"]
@@ -64,4 +66,5 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
       guidesCSV = $filter('filter')(merged_gRNAs, {selected:true}, true)
       guidesCSV = $filter('orderBy')(guidesCSV, 'score', true)
       guidesCSV
+  console.log $scope.generateGuidesPromise
 ]
