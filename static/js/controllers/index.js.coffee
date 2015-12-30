@@ -1,8 +1,5 @@
-FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', ($scope, $http, $timeout) ->
-  $scope.data = {
-  	'name': 'josh',
-  	'number': 201
-  }
+FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactory', ($scope, $http, $timeout, GuidesFactory) ->
+
 
   # these should really be inside directives...
   $scope.learn_more_fill = "#fff"
@@ -13,23 +10,6 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', ($scope, $htt
   $scope.learn_more_to_white = () ->
     $scope.learn_more_fill = "#fff"
 
-  $scope.submitToDesigner = () ->
-    console.log "should send parameters"
-
-  $scope.color = {
-    red: Math.floor(Math.random() * 255),
-    green: Math.floor(Math.random() * 255),
-    blue: Math.floor(Math.random() * 255)
-  };
-
-  $scope.rating1 = 3;
-  $scope.rating2 = 2;
-  $scope.rating3 = 4;
-
-  $scope.disabled1 = 0;
-  $scope.disabled2 = 70;
-
-
   $scope.someGroupFn = (item) ->
     if item.name[0] >= 'A' and item.name[0] <= 'M'
       return 'From A - M'
@@ -37,73 +17,73 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', ($scope, $htt
       return 'From N - Z'
     return
 
-  $scope.personAsync = selected: 'wladimir@email.com'
-  $scope.peopleAsync = []
-  $timeout (->
-    $scope.peopleAsync = [
-      {
-        name: 'Adam'
-        email: 'adam@email.com'
-        age: 12
-        country: 'United States'
-      }
-      {
-        name: 'Amalie'
-        email: 'amalie@email.com'
-        age: 12
-        country: 'Argentina'
-      }
-      {
-        name: 'Estefanía'
-        email: 'estefania@email.com'
-        age: 21
-        country: 'Argentina'
-      }
-      {
-        name: 'Adrian'
-        email: 'adrian@email.com'
-        age: 21
-        country: 'Ecuador'
-      }
-      {
-        name: 'Wladimir'
-        email: 'wladimir@email.com'
-        age: 30
-        country: 'Ecuador'
-      }
-      {
-        name: 'Samantha'
-        email: 'samantha@email.com'
-        age: 30
-        country: 'United States'
-      }
-      {
-        name: 'Nicole'
-        email: 'nicole@email.com'
-        age: 43
-        country: 'Colombia'
-      }
-      {
-        name: 'Natasha'
-        email: 'natasha@email.com'
-        age: 54
-        country: 'Ecuador'
-      }
-      {
-        name: 'Michael'
-        email: 'michael@email.com'
-        age: 15
-        country: 'Colombia'
-      }
-      {
-        name: 'Nicolás'
-        email: 'nicole@email.com'
-        age: 43
-        country: 'Colombia'
-      }
-    ]
-    return
-  ), 3000
+  # $scope.personAsync = selected: 'wladimir@email.com'
+  # $scope.peopleAsync = []
+  # $timeout (->
+  #   $scope.peopleAsync = [
+  #     {
+  #       name: 'Adam'
+  #       email: 'adam@email.com'
+  #       age: 12
+  #       country: 'United States'
+  #     }
+  #     {
+  #       name: 'Amalie'
+  #       email: 'amalie@email.com'
+  #       age: 12
+  #       country: 'Argentina'
+  #     }
+  #     {
+  #       name: 'Estefanía'
+  #       email: 'estefania@email.com'
+  #       age: 21
+  #       country: 'Argentina'
+  #     }
+  #     {
+  #       name: 'Adrian'
+  #       email: 'adrian@email.com'
+  #       age: 21
+  #       country: 'Ecuador'
+  #     }
+  #     {
+  #       name: 'Wladimir'
+  #       email: 'wladimir@email.com'
+  #       age: 30
+  #       country: 'Ecuador'
+  #     }
+  #     {
+  #       name: 'Samantha'
+  #       email: 'samantha@email.com'
+  #       age: 30
+  #       country: 'United States'
+  #     }
+  #     {
+  #       name: 'Nicole'
+  #       email: 'nicole@email.com'
+  #       age: 43
+  #       country: 'Colombia'
+  #     }
+  #     {
+  #       name: 'Natasha'
+  #       email: 'natasha@email.com'
+  #       age: 54
+  #       country: 'Ecuador'
+  #     }
+  #     {
+  #       name: 'Michael'
+  #       email: 'michael@email.com'
+  #       age: 15
+  #       country: 'Colombia'
+  #     }
+  #     {
+  #       name: 'Nicolás'
+  #       email: 'nicole@email.com'
+  #       age: 43
+  #       country: 'Colombia'
+  #     }
+  #   ]
+  #   return
+  # ), 3000
   $scope.counter = 0
   
   $scope.someFunction = (item, model) ->
@@ -112,7 +92,31 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', ($scope, $htt
       item: item
       model: model
     return
-  
+
+
+  # tissuesAvailable and genesAvailable is prepared here
+  # selected results is placed directly back into factory
+  # this way, we can just push to next controller and everything is ready :)
+  guidesFactory = new GuidesFactory()
+  $scope.guidesFactory = guidesFactory
+
+  $scope.tissuesAvailable = ['Thyroid', 'Testis', 'Cervix Uteri', 'Adipose Tissue', 'Breast', 'Vagina', 'Nerve', 'Pituitary', 'Stomach', 'Fallopian Tube', 'Bone Marrow', 'Bladder', 'Blood', 'Colon', 'Prostate', 'Pancreas', 'Blood Vessel', 'Liver', 'Spleen', 'Small Intestine', 'Uterus', 'Ovary', 'Muscle', 'Heart', 'Adrenal Gland', 'Brain', 'Salivary Gland', 'Lung', 'Skin', 'Esophagus', 'Kidney']
+  guidesFactory.data.tissues = [
+    $scope.tissuesAvailable[8]
+  ]
+
+  $scope.genesAvailable = []
+  # We are in /static/js/min/scripts.min.js
+  # We want /static/data/pre_processed/genes_list.json
+  $http.get('/static/data/pre_processed/genes_list.json').then (res) ->
+    $scope.genesAvailable = res.data
+    guidesFactory.data.genes = [
+      $scope.genesAvailable[5]
+      $scope.genesAvailable[4]
+    ]
+
+  $scope.guidesFactory.data.quantity = 60
+
   $scope.person = {}
   $scope.people = [
     {

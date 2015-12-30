@@ -1,16 +1,18 @@
-FlaskStart.controller 'DesignerCtrl', ['$scope', '$element', '$filter', 'GuidesFactory', ($scope, $element, $filter, GuidesFactory) ->
+FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($scope, $filter, GuidesFactory) ->
   guidesFactory = new GuidesFactory()
 
   guidesFactory.generateGuides("AAk1").then (guidesData) ->
     console.log guidesData
     $scope.guidesData = guidesData["data"]["gene_to_exon"]
     gene_to_exon = guidesData["data"]["gene_to_exon"]
+    guide_count = guidesData["data"]["guide_count"]
     all_gRNAs = {}
     merged_gRNAs = []
 
     # Display attributes for data
     # p_ values are pixel values (as opposed ot sequencing data)
     pixel_width = 800
+    $scope.countSelectedGuides = guide_count
     angular.forEach gene_to_exon, (gene, key1) ->
       all_gRNAs[gene.name] = []
       angular.forEach gene.exons, (exon, key2) ->
@@ -18,6 +20,8 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$element', '$filter', 'GuidesF
         exon.p_end = exon.end / gene.length * pixel_width
         angular.forEach exon.gRNAs, (guide, key3) ->
           # guide.selected = false # Change later to only include best guides -> might even come from server
+          # if guide.selected
+          #   $scope.countSelectedGuides += 1
           guide.p_start = guide.start / gene.length * pixel_width
           guide.exon = key2 + 1
           guide.gene = gene.name
@@ -28,16 +32,15 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$element', '$filter', 'GuidesF
     # angular.forEach all_gRNAs, (guides_for_gene, gene_name) ->
     #   all_gRNAs[gene_name] = $filter('orderBy')(guides_for_gene, 'score', true)
 
-    guide_count = guidesData["data"]["guide_count"]
-    $scope.countSelectedGuides = guide_count
-
-    merged_gRNAs = $filter('orderBy')(merged_gRNAs, 'score', true)
-    angular.forEach merged_gRNAs, (guide, key) ->
-      if guide_count > 0
-        guide.selected = true
-        guide_count -= 1
-      else
-        guide.selected = false
+    # Server is now doing this, so this has been removed.
+    # guide_count = $scope.countSelectedGuides
+    # merged_gRNAs = $filter('orderBy')(merged_gRNAs, 'score', true)
+    # angular.forEach merged_gRNAs, (guide, key) ->
+    #   if guide_count > 0
+    #     guide.selected = true
+    #     guide_count -= 1
+    #   else
+    #     guide.selected = false
 
     $scope.gene_to_exon = gene_to_exon
     $scope.all_gRNAs = all_gRNAs
@@ -60,10 +63,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$element', '$filter', 'GuidesF
       guidesCSV = $filter('filter')(merged_gRNAs, {selected:true}, true)
       guidesCSV = $filter('orderBy')(guidesCSV, 'score', true)
       guidesCSV
-
-
-    $scope.svgUnit = () -> 
-      $element.find('#connector_rect')[0].getBBox().width / (3 * $scope.gene.exons.length + 1)
 
     # console.log "in filter"
     # console.log gene_length

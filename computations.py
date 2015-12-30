@@ -11,16 +11,14 @@ import os
 
 class GuideRNA():
   """Holder of gRNA information"""
-  def __init__(self, start, seq, score, exon_ranking, ensembl_gene, gene_name):
+  def __init__(self, selected, start, seq, score, exon_ranking, ensembl_gene, gene_name):
     self.start = start
     self.seq = seq
     self.score = score
     self.exon_ranking = exon_ranking
     self.ensembl_gene = ensembl_gene
     self.gene_name = gene_name
-
-    # TODO: Make logical
-    self.selected = False
+    self.selected = selected
 
   def serialize_for_display(self):
     """Serialize for the way we are returning json"""
@@ -45,9 +43,11 @@ class Ranker():
     self.tissues = tissues
     self.genes = []
     self.gRNAs = []
+    self.countSelectedGuides = 0
 
     # Load pre-processed GTEx data
     self.df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
+    print os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p')
 
   # ensembl_gene - ensembl encocoding for the gene (grCH37)
   # gene_name - user-friendly name for the gene
@@ -103,7 +103,7 @@ class Ranker():
 
         # Calculate the doench score
         score = doench_score.calc_score(mer30)
-        potential_gRNA = GuideRNA(end-20, mer30, score, gtex_exon_num, ensembl_gene, gene_name)
+        potential_gRNA = GuideRNA(True, end-20, mer30, score, gtex_exon_num, ensembl_gene, gene_name)
 
         # If there's enough room, add it, no question.
         if q.qsize() < quantity:
@@ -121,6 +121,8 @@ class Ranker():
     # Pop gRNAs into our 'permanent' storage 
     while not q.empty():
       gRNA = q.get()
+      if gRNA.selected:
+        self.countSelectedGuides += 1
       self.gRNAs.append(gRNA)
 
   def get_guides_by_exon(self):
@@ -158,6 +160,9 @@ class Ranker():
       guides_by_exon.append(value)
 
     return guides_by_exon
+
+  def get_count_selected_guides(self):
+    return self.countSelectedGuides
 
 def run():
   suma = 0

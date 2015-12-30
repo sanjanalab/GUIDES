@@ -1,6 +1,6 @@
 from flask import session, request, render_template, jsonify, g, redirect
 from app import app, dev
-from flask import jsonify
+from flask import jsonify, url_for
 import pandas as pd
 import numpy as np
 import pickle
@@ -8,6 +8,8 @@ import urllib2
 from pyensembl import EnsemblRelease
 import seq_generator
 import computations
+from settings import APP_STATIC
+import os
 
 genome = {
   "human" : seq_generator.Genome()
@@ -22,27 +24,32 @@ def preprocess_request():
 def postprocess_request(response):
   return response
 
-### Views
+### pass routing to angular
 @app.route('/')
+@app.route('/designer')
 def index_view():
   return render_template('index.html')
 
-@app.route('/designer')
-def designer_view():
-  return render_template('designer.html')
+# @app.route('/genes_list')
+# def static_dir():
+#   print url_for('static', filename='data/pre_processed/genes_list.json')
+#   print os.path.join(APP_STATIC, 'data/pre_processed', 'genes_list.json')
+#   return url_for('static', filename='data/pre_processed/genes_list.json')
 
 ### API
-@app.route('/generate')
+@app.route('/generate', methods=['POST'])
 def generate():
-  # Request arguments
-  genes = request.args.get('gene')
-  species = request.args.get('species')
-  quantity = request.args.get('quantity')
-  tissues = request.args.get('tissues')
+  # Retrieve arguments
+  post = request.get_json()
+
+  genes = post.get('genes')
+  species = 'human'
+  quantity = post.get('quantity')
+  tissues = post.get('tissues')
 
   # Validations
   if genes == None:
-    genes = [('ENSG00000115977.14', "AAK1"), ('ENSG00000142168.10', "SOD1"), ('ENSG00000139618.10', 'BRCA1')]
+    genes = [{u'ensembl_id': u'ENSG00000186092.4', u'$$hashKey': u'object:50', u'name': u'OR4F5'}]
   if species == None:
     species = "human"
   if quantity == None:
@@ -50,17 +57,21 @@ def generate():
   if tissues == None:
     tissues = ["Muscle", "Heart", "Brain"]
 
+  if len(genes) == 0:
+    return jsonify(gene_to_exon={}, guide_count=0)
+  
   quantity_per_gene = quantity/len(genes)
 
   # Setup ranker
   ranker = computations.Ranker(genome["human"], species, tissues)
 
   # Iterate over genes, finding guides for each
-  for (ensembl_gene, gene_name) in genes:
-    ranker.rank(ensembl_gene, gene_name, quantity_per_gene)
+  for g in genes:
+    ranker.rank(g['ensembl_id'], g['name'], quantity_per_gene)
 
   guides_by_exon = ranker.get_guides_by_exon()
-  return jsonify(gene_to_exon=guides_by_exon, guide_count=quantity)
+  guide_count = ranker.get_count_selected_guides()
+  return jsonify(gene_to_exon=guides_by_exon, guide_count=guide_count)
 
 def test_generate():
   # Generate data

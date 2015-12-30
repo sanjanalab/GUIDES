@@ -1,5 +1,3 @@
-Filters = angular.module 'FlaskStart.filters', []
-
 Filters.filter 'normalizeExonsFilter', ->
   (exons, gene_length) ->
     pixel_width = 800 #length of displayed gene

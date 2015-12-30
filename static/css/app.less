@@ -18,8 +18,13 @@
   src: url(../../font/liberation-sans-regular.ttf);
 }
 
-input {
+.ui-select-container input {
   border: none;
+  color: #fff;
+}
+
+md-content .layout-row input {
+  color: #000;
 }
 
 @import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700,400italic,300italic,700italic);
@@ -71,6 +76,11 @@ input {
   background:none;
   background-color: transparent;
   border: none;
+}
+
+// This is where I override ui-select classes
+div.ui-select-container {
+  border:none;
 }
 
 // Home page
@@ -428,9 +438,10 @@ svg path, svg polygon {
 
 @media screen and (max-width: 1440px) {
   #hero .down span.arrow {
-      width: 60px;
-      height: 60px;
-      line-height: 60px;
+      width: 75px;
+      height: 75px;
+      line-height: 75px;
+      display: inline-block;
   }
 }
 

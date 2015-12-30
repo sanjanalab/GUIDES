@@ -1,5 +1,3 @@
-Filters = angular.module 'FlaskStart.filters', []
-
 Filters.filter 'propsFilter', ->
   (items, props) ->
     out = []

@@ -1,0 +1,9 @@
+<rect class="exon" fill="#fff" height="50" ng-attr-width="{{2 * svgUnit}}" stroke="#aaa" ng-attr-x="{{ svgUnit + toInt(index)*3*svgUnit }}" y="75"></rect>
+
+<text class="gRNA_count" fill="#111" font-size="16" ng-attr-x="{{svgUnit*2.0  + toInt(index)*3*svgUnit }}" y="108" style="text-anchor: middle;">
+  {{ (exon.gRNAs | filter:{selected:true}).length }}
+</text>
+
+<text class="exon_label" fill="#111" font-size="8" ng-attr-x="{{svgUnit*2.0 + toInt(index)*3*svgUnit }}" y="145" style="text-anchor: middle;">
+  Exon {{ toInt(index) + 1 }}
+</text>

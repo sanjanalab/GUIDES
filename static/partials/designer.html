@@ -1,9 +1,20 @@
-{% extends "_base.html" %}
-{% block title %}Designer{% endblock %}
-{% block body %}
-  {% raw %}
+<style>
+/*.exon {
+  width: calc(200%  /{{svgConstant}});
+  x: calc((100%  / {{svgConstant}}) + {{$index}}*3*(100% / {{svgConstant}}));
+}
 
-<div ng-controller='DesignerCtrl' id="full-page">
+.gRNA_count {
+  x: calc(100%  / {{svgConstant}} * 1.8  + {{$index}}*3*(100% / {{svgConstant}}));
+}
+
+.exon_label {
+  x: calc(100% / {{svgConstant}} *1.6  + {{$index}}*3*(100% / {{svgConstant}}))
+}*/
+
+</style>
+
+<div id="full-page">
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid">
@@ -41,7 +52,7 @@
         <div class="container-fluid" id='container'>
           <div class="row">
             <div class="col-md-12">
-              <svg height="250" id="exon_graph" width="100%" x="20">
+              <!-- <svg height="250" id="exon_graph" width="100%" x="20">
                 <g id="background_exon_graph">
                   <rect fill="#eee" height="250" width="100%" x="0" y="0"></rect>
                 </g>
@@ -49,15 +60,29 @@
                   <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="100" id="connector_rect"></rect>
 
                   <g ng-repeat="exon in gene.exons">
-                    <rect class="exon" fill="#fff" height="50" ng-attr-width="{{2 * svgUnit()}}" stroke="#aaa" ng-attr-x="{{ svgUnit() + $index*3*svgUnit() }}" y="75"></rect>
 
-                    <text class="gRNA_count" fill="#111" font-size="16" ng-attr-x="{{svgUnit()*1.8  + $index*3*svgUnit() }}" y="108">
+
+
+                    <rect class="exon" fill="#fff" height="50" stroke="#aaa" y="75"></rect>
+
+                    <text class="gRNA_count" fill="#111" font-size="16" y="108" style="x: calc((100%/{{svgConstant}})*1.8 + ({{$index}}*3)*(100%/{{svgConstant}}))">
                       {{ (exon.gRNAs | filter:{selected:true}).length }}
                     </text>
 
-                    <text class="exon_label" fill="#111" font-size="8" ng-attr-x="{{svgUnit()*1.6  + $index*3*svgUnit() }}" y="145">
+                    <text class="exon_label" fill="#111" font-size="8" y="145">
                       Exon {{ $index + 1 }}
                     </text>
+                  </g>
+                </g>
+              </svg> -->
+              <svg height="250" id="exon_graph" width="100%" x="20">
+                <g id="background_exon_graph">
+                  <rect fill="#eee" height="250" width="100%" x="0" y="0"></rect>
+                </g>
+                <g id="all_exons">
+                  <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="100" id="connector_rect"></rect>
+              
+                  <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" ng-repeat="exon in gene.exons">
                   </g>
                 </g>
               </svg>
@@ -67,7 +92,7 @@
             <div class=".col-md-6 .col-md-offset-3">
               <div class="table-header">
                 <span>
-                  Choose your guides below...or keep what what our algorithms have chosen!
+                  Step 3) Optional: Customize your guide selection.
                 </span>
               </div>
               <table class="table">
@@ -93,5 +118,3 @@
     </div>
   </div>
 </div>
-  {% endraw %}
-{% endblock %}

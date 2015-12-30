@@ -11,8 +11,8 @@ dev = os.environ.get('DEV') == 'true'
 env = assets.Environment(app)
 env.load_path = [os.path.dirname(__file__)]
 
-js = []
-coffee = []
+js = glob.glob('static/js/*.js')
+coffee = glob.glob('static/js/*.js.coffee')
 order = ['libs', 'services', 'filters', 'directives', 'controllers']
 for x in order:
   js.extend(glob.glob('static/js/{}/*.js'.format(x)))
