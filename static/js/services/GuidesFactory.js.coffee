@@ -1,33 +1,47 @@
 FlaskStart.factory 'GuidesFactory', ['$http', '$q', ($http, $q) ->
-	class GuidesFactory
-		data: 
-			'genes' : []
-			'tissues' : []
-			'quantity': 25
+    class GuidesFactory
+        available: # can select
+            'genes': [] # set later by $http in constructor
+            'tissues': ['Thyroid', 'Testis', 'Cervix Uteri', 'Adipose Tissue', 'Breast', 'Vagina', 'Nerve', 'Pituitary', 'Stomach', 'Fallopian Tube', 'Bone Marrow', 'Bladder', 'Blood', 'Colon', 'Prostate', 'Pancreas', 'Blood Vessel', 'Liver', 'Spleen', 'Small Intestine', 'Uterus', 'Ovary', 'Muscle', 'Heart', 'Adrenal Gland', 'Brain', 'Salivary Gland', 'Lung', 'Skin', 'Esophagus', 'Kidney']
 
-		constructor: () ->
-			# set genes, guides, etc.
+        data: # currently selected
+            'genes' : []
+            'tissues' : []
+            'quantity': 60
 
-		generateGuides: () ->
-			# use that information to grab from server
-			$http {
-				url: '/generate'
-				method: 'POST'
-				headers:
-					'Content-Type': 'application/json'
-				data: JSON.stringify(this.data)
-			}
-			.success (data) ->
-				console.log(data)
+        constructor: () ->
+            # Setup default available, and default selected
+            # We are in /static/js/min/scripts.min.js
+            # We want /static/data/pre_processed/genes_list.json
+            this_ = this
+            $http.get('/static/data/pre_processed/genes_list.json').then (res) ->
+                this_.available.genes = res.data
+                this_.data.genes = [
+                    this_.available.genes[28284]
+                    this_.available.genes[494]
+                ]
 
-		generateExons: () ->
-			$http.get('/generate')
+        generateGuides: () ->
+            if this.data.tissues.length == 0
+                this.data.tissues = this.available.tissues
+            $http {
+                url: '/generate'
+                method: 'POST'
+                headers:
+                    'Content-Type': 'application/json'
+                data: JSON.stringify(this.data)
+            }
+            .success (data) ->
+                console.log(data)
 
-		setGenes: (genes) ->
-			this.data.genes = genes
+        generateExons: () ->
+            $http.get('/generate')
 
-		setTissues: (tissues) ->
-			this.data.tissues = tissues
+        setGenes: (genes) ->
+            this.data.genes = genes
+
+        setTissues: (tissues) ->
+            this.data.tissues = tissues
 
 ]
 

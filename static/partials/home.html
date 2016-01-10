@@ -45,7 +45,7 @@
                   <span class="entry_label">Genes:</span> 
                   <ui-select multiple ng-model="guidesFactory.data.genes" theme="bootstrap" limit="10" ng-disabled=         "disabled" style="width: 100%; background: none; background-color: transparent">
                     <ui-select-match placeholder="Select genes...">{{$item.name}} &lt;{{$item.ensembl_id}}&gt;         </ui-select-match>
-                   <ui-select-choices repeat="gene in genesAvailable | propsFilter: {name: $select.search, ensembl_id: $select.search} | limitTo: 10">
+                   <ui-select-choices repeat="gene in guidesFactory.available.genes | propsFilter: {name: $select.search, ensembl_id: $select.search} | limitTo: 10">
                       <div ng-bind-html="gene.name | highlight: $select.search"></div>
                       <small>
                         Name: {{gene.name}}
@@ -56,28 +56,35 @@
                 </div>
           
                 <div class="entry_container">
-                  <span class="entry_label">Tissues:</span> 
-                  <ui-select multiple ng-model="guidesFactory.data.tissues" theme="bootstrap" limit="10" ng-disabled=         "disabled" style="width: 100%; background: none; background-color: transparent">
-                    <ui-select-match placeholder="Select tissues...">{{$item}}        </ui-select-match>
-                    <ui-select-choices repeat="tissue in tissuesAvailable | filter: $select.search | limitTo: 10">
-                      <div ng-bind-html="tissue | highlight: $select.search"></div>
-                    </ui-select-choices>
-                  </ui-select>
-                </div>
-          
-                <div class="entry_container">
                   <span class="entry_label">Library size:</span></br>
                   <div class="the_slider">
                     <md-content style="margin: 16px 0; padding:16px">
                     <div layout>
-                      <md-slider flex min="0" max="600" ng-model="guidesFactory.data.quantity" aria-label="red" id="red-            slider" class>
+                      <md-slider flex min="0" max="600" ng-model="guidesFactory.data.quantity" aria-label="red" id="red-slider" class>
                       </md-slider>
                       <div flex="20" layout layout-align="center center">
-                        <input flex type="number" ng-model="guidesFactory.data.quantity" aria-label="red" aria-controls="         red- slider">
+                        <input flex type="number" ng-model="guidesFactory.data.quantity" aria-label="red" aria-controls="red-slider">
+                      </div>
+                    </div>
+                    <div layout>
+                      <div class="slider-descriptors">
+                        <span class="under-slider">Estimated wait time: 5 sec</span>
+                        <span class="under-count">per guide</span>
                       </div>
                     </div>
                   </div>
                 </div>
+
+                <div class="entry_container">
+                  <span class="entry_label">Tissues (optional):</span> 
+                  <ui-select multiple ng-model="guidesFactory.data.tissues" theme="bootstrap" limit="10" ng-disabled=         "disabled" style="width: 100%; background: none; background-color: transparent">
+                    <ui-select-match placeholder="Select tissues...">{{$item}}        </ui-select-match>
+                    <ui-select-choices repeat="tissue in guidesFactory.available.tissues | filter: $select.search | limitTo: 10">
+                      <div ng-bind-html="tissue | highlight: $select.search"></div>
+                    </ui-select-choices>
+                  </ui-select>
+                </div>
+
               </div>
             </div>
 

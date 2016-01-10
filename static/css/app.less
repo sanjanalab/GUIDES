@@ -27,6 +27,19 @@ md-content .layout-row input {
   color: #000;
 }
 
+.slider-descriptors {
+  color: #BDBDBD;
+  width: 100%;
+}
+
+.under-slider {
+  float: left;
+}
+
+.under-count {
+  float: right;
+}
+
 @import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700,400italic,300italic,700italic);
 
 // Styling of entry labels on the home page
@@ -494,4 +507,26 @@ svg path, svg polygon {
     box-shadow: 0 6px 20px 0 rgba(0,0,0,0.09),0 8px 17px 0 rgba(0,0,0,0.08);
     -webkit-transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
     transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
+}
+
+// Placeholder text for genes and tissues
+#hero ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color:    #fff;
+  opacity: 0.5;
+}
+#hero :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color:    #fff;
+  opacity: 0.5;
+}
+#hero ::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color:    #fff;
+  opacity: 0.5;
+}
+#hero :-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color:    #fff;
+  opacity: 0.5;
+}
+#hero :placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+  color:    #fff;
+  opacity: 0.5;
 }
