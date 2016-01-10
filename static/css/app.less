@@ -42,6 +42,26 @@ md-content .layout-row input {
 
 @import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700,400italic,300italic,700italic);
 
+// uploading on home page
+.drop-box {
+/*    background: #F8F8F8;
+    border: 5px dashed #DDD;
+    width: 200px;
+    height: 65px;
+    text-align: center;
+    padding-top: 25px;
+    margin: 10px; */
+}
+.dragover {
+    border: 5px dashed #FFF200;
+}
+
+// for angular busy
+.library-summary {
+  font-size: 16px;
+}
+
+
 // Styling of entry labels on the home page
 .details-holder {
   padding-top: 77px;
@@ -84,6 +104,7 @@ md-content .layout-row input {
   font-family: 'Roboto Condensed', sans-serif;
   margin-right: 100px;
   padding-bottom: 2px;
+  z-index: 5000;
 }
 
 .entry_container div {
@@ -379,6 +400,11 @@ svg path, svg polygon {
   top: 25%;
   left: 12.5%;
   right: -12.5%;
+}
+
+.logo-box a {
+  text-decoration: none;
+  color: inherit;
 }
 
 .search-box {

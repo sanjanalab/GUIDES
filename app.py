@@ -20,7 +20,8 @@ for x in order:
 
 coffee_bundle = assets.Bundle(*coffee, filters=['coffeescript'])
 js.append(coffee_bundle)
-js_libs = ['node_modules/angular-sanitize/angular-sanitize.min.js', 'node_modules/ng-csv/build/ng-csv.min.js']
+js_libs = ['node_modules/angular-sanitize/angular-sanitize.min.js', 'node_modules/ng-csv/build/ng-csv.min.js',
+		   'node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js', 'node_modules/ng-file-upload/dist/ng-file-upload.min.js']
 js.append(js_libs)
 
 css = []

@@ -1,10 +1,10 @@
-<div cg-busy="{promise:generateGuidesPromise,message:'Step 2) Designing your library',templateUrl:'static/partials/angular-busy.html'}">
+<div cg-busy="{promise:generateGuidesPromise,templateUrl:'static/partials/angular-busy.html'}">
 <div id="full-page">
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid">
         <div class="logo-box">
-          <span>CRISPR Library Designer</span>
+          <a href="/#/"><span>CRISPR Library Designer</span></a>
         </div>
         <div class="search-box form-group"> 
           <div class="input-group">
@@ -59,7 +59,9 @@
               </div>
               <table class="table">
                 <tr>
-                  <th></th>
+                  <th>
+                    <select-all-checkbox checkboxes="all_gRNAs[gene.name]" counter="countSelectedGuides"></select-all-checkbox>
+                  </th>
                   <th>Sequence (5' <i class="fa fa-long-arrow-right"></i> 3')</th>
                   <th>Start</th>
                   <th>Score</th>

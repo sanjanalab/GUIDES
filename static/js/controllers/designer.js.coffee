@@ -1,13 +1,12 @@
 FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($scope, $filter, GuidesFactory) ->
   guidesFactory = new GuidesFactory()
-
+  $scope.gene_statistics = guidesFactory.gene_statistics
   $scope.generateGuidesPromise = guidesFactory.generateGuides()
 
   $scope.generateGuidesPromise.then (guidesData) ->
-    console.log guidesData
-    $scope.guidesData = guidesData["data"]["gene_to_exon"]
-    gene_to_exon = guidesData["data"]["gene_to_exon"]
-    guide_count = guidesData["data"]["guide_count"]
+    $scope.guidesData = guidesData["gene_to_exon"]
+    gene_to_exon = guidesData["gene_to_exon"]
+    guide_count = guidesData["guide_count"]
     all_gRNAs = {}
     merged_gRNAs = []
 
@@ -51,12 +50,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     $scope.gene = gene_to_exon[0]
     $scope.setGene = (idx) ->
       $scope.gene = gene_to_exon[idx]
-      console.log $scope.gene
 
-    console.log $scope.gene
 
     $scope.guideSelected = (guide) ->
-      console.log $scope.svgUnit
       if guide.selected == false
         $scope.countSelectedGuides -= 1
       else
@@ -66,5 +62,4 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
       guidesCSV = $filter('filter')(merged_gRNAs, {selected:true}, true)
       guidesCSV = $filter('orderBy')(guidesCSV, 'score', true)
       guidesCSV
-  console.log $scope.generateGuidesPromise
 ]

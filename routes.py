@@ -54,14 +54,12 @@ def generate():
   if len(genes) == 0:
     return jsonify(gene_to_exon={}, guide_count=0)
 
-  quantity_per_gene = quantity/len(genes)
-
   # Setup ranker
   ranker = computations.Ranker(genome["human"], species, tissues)
 
   # Iterate over genes, finding guides for each
   for g in genes:
-    ranker.rank(g['ensembl_id'], g['name'], quantity_per_gene)
+    ranker.rank(g['ensembl_id'], g['name'], quantity)
 
   guides_by_exon = ranker.get_guides_by_exon()
   guide_count = ranker.get_count_selected_guides()
