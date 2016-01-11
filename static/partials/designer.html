@@ -63,14 +63,12 @@
                     <select-all-checkbox checkboxes="all_gRNAs[gene.name]" counter="countSelectedGuides"></select-all-checkbox>
                   </th>
                   <th>Sequence (5' <i class="fa fa-long-arrow-right"></i> 3')</th>
-                  <th>Start</th>
                   <th>Score</th>
                   <th>Exon</th>
                 </tr>
                 <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:'-score'">
                   <td><input type="checkbox" ng-model="guide.selected" ng-change="guideSelected(guide)"></td>
                   <td>{{ guide.seq }}</td>
-                  <td>{{ guide.start }}</td>
                   <td>{{ guide.score.toFixed(2) }}</td>
                   <td>{{ guide.exon }}</td>
                 </tr>
