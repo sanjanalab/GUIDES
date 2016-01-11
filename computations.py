@@ -51,6 +51,9 @@ class Ranker():
   # ensembl_gene - ensembl encocoding for the gene (grCH37)
   # gene_name - user-friendly name for the gene
   def rank(self, ensembl_gene, gene_name, quantity):
+    # Get the revcompl of a sequence print revcompl("AGTCAGCAT")
+    revcompl = lambda x: ''.join([{'A':'T','C':'G','G':'C','T':'A'}[B] for B in x][::-1])
+
     df_gene = self.df_normalized[self.df_normalized.Id.str.contains(ensembl_gene)]
     self.genes.append((ensembl_gene, gene_name))
 
@@ -84,7 +87,8 @@ class Ranker():
       if len(seq) < 30:
         i += 1
         continue
-      for m in re.finditer(r'(?=GG)', seq[21:]):
+
+      def process_guide(selected, max_queue_size, seq):
         end = m.start() + 21 # add 21 because are looking at seq[21:]
         assert seq[end] == seq[end+1] == 'G'
 
@@ -98,14 +102,14 @@ class Ranker():
 
         # We might too far to the right
         if (len(mer30)) != 30:
-          continue
+          return
 
         # Calculate the doench score
         score = doench_score.calc_score(mer30)
-        potential_gRNA = GuideRNA(True, end-20, mer30, score, gtex_exon_num, ensembl_gene, gene_name)
+        potential_gRNA = GuideRNA(selected, end-20, mer30, score, gtex_exon_num, ensembl_gene, gene_name)
 
         # If there's enough room, add it, no question.
-        if q.qsize() < quantity:
+        if q.qsize() < max_queue_size:
           q.put(potential_gRNA)
         # Otherwise, take higher score
         else:
@@ -115,6 +119,11 @@ class Ranker():
           else:
             q.put(lowest_gRNA)
 
+      for m in re.finditer(r'(?=GG)', seq[21:]):
+        process_guide(True, quantity, seq)
+      seq_rc = revcompl(seq)
+      for m in re.finditer(r'(?=GG)', seq_rc[21:]):
+        process_guide(True, quantity, seq_rc)
       i += 1
 
     # Pop gRNAs into our 'permanent' storage 
@@ -140,7 +149,8 @@ class Ranker():
       if len(seq) < 30:
         i += 1
         continue
-      for m in re.finditer(r'(?=GG)', seq[21:]):
+
+      def process_guide(selected, max_queue_size, seq):
         end = m.start() + 21 # add 21 because we are looking at seq[21:]
         assert seq[end] == seq[end+1] == 'G'
 
@@ -154,14 +164,14 @@ class Ranker():
 
         # We might too far to the right
         if (len(mer30)) != 30:
-          continue
+          return
 
         # Calculate the doench score
         score = doench_score.calc_score(mer30)
-        potential_gRNA = GuideRNA(False, end-20, mer30, score, gtex_exon_num, ensembl_gene, gene_name)
+        potential_gRNA = GuideRNA(selected, end-20, mer30, score, gtex_exon_num, ensembl_gene, gene_name)
 
         # If there's enough room, add it, no question.
-        if q.qsize() < min_per_exon:
+        if q.qsize() < max_queue_size:
           q.put(potential_gRNA)
         # Otherwise, take higher score
         else:
@@ -170,7 +180,13 @@ class Ranker():
             q.put(potential_gRNA)
           else:
             q.put(lowest_gRNA)
-      
+
+      for m in re.finditer(r'(?=GG)', seq[21:]):
+        process_guide(False, min_per_exon, seq)
+      seq_rc = revcompl(seq)
+      for m in re.finditer(r'(?=GG)', seq_rc[21:]):
+        process_guide(False, min_per_exon, seq_rc)
+
       # Deposit the guides for this exon into our permanent source
       while not q.empty():
         gRNA = q.get()

@@ -45,8 +45,8 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     #     guide.selected = false
 
     # used for table column sorting
-    $scope.orderByField = 'score';
-    $scope.reverseSort = false;
+    $scope.orderByField = 'score'
+    $scope.reverseSort = true
 
     $scope.gene_to_exon = gene_to_exon
     $scope.all_gRNAs = all_gRNAs
