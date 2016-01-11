@@ -44,13 +44,13 @@
                 <div class="entry_container">
                   <div ngf-drop ng-model="file" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="false" accept="text/plain" ngf-pattern="text/plain">
                     <span class="entry_label">Genes:</span> 
-                    <ui-select multiple ng-model="guidesFactory.data.genes" theme="bootstrap" limit="10" ng-disabled  =         "disabled" style="width: 100%;  background: none; background-color: transparent">
+                    <ui-select multiple ng-model="guidesFactory.data.genes" theme="bootstrap" limit="10" ng-disabled ="disabled" style="width: 100%;  background: none; background-color: transparent">
                     <ui-select-match placeholder="Select genes..."> {{$item.name}}</ui-select-match>
                      <ui-select-choices repeat="gene in guidesFactory.available.genes | propsFilter: {name: $select.  search, ensembl_id: $select.search} | limitTo:  10">
                         <div ng-bind-html="gene.name | highlight: $select.search"></div>
                         <small>
                           Name: {{gene.name}}
-                          Ensembl: <span ng-bind-html="''+gene.ensembl_id | highlight: $select.search"></ span>
+                          Ensembl: <span ng-bind-html="''+gene.ensembl_id | highlight: $select.search"></span>
                         </small>
                       </ui-select-choices>
                     </ui-select>
@@ -79,8 +79,8 @@
 
                 <div class="entry_container">
                   <span class="entry_label">Tissues (optional):</span> 
-                  <ui-select multiple ng-model="guidesFactory.data.tissues" theme="bootstrap" limit="10" ng-disabled=         "disabled" style="width: 100%; background: none; background-color: transparent">
-                    <ui-select-match placeholder="Select tissues...">{{$item}}        </ui-select-match>
+                  <ui-select multiple ng-model="guidesFactory.data.tissues" theme="bootstrap" limit="10" ng-disabled="disabled" style="width: 100%; background: none; background-color: transparent">
+                    <ui-select-match placeholder="Select tissues...">{{$item}}</ui-select-match>
                     <ui-select-choices repeat="tissue in guidesFactory.available.tissues | filter: $select.search | limitTo: 10">
                       <div ng-bind-html="tissue | highlight: $select.search"></div>
                     </ui-select-choices>

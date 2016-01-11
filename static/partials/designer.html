@@ -63,10 +63,10 @@
                     <select-all-checkbox checkboxes="all_gRNAs[gene.name]" counter="countSelectedGuides"></select-all-checkbox>
                   </th>
                   <th>Sequence (5' <i class="fa fa-long-arrow-right"></i> 3')</th>
-                  <th>Score</th>
-                  <th>Exon</th>
+                  <th><a href="" ng-click="orderByField='score'; reverseSort = !reverseSort">Score </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
+                  <th><a href="" ng-click="orderByField='exon'; reverseSort = !reverseSort">Exon </a><span ng-show="orderByField == 'exon'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                 </tr>
-                <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:'-score'">
+                <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:orderByField:reverseSort">
                   <td><input type="checkbox" ng-model="guide.selected" ng-change="guideSelected(guide)"></td>
                   <td>{{ guide.seq }}</td>
                   <td>{{ guide.score.toFixed(2) }}</td>
