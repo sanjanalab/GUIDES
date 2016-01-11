@@ -51,8 +51,8 @@ class Ranker():
   # ensembl_gene - ensembl encocoding for the gene (grCH37)
   # gene_name - user-friendly name for the gene
   def rank(self, ensembl_gene, gene_name, quantity):
-    self.genes.append((ensembl_gene, gene_name))
     df_gene = self.df_normalized[self.df_normalized.Id.str.contains(ensembl_gene)]
+    self.genes.append((ensembl_gene, gene_name))
 
     # Sort by exon number, removing first and last exon
     # Recall: Id are entered as ENSG000xxxxx.x_EXONNUM, e.g. ENSG00000000971.11_21
@@ -71,7 +71,7 @@ class Ranker():
     exons_to_analyze = min(4, len(df_results))
     total_exons = len(df_results)
 
-    #for i in range(min(4, len(df_results))):
+    # for i in range(min(4, len(df_results))):
     i = 0
     while (i < total_exons) and (i < exons_to_analyze or q.qsize() < quantity):
       # Generate pseudogenome
@@ -123,6 +123,62 @@ class Ranker():
       if gRNA.selected:
         self.countSelectedGuides += 1
       self.gRNAs.append(gRNA)
+
+    # add at least k=10 guides from other exons, mark unselected
+    min_per_exon = 10
+    while i < total_exons:
+      # make a new priority queue for this analysis
+      q = PriorityQueue()
+
+      # Generate pseudogenome
+      gtex_gene_exon = str(df_results.iloc[i]['Id'])
+      gtex_exon_num = int(df_results.iloc[i]['exon_num'])
+      seq = str(self.genome.sequence_gtex_gene(gtex_gene_exon))
+
+      # Search for the NGG PAM, beginning after the 21st base pair. DISCUSS (introns needed?)
+      # Makes no sense to run if sequence is too short
+      if len(seq) < 30:
+        i += 1
+        continue
+      for m in re.finditer(r'(?=GG)', seq[21:]):
+        end = m.start() + 21 # add 21 because we are looking at seq[21:]
+        assert seq[end] == seq[end+1] == 'G'
+
+        # Doench score requires the 4 before and 6 after 20-mer (gives 30-mer)
+        # Recall that end points to first G = 21st base pair 
+        mer30 = seq[end-22-3:end+8-3]
+
+        # For reference:
+        # -- 20mer: seq[end-20 : end]
+        # -- PAM: seq[end : end+3]
+
+        # We might too far to the right
+        if (len(mer30)) != 30:
+          continue
+
+        # Calculate the doench score
+        score = doench_score.calc_score(mer30)
+        potential_gRNA = GuideRNA(False, end-20, mer30, score, gtex_exon_num, ensembl_gene, gene_name)
+
+        # If there's enough room, add it, no question.
+        if q.qsize() < min_per_exon:
+          q.put(potential_gRNA)
+        # Otherwise, take higher score
+        else:
+          lowest_gRNA = q.get()
+          if potential_gRNA.score > lowest_gRNA.score:
+            q.put(potential_gRNA)
+          else:
+            q.put(lowest_gRNA)
+      
+      # Deposit the guides for this exon into our permanent source
+      while not q.empty():
+        gRNA = q.get()
+        if gRNA.selected:
+          self.countSelectedGuides += 1
+        self.gRNAs.append(gRNA)
+
+      i += 1
 
   def get_guides_by_exon(self):
     # First, setup data as an associative array, to make guide insertion easier
