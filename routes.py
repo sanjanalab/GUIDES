@@ -6,7 +6,6 @@ import pandas as pd
 import numpy as np
 import pickle
 import urllib2
-from pyensembl import EnsemblRelease
 import seq_generator
 import computations
 from settings import APP_STATIC
