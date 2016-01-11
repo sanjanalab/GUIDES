@@ -1,4 +1,5 @@
 from flask import session, request, render_template, jsonify, g, redirect
+from flask.ext.basicauth import BasicAuth
 from app import app, dev
 from flask import jsonify, url_for
 import pandas as pd
@@ -14,6 +15,14 @@ import os
 genome = {
   "human" : seq_generator.Genome()
 }
+
+# setup password protection
+app.config['BASIC_AUTH_USERNAME'] = 'zhanglab'
+app.config['BASIC_AUTH_PASSWORD'] = 'editMe23'
+app.config['BASIC_AUTH_FORCE'] = True # protect entire site
+# for individual routes, decorate with @basic_auth.required
+
+basic_auth = BasicAuth(app)
 
 ### Processing
 @app.before_request
