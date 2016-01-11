@@ -68,7 +68,7 @@
                 </tr>
                 <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:orderByField:reverseSort">
                   <td><input type="checkbox" ng-model="guide.selected" ng-change="guideSelected(guide)"></td>
-                  <td>{{ guide.seq }}</td>
+                  <td class="nt-sequence">{{ guide.seq }}</td>
                   <td>{{ guide.score.toFixed(2) }}</td>
                   <td>{{ guide.exon }}</td>
                 </tr>
