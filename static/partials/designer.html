@@ -70,7 +70,7 @@
                     <select-all-checkbox checkboxes="all_gRNAs[gene.name]" counter="countSelectedGuides"></select-all-checkbox>
                   </th>
                   <th>Sequence (5' <i class="fa fa-long-arrow-right"></i> 3')</th>
-                  <th><a href="" ng-click="orderByField='score'; reverseSort = !reverseSort">Score </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
+                  <th><a tooltip-placement="left" uib-tooltip="Efficiency scores are computed using the techniques described by (1) Doench, et al., 2014; and (2) Fusi, et al., 2016., and presented as (1)/(2)." ng-click="orderByField='score'; reverseSort = !reverseSort">Efficiency </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                   <th><a href="" ng-click="orderByField='exon'; reverseSort = !reverseSort">Exon </a><span ng-show="orderByField == 'exon'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                 </tr>
                 <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:orderByField:reverseSort">
