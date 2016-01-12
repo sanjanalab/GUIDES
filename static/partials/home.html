@@ -77,8 +77,14 @@
                   </div>
                 </div>
 
-                <div class="entry_container">
-                  <span class="entry_label">Tissues (optional):</span> 
+                <div class="entry_container" style="overflow:auto">
+                  <span class="entry_label">Consider GTEx expression profiles?</span>
+                  <form>
+                    <switch id="tissues_enabled" name="tissues_enabled" ng-model="guidesFactory.data.tissues_enabled" class="green"></switch>
+                  </form>
+                </div>
+
+                <div class="entry_container" ng-show="guidesFactory.data.tissues_enabled">
                   <ui-select multiple ng-model="guidesFactory.data.tissues" theme="bootstrap" limit="10" ng-disabled="disabled" style="width: 100%; background: none; background-color: transparent">
                     <ui-select-match placeholder="Select tissues...">{{$item}}</ui-select-match>
                     <ui-select-choices repeat="tissue in guidesFactory.available.tissues | filter: $select.search | limitTo: 10">
@@ -101,7 +107,6 @@
                 </a>
               </div>
             </div>
-
           </div>
         </div>
       </div>

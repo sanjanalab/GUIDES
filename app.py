@@ -20,8 +20,9 @@ for x in order:
 
 coffee_bundle = assets.Bundle(*coffee, filters=['coffeescript'])
 js.append(coffee_bundle)
-js_libs = ['node_modules/angular-sanitize/angular-sanitize.min.js', 'node_modules/ng-csv/build/ng-csv.min.js',
-		   'node_modules/ng-file-upload/dist/ng-file-upload-shim.min.js', 'node_modules/ng-file-upload/dist/ng-file-upload.min.js']
+js_libs = ['node_modules/angular-sanitize/angular-sanitize.js', 'node_modules/ng-csv/build/ng-csv.js',
+		   'node_modules/ng-file-upload/dist/ng-file-upload-shim.js', 'node_modules/ng-file-upload/dist/ng-file-upload.js',
+       'node_modules/angular-ui-switch/angular-ui-switch.js']
 js.append(js_libs)
 
 css = []
@@ -33,6 +34,9 @@ for x in order:
 
 css.extend(glob.glob('static/css/*.css'))
 less.extend(glob.glob('static/css/*.less'))
+
+# css libraries
+css.extend(['node_modules/angular-ui-switch/angular-ui-switch.css'])
 
 less_bundle = assets.Bundle(*less, filters=['less'])
 css.append(less_bundle)

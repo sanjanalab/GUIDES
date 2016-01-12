@@ -6,8 +6,9 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
 
     data: # currently selected
       'genes' : []
-      'tissues' : []
+      'tissues' : ['Brain','Nerve']
       'quantity': 60
+      'tissues_enabled': false # does the user want to consider tissue expression?
 
     # paramters for getting genes from file
     genesFromFile: []
@@ -73,7 +74,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       promise = this.prepareGenesFromFile()
       this_ = this
       promise.then () ->
-        if this_.data.tissues.length == 0
+        if this_.data.tissues.length == 0 or not this_.data.tissues_enabled
           this_.data.tissues = this_.available.tissues
         $http {
           url: '/generate'
