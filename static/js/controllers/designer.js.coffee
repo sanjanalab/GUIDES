@@ -1,12 +1,10 @@
 FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($scope, $filter, GuidesFactory) ->
-  guidesFactory = new GuidesFactory()
-  $scope.gene_statistics = guidesFactory.gene_statistics
-  $scope.generateGuidesPromise = guidesFactory.generateGuides()
+  computeGuidesData = (gene_to_exon) ->
+    # $scope.guidesData = guidesData["gene_to_exon"]
+    # gene_to_exon = guidesData["gene_to_exon"]
+    #guide_count = guidesData["guide_count"]
+    $scope.gene_to_exon = gene_to_exon
 
-  $scope.generateGuidesPromise.then (guidesData) ->
-    $scope.guidesData = guidesData["gene_to_exon"]
-    gene_to_exon = guidesData["gene_to_exon"]
-    guide_count = guidesData["guide_count"]
     all_gRNAs = {}
     merged_gRNAs = []
 
@@ -14,21 +12,31 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     # p_ values are pixel values (as opposed ot sequencing data)
     # was using p_ approach before switching to a directive.
     pixel_width = 800
-    $scope.countSelectedGuides = guide_count
+    countSelectedGuides = 0 #guide_count
     angular.forEach gene_to_exon, (gene, key1) ->
       all_gRNAs[gene.name] = []
       angular.forEach gene.exons, (exon, key2) ->
-        exon.p_start =  exon.start / gene.length * pixel_width
+        exon.p_start = exon.start / gene.length * pixel_width
         exon.p_end = exon.end / gene.length * pixel_width
         angular.forEach exon.gRNAs, (guide, key3) ->
           # guide.selected = false # Change later to only include best guides -> might even come from server
-          # if guide.selected
-          #   $scope.countSelectedGuides += 1
+          if guide.selected
+            countSelectedGuides += 1
           guide.p_start = guide.start / gene.length * pixel_width
           guide.exon = key2 + 1
           guide.gene = gene.name
           all_gRNAs[gene.name].push(guide)
           merged_gRNAs.push(guide)
+    $scope.countSelectedGuides = countSelectedGuides
+    $scope.all_gRNAs = all_gRNAs
+    $scope.merged_gRNAs = merged_gRNAs
+
+  guidesFactory = new GuidesFactory()
+  $scope.gene_statistics = guidesFactory.gene_statistics
+  $scope.generateGuidesPromise = guidesFactory.generateGuides()
+
+  $scope.generateGuidesPromise.then (guidesData) ->
+    computeGuidesData(guidesData["gene_to_exon"])
 
     ## I think this is unnecessary, since we filter by order in the template.
     # angular.forEach all_gRNAs, (guides_for_gene, gene_name) ->
@@ -48,13 +56,16 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     $scope.orderByField = 'score'
     $scope.reverseSort = true
 
-    $scope.gene_to_exon = gene_to_exon
-    $scope.all_gRNAs = all_gRNAs
+    #$scope.gene_to_exon = gene_to_exon
+    #$scope.all_gRNAs = all_gRNAs
     
-    $scope.gene = gene_to_exon[0]
+    $scope.gene = $scope.gene_to_exon[0]
     $scope.setGene = (idx) ->
-      $scope.gene = gene_to_exon[idx]
+      $scope.gene = $scope.gene_to_exon[idx]
 
+    $scope.removeGene = (idx) ->
+      $scope.gene_to_exon.splice(idx, 1)
+      computeGuidesData($scope.gene_to_exon)
 
     $scope.guideSelected = (guide) ->
       if guide.selected == false
@@ -63,7 +74,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
         $scope.countSelectedGuides += 1
 
     $scope.getGuidesCSV = ->
-      guidesCSV = $filter('filter')(merged_gRNAs, {selected:true}, true)
+      guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
       guidesCSV = $filter('orderBy')(guidesCSV, 'score', true)
       guidesCSV
 ]

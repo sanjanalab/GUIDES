@@ -23,11 +23,18 @@
       <div class="sidebar-wrapper-inner">
         <ul class="sidebar-nav">
           <li ng-repeat="thegene in gene_to_exon" class="sidebar-primary-item-action" ng-class="{ selected_item : thegene == gene }">
-            <a href="" ng-click="setGene($index)" class="sidebar-primary-item-action" ng-class="{ selected_item : thegene == gene }">
-              <span class="sidebar-primary-item-action">
-                <i class="glyphicon glyph-science-atom"></i> {{ thegene.name }}
-              </span>
-            </a>
+            <span class="sidebar-primary-item-action">
+              <div class="x-close-container">
+                <span ng-click="removeGene($index)" class="x-close"><i class="fa fa-times-circle"></i></span>
+              </div>
+              <div class="sidebar-primary-item-action-text-container">
+                <a href="" ng-click="setGene($index)" class="sidebar-primary-item-action" ng-class="{ selected_item : thegene == gene }">
+                  <span class="sidebar-primary-item-action-text">
+   {{ thegene.name }}
+                  </span>
+                </a>
+              </div>
+            </span>
           </li>
         </ul>
       </div>
