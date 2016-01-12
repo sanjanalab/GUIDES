@@ -35,13 +35,14 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       # Setup default available, and default selected
       # We are in /static/js/min/scripts.min.js
       # We want /static/data/pre_processed/genes_list.json
-      this_ = this
-      $http.get('/static/data/pre_processed/genes_list.json').then (res) ->
-        this_.available.genes = res.data
-        this_.data.genes = [
-          this_.available.genes[28284]
-          this_.available.genes[494]
-        ]
+      if this.available.genes.length == 0 # implies we have not yet preloaded
+        this_ = this
+        $http.get('/static/data/pre_processed/genes_list.json').then (res) ->
+          this_.available.genes = res.data
+          this_.data.genes = [
+            this_.available.genes[28284]
+            this_.available.genes[494]
+          ]
 
     prepareGenesFromFile: () ->
       this_ = this

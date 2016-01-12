@@ -64,6 +64,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
       $scope.gene = $scope.gene_to_exon[idx]
 
     $scope.removeGene = (idx) ->
+      guidesFactory.data.genes.splice(idx, 1)
       $scope.gene_to_exon.splice(idx, 1)
       computeGuidesData($scope.gene_to_exon)
 
