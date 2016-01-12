@@ -6,7 +6,7 @@ FlaskStart.controller 'RootCtrl', ['$scope', ($scope) ->
 FlaskStart.config ['$routeProvider', '$locationProvider', ($routeProvider, $locationProvider) ->
   $routeProvider.when("/designer", {templateUrl: "static/partials/designer.html", controller: 'DesignerCtrl'})
   .when("/", {templateUrl: "static/partials/home.html", controller: 'IndexCtrl'}) 
-  .otherwise({redirectTo: "/s"})
+  .otherwise({redirectTo: "/"})
   # $locationProvider.html5Mode(true);
 ]
 

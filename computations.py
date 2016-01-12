@@ -10,9 +10,10 @@ import os
 
 class GuideRNA():
   """Holder of gRNA information"""
-  def __init__(self, selected, start, seq, score, exon_ranking, ensembl_gene, gene_name):
+  def __init__(self, selected, start, seq, PAM, score, exon_ranking, ensembl_gene, gene_name):
     self.start = start
     self.seq = seq
+    self.PAM = PAM
     self.score = score
     self.exon_ranking = exon_ranking
     self.ensembl_gene = ensembl_gene
@@ -25,6 +26,7 @@ class GuideRNA():
       "score": self.score,
       "start": self.start,
       "seq": self.seq,
+      "PAM": self.PAM,
       "selected": self.selected
     }
 
@@ -92,6 +94,7 @@ class Ranker():
         assert seq[end] == seq[end+1] == 'G'
 
         # Doench score requires the 4 before and 6 after 20-mer (gives 30-mer)
+        # 012345678901234567890123456789
         # Recall that end points to first G = 21st base pair 
         mer30 = seq[end-22-3:end+8-3]
 
@@ -105,7 +108,9 @@ class Ranker():
 
         # Calculate the doench score
         score = doench_score.calc_score(mer30)
-        potential_gRNA = GuideRNA(selected, end-20, mer30, score, gtex_exon_num, ensembl_gene, gene_name)
+        mer20 = mer30[4:24]
+        PAM =   mer30[24:27]
+        potential_gRNA = GuideRNA(selected, end-20, mer20, PAM, score, gtex_exon_num, ensembl_gene, gene_name)
 
         # If there's enough room, add it, no question.
         if q.qsize() < max_queue_size:
@@ -167,7 +172,9 @@ class Ranker():
 
         # Calculate the doench score
         score = doench_score.calc_score(mer30)
-        potential_gRNA = GuideRNA(selected, end-20, mer30, score, gtex_exon_num, ensembl_gene, gene_name)
+        mer20 = mer30[4:24]
+        PAM =   mer30[24:27]
+        potential_gRNA = GuideRNA(selected, end-20, mer20, PAM, score, gtex_exon_num, ensembl_gene, gene_name)
 
         # If there's enough room, add it, no question.
         if q.qsize() < max_queue_size:
