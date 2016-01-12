@@ -32,4 +32,8 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
         reader.readAsText($scope.file) # assume UTF-8 encoding
       else
         console.log $scope.file.$error
+
+  # From pre-calculated experimental results
+  $scope.waitTime = () ->
+    3 + Math.max(30,($scope.guidesFactory.data.quantity - 100)) // 8 * $scope.guidesFactory.data.genes.length
 ]
