@@ -20,6 +20,7 @@ app.config['BASIC_AUTH_USERNAME'] = 'zhanglab'
 app.config['BASIC_AUTH_PASSWORD'] = 'editMe23'
 app.config['BASIC_AUTH_FORCE'] = True # protect entire site
 # for individual routes, decorate with @basic_auth.required
+app.config['PROPOGATE_EXCEPTIONS'] = True
 
 basic_auth = BasicAuth(app)
 
