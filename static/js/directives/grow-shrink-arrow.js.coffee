@@ -1,7 +1,9 @@
 Directives.directive 'growshrinkarrow', ['$interval', ($interval) ->
   restrict: 'A'
   link: (scope, elem, attrs) ->
-    console.log elem
+    elem.height('75px')
+    elem.width('75px')
+
     elem.mouseenter ->
       elem.animate({
         height: '85px',
