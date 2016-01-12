@@ -8,8 +8,8 @@
         </div>
         <div class="search-box form-group"> 
           <div class="input-group">
-            <input type="text" class="form-control" id="search-str" placeholder="Search for additional genes or tissues...">
-            <div class="input-group-addon"><i class="fa fa-search"></i></div>
+            <input type="text" class="form-control" id="search-str" placeholder="Search for additional genes or tissues..." ng-model="geneTissueQuery">
+            <div class="input-group-addon" ng-click="geneTissueSearch()"><i class="fa fa-search"></i></div>
           </div>
         </div>
         <div class="guide-count-box">

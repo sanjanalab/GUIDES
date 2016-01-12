@@ -67,6 +67,34 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
       $scope.gene_to_exon.splice(idx, 1)
       computeGuidesData($scope.gene_to_exon)
 
+    # Searching
+    $scope.geneTissueQuery = ""
+    $scope.geneTissueSearch = () ->
+      console.log "in search"
+      for elt in $scope.geneTissueQuery.split(',')
+        elt = elt.replace(/ /g,'')
+        found = false
+        console.log elt
+        console.log guidesFactory.available.tissues
+        for tissue in guidesFactory.available.tissues
+          if tissue.toUpperCase() == elt.toUpperCase()
+            console.log elt + "is tissue"
+            guidesFactory.data.tissues.push(tissue)
+            found = true
+            break
+        if found == false
+          for gene in guidesFactory.available.genes
+            if gene.name.toUpperCase() == elt.toUpperCase() or gene.ensembl_id.toUpperCase() == elt.toUpperCase()
+              console.log elt + "is gene"
+              guidesFactory.data.genes.push(gene)
+              found = true
+              break
+      console.log guidesFactory
+      console.log guidesFactory.data
+      $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
+        computeGuidesData(guidesData["gene_to_exon"])
+
+
     $scope.guideSelected = (guide) ->
       if guide.selected == false
         $scope.countSelectedGuides -= 1
