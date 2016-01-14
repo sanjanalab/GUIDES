@@ -6,6 +6,8 @@
     "Joshua Meier <jmeier@college.harvard.edu>"
   ],
   "dependencies": {
+    "angular-chart.js": "^0.8.8",
+    "chart.js": "^1.0.2",
     "coffee-script": "^1.7.1",
     "less": "^1.7.5"
   }

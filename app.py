@@ -22,7 +22,9 @@ coffee_bundle = assets.Bundle(*coffee, filters=['coffeescript'])
 js.append(coffee_bundle)
 js_libs = ['node_modules/angular-sanitize/angular-sanitize.js', 'node_modules/ng-csv/build/ng-csv.js',
 		   'node_modules/ng-file-upload/dist/ng-file-upload-shim.js', 'node_modules/ng-file-upload/dist/ng-file-upload.js',
-       'node_modules/angular-ui-switch/angular-ui-switch.js']
+       'node_modules/angular-ui-switch/angular-ui-switch.js',
+       'node_modules/chart.js/Chart.js',
+       'node_modules/angular-chart.js/angular-chart.js']
 js.append(js_libs)
 
 css = []
@@ -36,7 +38,9 @@ css.extend(glob.glob('static/css/*.css'))
 less.extend(glob.glob('static/css/*.less'))
 
 # css libraries
-css.extend(['node_modules/angular-ui-switch/angular-ui-switch.css'])
+css.extend(['node_modules/angular-ui-switch/angular-ui-switch.css',
+            ]) #'node_modules/angular-chart.js/dist/angular-chart.css'
+less.extend(['node_modules/angular-chart.js/angular-chart.less'])
 
 less_bundle = assets.Bundle(*less, filters=['less'])
 css.append(less_bundle)

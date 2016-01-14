@@ -1,6 +1,7 @@
 // Custom fonts
 // Got these from:
 // http://fontsgeek.com/fonts/ITC-Franklin-Gothic-LT-Book-Com-Regular/download
+// 'https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700,400italic,300italic,700italic'
 
 @font-face {
   font-family: "franklin-gothic-urw";
@@ -48,8 +49,6 @@ md-content .layout-row input {
 .under-count {
   float: right;
 }
-
-@import url(https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700,400italic,300italic,700italic);
 
 // uploading on home page
 .drop-box {
@@ -116,7 +115,7 @@ md-content .layout-row input {
 }
 
 .entry_container {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: sans-serif;
   margin-right: 100px;
   padding-bottom: 2px;
 }
@@ -194,76 +193,76 @@ div.ui-select-container {
 }
 
 #home-page-body {
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: sans-serif;
 }
 
 #hero>.container {
   max-width: 1280px;
   margin: 0 auto;
-    opacity: 1;
-    transition: all 1s ease-in-out;
+  opacity: 1;
+  transition: all 1s ease-in-out;
 }
 
 #heroBackground {
-      position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: calc(100%);
-    background-color: #00b5ec;
-    transition: all .2s ease-in-out;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: calc(100%);
+  background-color: #00b5ec;
+  transition: all .2s ease-in-out;
 }
 
 #herowrapper {
-      height: 100%;
-    min-height: 100%;
-    width: 100%;
-    padding-left: 0;
-    padding-right: 0;
-    background: #00b5ec;
-    position: relative;
+  height: 100%;
+  min-height: 100%;
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+  background: #00b5ec;
+  position: relative;
 }
 
 #hero {
-      background: transparent;
-    min-height: 100%;
-    padding-top: 70px;
-    padding-bottom: 85px;
+  background: transparent;
+  min-height: 100%;
+  padding-top: 70px;
+  padding-bottom: 85px;
 }
 
 .overlays-wrapper {
-      opacity: 1;
-    position: absolute;
-    z-index: 2;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    transition: all .2s ease-in-out;
-    background-color: transparent;
-    z-index: -10;
-    pointer-events: none;
+  opacity: 1;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transition: all .2s ease-in-out;
+  background-color: transparent;
+  z-index: -10;
+  pointer-events: none;
 }
 
 #hero .tagline {
-      position: absolute;
-    top: 50%;
-    -webkit-transform: translate3d(0, -50%, 0);
-    transform: translate3d(0, -50%, 0);
+  position: absolute;
+  top: 50%;
+  -webkit-transform: translate3d(0, -50%, 0);
+  transform: translate3d(0, -50%, 0);
 }
 
 #hero .tagline h1 {
-    font-size: 62px;
-    font-weight: 300;
-    color: white;
-    line-height: 1.2;
-    margin-bottom: 74px;
+  font-size: 62px;
+  font-weight: 300;
+  color: white;
+  line-height: 1.2;
+  margin-bottom: 74px;
 }
 
 #hero .tagline h2 {
-    font-size: 28px;
-    font-weight: 300;
-    color: #b1edff;
+  font-size: 28px;
+  font-weight: 300;
+  color: #b1edff;
 }
 
 svg path, svg polygon {
@@ -273,28 +272,30 @@ svg path, svg polygon {
 }
 
 #hero .tagline h2 a {
-    color: white;
-    font-weight: 500;
-    text-decoration: none;
-    transition: color 0.1s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    -webkit-transition: color 0.2s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    -moz-transition: color 0.1s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    display: inline-block;
-    margin-left: 7px;
+  color: white;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.1s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  -webkit-transition: color 0.2s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  -moz-transition: color 0.1s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  display: inline-block;
+  margin-left: 7px;
 }
 
 #hero .tagline h2 a svg {
-    display: inline-block;
-    position: relative;
-    top: 8px;
-    left: 6px;
+  display: inline-block;
+  position: relative;
+  top: 8px;
+  left: 6px;
 }
 
 
 // Designer
 .table {
+  font-size: 14px;
   background-color: #F5F5F5;
   color: #999999;
+  font-family: 'Open Sans', Sans-serif;
 }
 
 .table th { 
@@ -309,16 +310,29 @@ svg path, svg polygon {
   text-align: center;
   margin-left: auto;
   margin-right: auto;
+  margin-top: 10px;
 }
 
 .table-header span {
   position: relative;
-  top: 12.5%;
+  top: 21.5%;
+  font-family: 'Open Sans';
+  color: #85898C;
+  font-weight: 600;
+}
+
+// align center for all columns besides second (sequence)
+.table>tbody>tr>th, .table>tbody>tr>td {
+  text-align: center; 
+}
+
+.table>tbody>tr>th:nth-child(2), .table>tbody>tr>td:nth-child(2) {
+  text-align: left;
 }
 
 #wrapper {
   padding-left: 250px;
-  padding-top: 50px;
+  padding-top: 30px;
   transition: all 0.4s ease 0s;
 }
 
@@ -361,6 +375,11 @@ svg path, svg polygon {
 #exon_graph {
   display: block;
   margin: auto;
+}
+
+// exon graph
+text.gRNA_count text.exon_label {
+  font-family: 'Open Sans';
 }
 
 // Sidebar: ul - li - a - span - text
@@ -410,6 +429,8 @@ li:hover .sidebar-primary-item-action {
   top: 8px;
   position: relative;
   left: -28px;
+  font-weight: 600;
+  font-family: 'Open Sans', sans-serif;
 }
 
 .sidebar-primary-item-action a {
@@ -426,6 +447,10 @@ li:hover .sidebar-primary-item-action {
   color: #FFFFFF
 }
 
+.boxed {
+  border: 1px white solid;
+}
+
 // top header
 
 .navbar-inverse {
@@ -440,13 +465,15 @@ li:hover .sidebar-primary-item-action {
   background-color: #51D2B7;
   color: #fff;
   height: 102%;
-  font-family: 'Futura';
+  font-family: 'Open Sans';
+  font-weight: 600;
+  font-size: 18px;
 }
 
 .logo-box span {
   position: relative;
   top: 25%;
-  left: 12.5%;
+  left: 7.5%;
   right: -12.5%;
 }
 
@@ -486,7 +513,7 @@ li:hover .sidebar-primary-item-action {
 
 .guide-count-box {
   position: absolute;
-  width: 200px;
+  width: 285px;
   right: 0px;
   color: #2B333B;
   height: 100%;
@@ -507,10 +534,16 @@ li:hover .sidebar-primary-item-action {
 .guide-count-box button {
   position: relative;
   top: 12.5%;
-  left: 12.5%;
-  right: -12.5%;
   // background-color: #FF4081; // magenta
   // border-color: #BDBDBD; // slight stroke
+  margin-right: 15px;
+  float: right;
+}
+
+.guide-count-box span {
+  position: relative;
+  top: 25%;
+  float: left;
 }
 
 @media (max-width:767px) {
@@ -613,4 +646,12 @@ li:hover .sidebar-primary-item-action {
 .switch.checked {
   background: rgb(255, 64, 129);
   border-color: rgb(255, 64, 129);
+}
+
+// Charts on designer page
+#bar {
+  width: 1177px;
+  height: 150px;
+  position: relative;
+  left: -7px;
 }

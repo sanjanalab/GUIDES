@@ -13,7 +13,10 @@
           </div>
         </div>
         <div class="guide-count-box">
-          <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']"> Export {{ countSelectedGuides }} guides</button>
+          <span>
+            {{ countSelectedGuides }} Guides in Library
+          </span>
+          <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']"> Export Library</button>
         </div>
       </div>
     </div>
@@ -30,7 +33,7 @@
               <div class="sidebar-primary-item-action-text-container">
                 <a href="" ng-click="setGene($index)" class="sidebar-primary-item-action" ng-class="{ selected_item : thegene == gene }">
                   <span class="sidebar-primary-item-action-text">
-   {{ thegene.name }}
+   {{ thegene.name }} <span class="boxed">{{ all_gRNAs[thegene.name].length }}</span>
                   </span>
                 </a>
               </div>
@@ -44,17 +47,19 @@
         <div class="container-fluid" id='container'>
           <div class="row">
             <div class="col-md-12">
-              <svg height="250" id="exon_graph" width="100%" x="20">
+              <svg height="145" id="exon_graph" width="100%" x="20">
                 <g id="background_exon_graph">
-                  <rect fill="#eee" height="250" width="100%" x="0" y="0"></rect>
+                  <rect fill="#eee" height="145" width="100%" x="0" y="0"></rect>
+                  <text fill="#000" font-size="20" x="15" y="30" style="font-family: 'Roboto';">{{ gene.name }}: {{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</text>
                 </g>
                 <g id="all_exons">
-                  <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="100" id="connector_rect"></rect>
+                  <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="75" id="connector_rect"></rect>
               
-                  <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" ng-repeat="exon in gene.exons">
+                  <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" modify-svg-unit="modifySvgUnit(unit)" ng-repeat="exon in gene.exons">
                   </g>
                 </g>
               </svg>
+              <canvas id="bar" class="chart chart-bar" chart-data="data" chart-labels="labels" chart-series="series" chart-options="exon_chart_options" chart-colours="chartcolors" width="1177" height="150"></canvas>
             </div>
           </div>
           <div class="row">
@@ -69,9 +74,9 @@
                   <th>
                     <select-all-checkbox checkboxes="all_gRNAs[gene.name]" counter="countSelectedGuides"></select-all-checkbox>
                   </th>
-                  <th>Sequence (5' <i class="fa fa-long-arrow-right"></i> 3')</th>
+                  <th>Guide Sequence (5' <i class="fa fa-long-arrow-right"></i> 3')</th>
                   <th>PAM</th>
-                  <th><a tooltip-placement="left" uib-tooltip="Efficiency scores are computed using the techniques described by (1) Doench, et al., 2014; and (2) Fusi, et al., 2016., and presented as (1)/(2)." ng-click="orderByField='score'; reverseSort = !reverseSort">Efficiency </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
+                  <th><a tooltip-placement="left" uib-tooltip="Efficiency scores are computed using the techniques described by (1) Doench, et al., 2014; and (2) Fusi, et al., 2016., and presented as (1)/(2)." ng-click="orderByField='score'; reverseSort = !reverseSort">On-target Efficiency </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                   <th><a href="" ng-click="orderByField='exon'; reverseSort = !reverseSort">Exon targeted by guide </a><span ng-show="orderByField == 'exon'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                 </tr>
                 <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:orderByField:reverseSort">

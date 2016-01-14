@@ -1,4 +1,48 @@
 FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($scope, $filter, GuidesFactory) ->
+  # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive. 
+  $scope.modifySvgUnit = (unit) ->
+    $scope.svg_unit_global = unit / 2
+    $scope.exon_chart_options = {
+      barValueSpacing : $scope.svg_unit_global,
+      responsive: false,
+      maintainAspectRatio: false,
+      scaleShowHorizontalLines: false,
+      scaleIntegersOnly: true,
+      scaleBeginAtZero: true,
+      scaleShowGridLines : false,
+      legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+      scaleOverride: true,
+      scaleSteps : 1,
+      scaleStepWidth: 1,
+      scaleStartValue: 0,
+      barShowStroke: false
+    }
+  # Initialize
+  $scope.modifySvgUnit(15)
+
+  $scope.labels = ['Exon 1', 'Exon 2', 'Exon 3', 'Exon 4', 'Exon 5', 'Exon 6', 'Exon 7', 'Exon 8', 'Exon 9', 'Exon 10', 'Exon 11', 'Exon 12']
+  $scope.series = ['Mean All Tissues', 'Mean Selected Tissues']
+
+  $scope.data = [
+    [0.65, 0.59, 0.80, 0.81, 0.56, 0.55, 0.40, 0.65, 0.59, 0.80, 0.81, 0.56]
+    [0.28, 0.48, 0.40, 0.19, 0.86, 0.27, 0.90, 0.65, 0.59, 0.80, 0.81, 0.56]
+  ]
+
+  $scope.chartcolors = [{
+    "fillColor": "#2B333B" # dark color from sidebar
+  },
+  {
+    "fillColor": "#51D2B7" # light gray from exon background
+  }
+  {
+    "fillColor": "rgba(224, 108, 112, 1)",
+    "strokeColor": "rgba(207,100,103,1)",
+    "pointColor": "rgba(220,220,220,1)",
+    "pointStrokeColor": "#fff",
+    "pointHighlightFill": "#fff",
+    "pointHighlightStroke": "rgba(151,187,205,0.8)"
+  }]
+
   computeGuidesData = (gene_to_exon) ->
     # $scope.guidesData = guidesData["gene_to_exon"]
     # gene_to_exon = guidesData["gene_to_exon"]
@@ -37,6 +81,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
 
   $scope.generateGuidesPromise.then (guidesData) ->
     computeGuidesData(guidesData["gene_to_exon"])
+    $scope.gene = $scope.gene_to_exon[0]
 
     ## I think this is unnecessary, since we filter by order in the template.
     # angular.forEach all_gRNAs, (guides_for_gene, gene_name) ->
@@ -52,58 +97,80 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     #   else
     #     guide.selected = false
 
-    # used for table column sorting
-    $scope.orderByField = 'score'
-    $scope.reverseSort = true
+  # used for table column sorting
+  $scope.orderByField = 'score'
+  $scope.reverseSort = true
 
-    #$scope.gene_to_exon = gene_to_exon
-    #$scope.all_gRNAs = all_gRNAs
-    
-    $scope.gene = $scope.gene_to_exon[0]
-    $scope.setGene = (idx) ->
-      $scope.gene = $scope.gene_to_exon[idx]
+  #$scope.gene_to_exon = gene_to_exon
+  #$scope.all_gRNAs = all_gRNAs
+  
+  $scope.setGene = (idx) ->
+    $scope.gene = $scope.gene_to_exon[idx]
+    labels = []
+    data1 = []
+    data2 = []
+    angular.forEach $scope.gene.exons, (exon, key) ->
+      labels.push('Exon ' + (key+1))
+      data1.push(Math.random() * (1-0.20) + 0.20)
+      data2.push(Math.random() * (1-0.20) + 0.20)
+    $scope.labels = labels
+    $scope.data = [data1,data2]
 
-    $scope.removeGene = (idx) ->
-      guidesFactory.data.genes.splice(idx, 1)
-      $scope.gene_to_exon.splice(idx, 1)
-      computeGuidesData($scope.gene_to_exon)
+  # returns the actual exons
+  $scope.exonsUtilized = (gene) ->
+    exons = []
+    if not gene or not gene.hasOwnProperty('exons')
+      return 0
+    for exon in gene.exons
+      for guide in exon.gRNAs
+        if guide.selected
+          exons.push(exon)
+          break
+    exons
 
-    # Searching
-    $scope.geneTissueQuery = ""
-    $scope.geneTissueSearch = () ->
-      console.log "in search"
-      for elt in $scope.geneTissueQuery.split(',')
-        elt = elt.replace(/ /g,'')
-        found = false
-        console.log elt
-        console.log guidesFactory.available.tissues
-        for tissue in guidesFactory.available.tissues
-          if tissue.toUpperCase() == elt.toUpperCase()
-            console.log elt + "is tissue"
-            guidesFactory.data.tissues.push(tissue)
+  $scope.selectedGuides = (gene_name) ->
+    guides = []
+    console.log "here"
+    for guide in $scope.all_gRNAs[gene_name]
+      if guide.selected
+        guides.push(guide)
+    guides
+
+  $scope.removeGene = (idx) ->
+    guidesFactory.data.genes.splice(idx, 1)
+    $scope.gene_to_exon.splice(idx, 1)
+    computeGuidesData($scope.gene_to_exon)
+
+  # Searching
+  $scope.geneTissueQuery = ""
+  $scope.geneTissueSearch = () ->
+    for elt in $scope.geneTissueQuery.split(',')
+      elt = elt.replace(/ /g,'')
+      found = false
+      for tissue in guidesFactory.available.tissues
+        if tissue.toUpperCase() == elt.toUpperCase()
+          guidesFactory.data.tissues.push(tissue)
+          found = true
+          break
+      if found == false
+        for gene in guidesFactory.available.genes
+          if gene.name.toUpperCase() == elt.toUpperCase() or gene.ensembl_id.toUpperCase() == elt.toUpperCase()
+            guidesFactory.data.genes.push(gene)
             found = true
             break
-        if found == false
-          for gene in guidesFactory.available.genes
-            if gene.name.toUpperCase() == elt.toUpperCase() or gene.ensembl_id.toUpperCase() == elt.toUpperCase()
-              console.log elt + "is gene"
-              guidesFactory.data.genes.push(gene)
-              found = true
-              break
-      console.log guidesFactory
-      console.log guidesFactory.data
-      $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
-        computeGuidesData(guidesData["gene_to_exon"])
 
+    $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
+      computeGuidesData(guidesData["gene_to_exon"])
 
-    $scope.guideSelected = (guide) ->
-      if guide.selected == false
-        $scope.countSelectedGuides -= 1
-      else
-        $scope.countSelectedGuides += 1
+  $scope.guideSelected = (guide) ->
+    if guide.selected == false
+      $scope.countSelectedGuides -= 1
+    else
+      $scope.countSelectedGuides += 1
 
-    $scope.getGuidesCSV = ->
-      guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
-      guidesCSV = $filter('orderBy')(guidesCSV, 'score', true)
-      guidesCSV
+  $scope.getGuidesCSV = ->
+    guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
+    guidesCSV = $filter('orderBy')(guidesCSV, 'score', true)
+    guidesCSV
+
 ]
