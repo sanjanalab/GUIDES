@@ -47,7 +47,7 @@
         <div class="container-fluid" id='container'>
           <div class="row">
             <div class="col-md-12">
-              <svg height="45" id="exon_graph" width="100%" x="20">
+              <svg height="45" id="exon_graph" width="100%" x="20" ng-show="guidesReady">
                 <g id="background_exon_graph">
                   <text fill="#000" font-size="20" x="15" y="25" style="font-family: 'Roboto';">{{ gene.name }}: {{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</text>
                 </g>

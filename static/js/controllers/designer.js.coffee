@@ -82,6 +82,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
   $scope.generateGuidesPromise.then (guidesData) ->
     computeGuidesData(guidesData["gene_to_exon"])
     $scope.gene = $scope.gene_to_exon[0]
+    $scope.guidesReady = true
 
     ## I think this is unnecessary, since we filter by order in the template.
     # angular.forEach all_gRNAs, (guides_for_gene, gene_name) ->
