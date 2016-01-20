@@ -1,4 +1,4 @@
-<div cg-busy="{promise:generateGuidesPromise,templateUrl:'static/partials/angular-busy.html'}">
+<div cg-busy="{promise:generateGuidesPromise,templateUrl:'static/partials/angular-busy.html',minDuration:10}">
 <div id="full-page">
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
@@ -33,7 +33,7 @@
               <div class="sidebar-primary-item-action-text-container">
                 <a href="" ng-click="setGene($index)" class="sidebar-primary-item-action" ng-class="{ selected_item : thegene == gene }">
                   <span class="sidebar-primary-item-action-text">
-   {{ thegene.name }} <span class="boxed">{{ all_gRNAs[thegene.name].length }}</span>
+   {{ thegene.name }} <span class="boxed">{{ selectedGuides(thegene.name).length }}</span>
                   </span>
                 </a>
               </div>

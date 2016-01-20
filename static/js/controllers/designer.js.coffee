@@ -1,7 +1,7 @@
 FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($scope, $filter, GuidesFactory) ->
   guidesFactory = new GuidesFactory()
-  if guidesFactory.data.genes.length < 1
-    window.location.href = "/#/"
+  $scope.generateGuidesPromise = guidesFactory.generateGuides()
+  $scope.gene_statistics = guidesFactory.gene_statistics
 
   # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive. 
   $scope.modifySvgUnit = (unit) ->
@@ -79,9 +79,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     $scope.countSelectedGuides = countSelectedGuides
     $scope.all_gRNAs = all_gRNAs
     $scope.merged_gRNAs = merged_gRNAs
-
-  $scope.gene_statistics = guidesFactory.gene_statistics
-  $scope.generateGuidesPromise = guidesFactory.generateGuides()
 
   $scope.generateGuidesPromise.then (guidesData) ->
     computeGuidesData(guidesData["gene_to_exon"])
