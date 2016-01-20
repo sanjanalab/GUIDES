@@ -1,4 +1,4 @@
-Directives.directive 'drawindividualexon', ['$timeout', ($timeout) ->
+Directives.directive 'drawindividualexon', ['$timeout', '$window', ($timeout, $window) ->
   replace: false
   restrict: 'A'
   scope: {
@@ -15,10 +15,17 @@ Directives.directive 'drawindividualexon', ['$timeout', ($timeout) ->
     # x = (total width) / (3k+1)
     # total width comes from parent of parent, which is the svg.
 
-    scope.svgUnit = elem.parent().parent()[0].getBoundingClientRect().width / (3 * scope.exonsLength + 1)
+    resizeFunction = () ->
+      scope.svgUnit = $('#exon_graph')[0].getBoundingClientRect().width / (3 * scope.exonsLength + 1)
+      scope.modifySvgUnit({unit: scope.svgUnit})
 
-    scope.modifySvgUnit({unit: scope.svgUnit})
+    angular.element($window).bind 'resize', () ->
+      resizeFunction()
+      scope.$apply()
 
     scope.toInt = (num) ->
       parseInt(num, 10)
+
+    # Kick things off
+    resizeFunction()
 ]

@@ -1,10 +1,15 @@
 FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($scope, $filter, GuidesFactory) ->
+  guidesFactory = new GuidesFactory()
+  if guidesFactory.data.genes.length < 1
+    window.location.href = "/#/"
+
   # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive. 
   $scope.modifySvgUnit = (unit) ->
     $scope.svg_unit_global = unit / 2
     $scope.exon_chart_options = {
+      animation: false,
       barValueSpacing : $scope.svg_unit_global,
-      responsive: false,
+      responsive: true,
       maintainAspectRatio: false,
       scaleShowHorizontalLines: false,
       scaleIntegersOnly: true,
@@ -75,7 +80,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     $scope.all_gRNAs = all_gRNAs
     $scope.merged_gRNAs = merged_gRNAs
 
-  guidesFactory = new GuidesFactory()
   $scope.gene_statistics = guidesFactory.gene_statistics
   $scope.generateGuidesPromise = guidesFactory.generateGuides()
 
@@ -130,7 +134,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
 
   $scope.selectedGuides = (gene_name) ->
     guides = []
-    console.log "here"
     for guide in $scope.all_gRNAs[gene_name]
       if guide.selected
         guides.push(guide)
