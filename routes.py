@@ -12,7 +12,7 @@ from settings import APP_STATIC
 import os
 
 genome = {
-  "human" : seq_generator.Genome()
+  "human" : seq_generator.FastGenome()
 }
 
 # setup password protection

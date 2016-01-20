@@ -269,7 +269,7 @@ if __name__ == '__main__':
 
   # Setup ranker
   genome = {
-    "human" : seq_generator.Genome()
+    "human" : seq_generator.FastGenome()
   }
   ranker = Ranker(genome["human"], species, tissues)
 

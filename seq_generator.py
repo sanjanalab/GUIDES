@@ -1,6 +1,7 @@
 import gzip
 from Bio import SeqIO
 import pickle
+import os
 
 class ExonError(Exception):
     """Error class for improper exon numbering"""
@@ -30,6 +31,13 @@ class Genome():
             self.chromosomes[c] = SeqIO.read(handle, "fasta")
         return self.chromosomes[c]
 
+    def count_exons_in_gene(self, gene):
+        gene_data = self.df.loc[self.df['name'] == gene]
+        return len(gene_data["exonStarts"].tolist()[0])
+
+    def genes_exons(self):
+        return [(row["name"], row["exonCount"]) for index, row in self.df.iterrows()]
+        
     def sequence(self, gene, exon):
         try:
             gene_data = self.df.loc[self.df['name'] == gene]
@@ -40,7 +48,7 @@ class Genome():
             full_sequenece_seq = self.chrom_sequence(chrom).seq
             return full_sequenece_seq[start:end]
         except IndexError:
-            raise ExonError(gene, exonNum)
+            raise ExonError(gene, exon)
 
     # gene must be in ensembl format
     def gene_info(self, gene):
@@ -62,3 +70,13 @@ class Genome():
             return self.sequence(values[0], int(values[1]))
         except IndexError:
             raise ValueError('Gene string entered in wrong format.')
+
+class FastGenome(Genome):
+    def sequence(self, gene, exon):
+        try:
+            filename = "{0}_{1}".format(gene, exon)
+            path = os.path.join('static/data/GRCh37_exons/', filename)
+            with open(path) as infile:
+                return infile.read()
+        except IOError:
+            raise ExonError(gene, exon)
