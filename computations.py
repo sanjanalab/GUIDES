@@ -45,6 +45,7 @@ class Ranker():
     self.genes = []
     self.gRNAs = []
     self.countSelectedGuides = 0
+    self.expression_values = {}
 
     # Load pre-processed GTEx data
     self.df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
@@ -61,12 +62,22 @@ class Ranker():
     # Sort by exon number, removing first and last exon
     # Recall: Id are entered as ENSG000xxxxx.x_EXONNUM, e.g. ENSG00000000971.11_21
     df_gene['exon_num'] = df_gene['Id'].apply(lambda x: int(x.split('_')[1]))
+        # Get median expression for selected tissues
+    df_gene['median'] = df_gene[self.tissues].median(axis=1)
+    df_gene['overall'] = df_gene.median(axis=1)
+    expression_values = {}
+    for index, row in df_gene.iterrows():
+      expression_value = {
+        'median': row['median'],
+        'overall': row['overall']
+      }
+      expression_values[int(row['exon_num'])] = expression_value
+    self.expression_values[gene_name] = expression_values
+
     if len(df_gene) > 4:
       df_gene = df_gene.sort(['exon_num'], ascending=True).iloc[1:-1]
 
-    # Get median expression for selected tissues
-    df_gene['median'] = df_gene[self.tissues].median(axis=1)
-    df_results =  df_gene[['Id', 'median', 'exon_num']]
+    df_results =  df_gene[['Id', 'median', 'overall','exon_num']]
     df_results = df_results.sort(['median'], ascending=False)
 
     # For this gene, analyze top 4 exons, at most
@@ -220,10 +231,13 @@ class Ranker():
 
       # Prepare each exon and add to gene_to_exon[gene_name].exons
       for i in range(gene_info['exonCount']):
+        expression_value = self.expression_values[gene_name][i]
         exon = {
           "start": gene_info['exonStarts'][i] - gene_info['txStart'],
           "end": gene_info['exonEnds'][i] - gene_info['txStart'],
-          "gRNAs": [] # Gets filled in below
+          "gRNAs": [], # Gets filled in below
+          "expression_overall": expression_value["overall"],
+          "expression_median": expression_value["median"]
         }
         gene_to_exon[gene_name]['exons'].append(exon)
 

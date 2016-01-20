@@ -22,16 +22,11 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
       scaleStartValue: 0,
       barShowStroke: false
     }
+
   # Initialize
   $scope.modifySvgUnit(15)
 
-  $scope.labels = ['Exon 1', 'Exon 2', 'Exon 3', 'Exon 4', 'Exon 5', 'Exon 6', 'Exon 7', 'Exon 8', 'Exon 9', 'Exon 10', 'Exon 11', 'Exon 12']
   $scope.series = ['Mean All Tissues', 'Mean Selected Tissues']
-
-  $scope.data = [
-    [0.65, 0.59, 0.80, 0.81, 0.56, 0.55, 0.40, 0.65, 0.59, 0.80, 0.81, 0.56]
-    [0.28, 0.48, 0.40, 0.19, 0.86, 0.27, 0.90, 0.65, 0.59, 0.80, 0.81, 0.56]
-  ]
 
   $scope.chartcolors = [{
     "fillColor": "#2B333B" # dark color from sidebar
@@ -80,6 +75,10 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     $scope.all_gRNAs = all_gRNAs
     $scope.merged_gRNAs = merged_gRNAs
 
+    # simulate setting up the first gene
+    $scope.setGene(0)
+
+
   $scope.generateGuidesPromise.then (guidesData) ->
     computeGuidesData(guidesData["gene_to_exon"])
     $scope.gene = $scope.gene_to_exon[0]
@@ -110,12 +109,23 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
     labels = []
     data1 = []
     data2 = []
+    # find normalizing constant
+    # Normalize by max(max(expression_overalls), max(expression_median))
+    max_expression = 0
     angular.forEach $scope.gene.exons, (exon, key) ->
+      if exon.expression_overall > max_expression
+        max_expression = exon.expression_overall
+      if exon.expression_median > max_expression
+        max_expression = exon.expression_median
+    angular.forEach $scope.gene.exons, (exon, key) ->
+      data1.push exon.expression_overall / max_expression
+      data2.push exon.expression_median / max_expression
       labels.push('Exon ' + (key+1))
-      data1.push(Math.random() * (1-0.20) + 0.20)
-      data2.push(Math.random() * (1-0.20) + 0.20)
     $scope.labels = labels
-    $scope.data = [data1,data2]
+    if guidesFactory.data.tissues_enabled
+      $scope.data = [data1,data2]
+    else
+      $scope.data = [data1]
 
   # returns the actual exons
   $scope.exonsUtilized = (gene) ->
@@ -150,7 +160,8 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($s
       for tissue in guidesFactory.available.tissues
         if tissue.toUpperCase() == elt.toUpperCase()
           guidesFactory.data.tissues.push(tissue)
-          found = true
+          guidesFactory.data.tissues_enabled = true
+          containsTissue = true
           break
       if found == false
         for gene in guidesFactory.available.genes
