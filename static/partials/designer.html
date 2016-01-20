@@ -47,19 +47,20 @@
         <div class="container-fluid" id='container'>
           <div class="row">
             <div class="col-md-12">
-              <svg height="145" id="exon_graph" width="100%" x="20">
+              <svg height="45" id="exon_graph" width="100%" x="20">
                 <g id="background_exon_graph">
-                  <rect fill="#eee" height="145" width="100%" x="0" y="0"></rect>
-                  <text fill="#000" font-size="20" x="15" y="30" style="font-family: 'Roboto';">{{ gene.name }}: {{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</text>
-                </g>
-                <g id="all_exons">
-                  <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="75" id="connector_rect"></rect>
-              
-                  <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" modify-svg-unit="modifySvgUnit(unit)" ng-repeat="exon in gene.exons">
-                  </g>
+                  <text fill="#000" font-size="20" x="15" y="25" style="font-family: 'Roboto';">{{ gene.name }}: {{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</text>
                 </g>
               </svg>
               <expression-bar-chart></expression-bar-chart>
+              <svg width="100%" x="20" height="100">
+                <g id="all_exons">
+                  <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="50" id="connector_rect"></rect>
+              
+                  <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" modify-svg-unit="modifySvgUnit(unit)" ng-repeat="exon in gene.exons" y="25">
+                  </g>
+                </g>
+              </svg>
             </div>
           </div>
           <div class="row">

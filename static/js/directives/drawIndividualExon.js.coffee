@@ -4,6 +4,7 @@ Directives.directive 'drawindividualexon', ['$timeout', '$window', ($timeout, $w
   scope: {
     index: '@'
     exonsLength: '@'
+    y: '@'
     exon: '='
     modifySvgUnit: '&' # hacky way to get this to change svgUnit
   }
