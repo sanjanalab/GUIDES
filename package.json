@@ -7,8 +7,12 @@
   ],
   "dependencies": {
     "angular-chart.js": "^0.8.8",
+    "angular-sanitize": "^1.4.8",
+    "angular-ui-switch": "^0.1.1",
     "chart.js": "^1.0.2",
     "coffee-script": "^1.7.1",
-    "less": "^1.7.5"
+    "less": "^1.7.5",
+    "ng-csv": "^0.3.6",
+    "ng-file-upload": "^11.2.0"
   }
 }
