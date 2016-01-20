@@ -1,9 +1,9 @@
 <rect class="exon" fill="#fff" height="50" ng-attr-width="{{2 * svgUnit}}" stroke="#aaa" ng-attr-x="{{ svgUnit + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y)}}"></rect>
 
-<text class="gRNA_count" fill="#111" font-size="16" ng-attr-x="{{svgUnit*2.0  + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y) + 33}}" style="text-anchor: middle;">
+<text class="gRNA_count" fill="#111" font-size="16" ng-attr-x="{{svgUnit*2.0  + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y) + 23}}" style="text-anchor: middle;">
   {{ (exon.gRNAs | filter:{selected:true}).length }}
 </text>
 
-<text class="exon_label" fill="#111" font-size="12" ng-attr-x="{{svgUnit*2.0 + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y) + 70}}" style="text-anchor: middle;">
-  {{ toInt(index) + 1 }}
+<text class="exon_label" fill="#111" font-size="12" ng-attr-x="{{svgUnit*2.0 + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y) + 40}}" style="text-anchor: middle;">
+  guides
 </text>
