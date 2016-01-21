@@ -35,5 +35,13 @@ FlaskStart.config ['$routeProvider', '$locationProvider', 'AnalyticsProvider', (
     redirectTo: "/"
   } 
 ]
+
+FlaskStart.run ['$rootScope', '$location', '$window', ($rootScope, $location, $window) ->
+  $rootScope.$on '$stateChangeSuccess', (event) ->
+    if not $window.ga
+      return
+    $window.ga('send', 'pageview', { page: $location.path() })
+]
+
 Filters = angular.module 'FlaskStart.filters', []
 Directives = angular.module 'FlaskStart.directives', []
