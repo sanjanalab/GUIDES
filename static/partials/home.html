@@ -78,13 +78,20 @@
                 </div>
 
                 <div class="entry_container" style="overflow:auto">
-                  <span class="entry_label">Consider tissue expression profiles?</span>
+                  <span class="entry_label">Target constitutive exons using GTEx?</span>
                   <form>
-                    <switch id="tissues_enabled" name="tissues_enabled" ng-model="guidesFactory.data.tissues_enabled" class="green"></switch>
+                    <switch id="gtex_enabled" name="gtex_enabled" ng-model="gtex_enabled" class="green"></switch>
                   </form>
                 </div>
 
-                <div class="entry_container" ng-show="guidesFactory.data.tissues_enabled">
+                <div class="entry_container" style="overflow:auto" ng-show="gtex_enabled">
+                  <span class="entry_label">Use data from all tissues?</span>
+                  <form>
+                    <switch id="tissues_enabled" name="tissues_enabled" ng-model="guidesFactory.data.tissues_disabled" class="green"></switch>
+                  </form>
+                </div>
+
+                <div class="entry_container" ng-hide="guidesFactory.data.tissues_disabled">
                   <ui-select multiple ng-model="guidesFactory.data.tissues" theme="bootstrap" limit="10" ng-disabled="disabled" style="width: 100%; background: none; background-color: transparent">
                     <ui-select-match placeholder="Select tissues...">{{$item}}</ui-select-match>
                     <ui-select-choices repeat="tissue in guidesFactory.available.tissues | filter: $select.search | limitTo: 10">

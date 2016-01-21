@@ -12,6 +12,7 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
   # selected results is placed directly back into factory
   # this way, we can just push to next controller and everything is ready :)
   $scope.guidesFactory = new GuidesFactory()
+  $scope.gtex_enabled = true
 
   # file upload
   $scope.$watch 'file', () ->
