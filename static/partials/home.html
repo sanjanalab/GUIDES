@@ -49,8 +49,10 @@
                      <ui-select-choices repeat="gene in guidesFactory.available.genes | propsFilter: {name: $select.  search, ensembl_id: $select.search} | limitTo:  10">
                         <div ng-bind-html="gene.name | highlight: $select.search"></div>
                         <small>
-                          Name: {{gene.name}}
-                          Ensembl: <span ng-bind-html="''+gene.ensembl_id | highlight: $select.search"></span>
+              <!--        
+                          Ensembl: <span ng-bind-html="''+gene.ensembl_id | highlight: $select.search"></span>        
+              -->
+                          <span ng-bind-html="''+gene.description | highlight: $select.search"></span>
                         </small>
                       </ui-select-choices>
                     </ui-select>
