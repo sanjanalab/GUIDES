@@ -9,7 +9,8 @@ Filters.filter 'propsFilter', ->
         while i < keys.length
           prop = keys[i]
           text = props[prop].toLowerCase()
-          if item[prop].toString().toLowerCase().indexOf(text) != -1
+          # Check if the property starts with the query
+          if item[prop].toString().toLowerCase().indexOf(text) == 0
             itemMatches = true
             break
           i++
@@ -19,6 +20,7 @@ Filters.filter 'propsFilter', ->
     else
       # Let the output be the input untouched
       out = items
+    
     out
 
 # Used for our Angular select library
