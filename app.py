@@ -24,7 +24,8 @@ js_libs = ['node_modules/angular-sanitize/angular-sanitize.js', 'node_modules/ng
 		   'node_modules/ng-file-upload/dist/ng-file-upload-shim.js', 'node_modules/ng-file-upload/dist/ng-file-upload.js',
        'node_modules/angular-ui-switch/angular-ui-switch.js',
        'node_modules/chart.js/Chart.js',
-       'node_modules/angular-chart.js/angular-chart.js']
+       'node_modules/angular-chart.js/angular-chart.js',
+       'node_modules/angular-google-analytics/dist/angular-google-analytics.js']
 js.append(js_libs)
 
 css = []

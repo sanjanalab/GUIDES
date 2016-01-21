@@ -1,7 +1,11 @@
-FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', ($scope, $filter, GuidesFactory) ->
+FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'Analytics', ($scope, $filter, GuidesFactory, Analytics) ->
   guidesFactory = new GuidesFactory()
   $scope.generateGuidesPromise = guidesFactory.generateGuides()
   $scope.gene_statistics = guidesFactory.gene_statistics
+
+  # Track Analytics
+  Analytics.trackEvent('designer', 'begin', 'genes', guidesFactory.data.genes.length, true, { genes: guidesFactory.data.genes })
+
 
   # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive. 
   $scope.modifySvgUnit = (unit) ->
