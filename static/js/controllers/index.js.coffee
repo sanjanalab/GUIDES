@@ -14,6 +14,14 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
   $scope.guidesFactory = new GuidesFactory()
   $scope.gtex_enabled = true
 
+  # Validations
+  $scope.genesWarning = false
+
+  $scope.$on '$locationChangeStart', (event) ->
+    if $scope.guidesFactory.data.genes.length < 1
+      $scope.genesWarning = true
+      event.preventDefault()
+
   # file upload
   $scope.$watch 'file', () ->
     if $scope.file
