@@ -40,10 +40,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
         this_ = this
         $http.get('/static/data/pre_processed/genes_list.json').then (res) ->
           this_.available.genes = res.data
-          this_.data.genes = [
-            this_.available.genes[28284]
-            this_.available.genes[494]
-          ]
+          this_.data.genes = []
 
     prepareGenesFromFile: () ->
       this_ = this
