@@ -165,7 +165,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
       for tissue in guidesFactory.available.tissues
         if tissue.toUpperCase() == elt.toUpperCase()
           guidesFactory.data.tissues.push(tissue)
-          guidesFactory.data.tissues_enabled = true
+          guidesFactory.data.tissues_disabled = false
           containsTissue = true
           break
       if found == false
