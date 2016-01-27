@@ -2,6 +2,8 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
   guidesFactory = new GuidesFactory()
   $scope.generateGuidesPromise = guidesFactory.generateGuides()
   $scope.gene_statistics = guidesFactory.gene_statistics
+  $scope.tissues = guidesFactory.data.tissues
+  $scope.tissues_enabled = not guidesFactory.data.tissues_disabled
 
   # Track Analytics
   Analytics.trackEvent('designer', 'begin', 'genes', guidesFactory.data.genes.length, true, { genes: guidesFactory.data.genes })
@@ -155,6 +157,15 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
     guidesFactory.data.genes.splice(idx, 1)
     $scope.gene_to_exon.splice(idx, 1)
     computeGuidesData($scope.gene_to_exon)
+
+  $scope.removeTissue = (idx) ->
+    $scope.guidesReady = false
+    guidesFactory.data.tissues.splice(idx, 1)
+    $scope.generateGuidesPromise = guidesFactory.generateGuides()
+    $scope.generateGuidesPromise.then (guidesData) ->
+      computeGuidesData(guidesData["gene_to_exon"])
+      $scope.gene = $scope.gene_to_exon[0]
+      $scope.guidesReady = true
 
   # Searching
   $scope.geneTissueQuery = ""

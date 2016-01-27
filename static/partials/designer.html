@@ -25,6 +25,7 @@
     <div id="sidebar-wrapper">
       <div class="sidebar-wrapper-inner">
         <ul class="sidebar-nav">
+          <li class="sidebar-header sidebar-header-first" ng-if="guidesReady">Genes</li>
           <li ng-repeat="thegene in gene_to_exon" class="sidebar-primary-item-action" ng-class="{ selected_item : thegene == gene }">
             <span class="sidebar-primary-item-action">
               <div class="x-close-container">
@@ -39,6 +40,22 @@
               </div>
             </span>
           </li>
+          <hr class="gene-tissue-seperator" ng-if="tissues_enabled && guidesReady">
+          <li class="sidebar-header" ng-if="tissues_enabled && guidesReady">Tissues</li>
+          <li ng-repeat="thetissue in tissues" class="sidebar-primary-item-action" ng-if="tissues_enabled && guidesReady">
+            <span class="sidebar-primary-item-action">
+              <div class="x-close-container">
+                <span ng-click="removeTissue($index)" class="x-close"><i class="fa fa-times-circle"></i></span>
+              </div>
+              <div class="sidebar-primary-item-action-text-container">
+                <a href="" class="sidebar-primary-item-action sidebar-noclick">
+                  <span class="sidebar-primary-item-action-text">
+   {{ thetissue }}
+                  </span>
+                </a>
+              </div>
+            </span>
+          </li>
         </ul>
       </div>
     </div>
@@ -47,13 +64,13 @@
         <div class="container-fluid" id='container'>
           <div class="row">
             <div class="col-md-12">
-              <svg height="45" id="exon_graph" width="100%" x="20" ng-show="guidesReady">
+              <svg height="45" id="exon_graph" width="100%" x="20">
                 <g id="background_exon_graph">
                   <text fill="#000" font-size="20" x="15" y="25" style="font-family: 'Roboto';">{{ gene.name }}: {{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</text>
                 </g>
               </svg>
               <expression-bar-chart></expression-bar-chart>
-              <svg width="100%" x="20" height="100">
+              <svg width="100%" x="20" height="100" ng-if="guidesReady">
                 <g id="all_exons">
                   <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="50" id="connector_rect"></rect>
               
