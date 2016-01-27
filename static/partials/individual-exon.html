@@ -5,5 +5,5 @@
 </text>
 
 <text class="exon_label" fill="#111" font-size="12" ng-attr-x="{{svgUnit*2.0 + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y) + 40}}" style="text-anchor: middle;">
-  guides
+  {{ (exon.gRNAs | filter:{selected:true}).length == 1 ? 'guide' : 'guides' }}
 </text>
