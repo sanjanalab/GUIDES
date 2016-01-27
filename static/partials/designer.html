@@ -14,9 +14,9 @@
         </div>
         <div class="guide-count-box">
           <span>
-            {{ countSelectedGuides }} Guides in Library
+            Guides in Library: {{ countSelectedGuides }}
           </span>
-          <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']"> Export Library</button>
+          <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']"> Export Library (.csv)</button>
         </div>
       </div>
     </div>
