@@ -1,4 +1,4 @@
-_<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en" ng-app='FlaskStart' ng-controller='RootCtrl' ng-cloak>
   <head>
     <meta charset="utf-8" />
@@ -13,6 +13,8 @@ _<!DOCTYPE html>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Condensed:400,300,700,400italic,300italic,700italic">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:400,300,700,400italic,300italic,700italic">
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800' rel='stylesheet' type='text/css'>
+
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     
     {% assets "css_all" %}
     <link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}"></link>
