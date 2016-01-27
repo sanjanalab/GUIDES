@@ -6,7 +6,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
 
     data: # currently selected
       'genes' : []
-      'tissues' : ['Brain','Nerve']
+      'tissues' : []
       'quantity': 60
       'tissues_disabled': true # does the user want to consider tissue expression?
 
