@@ -8,46 +8,83 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
   # Track Analytics
   Analytics.trackEvent('designer', 'begin', 'genes', guidesFactory.data.genes.length, true, { genes: guidesFactory.data.genes })
 
+  # Bar chart setup
+  base_options = {
+    animation: true,
+    barValueSpacing : $scope.svg_unit_global,
+    responsive: true,
+    maintainAspectRatio: false,
+    scaleShowHorizontalLines: false,
+    scaleIntegersOnly: true,
+    scaleBeginAtZero: true,
+    scaleShowGridLines : false,
+    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+    scaleOverride: true,
+    scaleSteps : 1,
+    scaleStepWidth: 1,
+    scaleStartValue: 0,
+    barShowStroke: false
+  }
+
+  expression_options = base_options
+  guide_options = base_options
+  guide_options.scaleOverride = false
+
+  $scope.chart_config = {
+    'expression': {
+      'data':    [[]] # set later
+      'labels':  [] # set later
+      'series':  ['Mean All Tissues', 'Mean Selected Tissues']
+      'options': expression_options
+      'colors': [
+        {
+          "fillColor": "#2B333B" # dark color from sidebar
+        },
+        {
+          "fillColor": "#51D2B7" # light gray from exon background
+        },
+        {
+          "fillColor": "rgba(224, 108, 112, 1)",
+          "strokeColor": "rgba(207,100,103,1)",
+          "pointColor": "rgba(220,220,220,1)",
+          "pointStrokeColor": "#fff",
+          "pointHighlightFill": "#fff",
+          "pointHighlightStroke": "rgba(151,187,205,0.8)"
+        }
+      ]
+    },
+    'guides': {
+      'data':    [[]] # set later
+      'labels':  [] # set later
+      'series':  ['Guides per Exon']
+      'options': guide_options
+      'colors': [
+        {
+          "fillColor": "#2B333B" # dark color from sidebar
+        },
+        {
+          "fillColor": "#51D2B7" # light gray from exon background
+        },
+        {
+          "fillColor": "rgba(224, 108, 112, 1)",
+          "strokeColor": "rgba(207,100,103,1)",
+          "pointColor": "rgba(220,220,220,1)",
+          "pointStrokeColor": "#fff",
+          "pointHighlightFill": "#fff",
+          "pointHighlightStroke": "rgba(151,187,205,0.8)"
+        }
+      ]
+    }
+  }
 
   # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive. 
   $scope.modifySvgUnit = (unit) ->
     $scope.svg_unit_global = unit / 2
-    $scope.exon_chart_options = {
-      animation: false,
-      barValueSpacing : $scope.svg_unit_global,
-      responsive: true,
-      maintainAspectRatio: false,
-      scaleShowHorizontalLines: false,
-      scaleIntegersOnly: true,
-      scaleBeginAtZero: true,
-      scaleShowGridLines : false,
-      legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-      scaleOverride: true,
-      scaleSteps : 1,
-      scaleStepWidth: 1,
-      scaleStartValue: 0,
-      barShowStroke: false
-    }
+    $scope.chart_config.expression.options.barValueSpacing = $scope.svg_unit_global
+    $scope.chart_config.guides.options.barValueSpacing = $scope.svg_unit_global
 
   # Initialize
   $scope.modifySvgUnit(15)
-
-  $scope.series = ['Mean All Tissues', 'Mean Selected Tissues']
-
-  $scope.chartcolors = [{
-    "fillColor": "#2B333B" # dark color from sidebar
-  },
-  {
-    "fillColor": "#51D2B7" # light gray from exon background
-  }
-  {
-    "fillColor": "rgba(224, 108, 112, 1)",
-    "strokeColor": "rgba(207,100,103,1)",
-    "pointColor": "rgba(220,220,220,1)",
-    "pointStrokeColor": "#fff",
-    "pointHighlightFill": "#fff",
-    "pointHighlightStroke": "rgba(151,187,205,0.8)"
-  }]
 
   computeGuidesData = (gene_to_exon) ->
     # $scope.guidesData = guidesData["gene_to_exon"]
@@ -113,9 +150,10 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
   
   $scope.setGene = (idx) ->
     $scope.gene = $scope.gene_to_exon[idx]
-    labels = []
-    data1 = []
-    data2 = []
+    expression_labels = []
+    expression_data1 = []
+    expression_data2 = []
+    guides_data = []
     # find normalizing constant
     # Normalize by max(max(expression_overalls), max(expression_median))
     max_expression = 0
@@ -124,15 +162,19 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
         max_expression = exon.expression_overall
       if exon.expression_median > max_expression
         max_expression = exon.expression_median
+      guides_count = ($filter('filter')(exon.gRNAs, {selected:true}, true)).length
+      guides_data.push guides_count
     angular.forEach $scope.gene.exons, (exon, key) ->
-      data1.push exon.expression_overall / max_expression
-      data2.push exon.expression_median / max_expression
-      labels.push('Exon ' + (key+1))
-    $scope.labels = labels
+      expression_data1.push exon.expression_overall / max_expression
+      expression_data2.push exon.expression_median / max_expression
+      expression_labels.push('Exon ' + (key+1))
+    $scope.chart_config.expression.labels = expression_labels
+    $scope.chart_config.guides.labels = expression_labels
+    $scope.chart_config.guides.data = [guides_data]
     if guidesFactory.data.tissues_enabled
-      $scope.data = [data1,data2]
+      $scope.chart_config.expression.data = [expression_data1,expression_data2]
     else
-      $scope.data = [data1]
+      $scope.chart_config.expression.data = [expression_data1]
 
   # returns the actual exons
   $scope.exonsUtilized = (gene) ->
@@ -190,10 +232,13 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
       computeGuidesData(guidesData["gene_to_exon"])
 
   $scope.guideSelected = (guide) ->
+    exon_key = guide.exon - 1 # dynamically update chart
     if guide.selected == false
       $scope.countSelectedGuides -= 1
+      $scope.chart_config.guides.data[0][exon_key] -= 1
     else
       $scope.countSelectedGuides += 1
+      $scope.chart_config.guides.data[0][exon_key] += 1
 
   $scope.getGuidesCSV = ->
     guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
