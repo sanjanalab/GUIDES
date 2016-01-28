@@ -64,13 +64,9 @@
         <div class="container-fluid" id='container'>
           <div class="row">
             <div class="col-md-12">
-              <svg height="45" id="exon_graph" width="100%" x="20">
-                <g id="background_exon_graph">
-                  <text fill="#000" font-size="20" x="15" y="25" style="font-family: 'Roboto';">{{ gene.name }}: {{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</text>
-                </g>
-              </svg>
+              <div class="designer-gene-title">{{ gene.name }}: <span>{{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</span></div>
               <guides-bar-chart></guides-bar-chart>
-              <svg width="100%" x="20" height="100" ng-if="guidesReady">
+              <svg width="100%" x="20" height="100" ng-if="guidesReady" id="exon_graph">
                 <g id="all_exons">
                   <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="50" id="connector_rect"></rect>
               
