@@ -83,11 +83,11 @@
                 <div class="entry_container" style="overflow:auto">
                   <span class="entry_label">Use expression data to pick exons?</span>
                   <form>
-                    <switch id="gtex_enabled" name="gtex_enabled" ng-model="gtex_enabled" class="green"></switch>
+                    <switch id="gtex_enabled" name="gtex_enabled" ng-model="guidesFactory.data.gtex_enabled" class="green"></switch>
                   </form>
                 </div>
 
-                <div class="entry_container" style="overflow:auto" ng-show="gtex_enabled">
+                <div class="entry_container" style="overflow:auto" ng-show="guidesFactory.data.gtex_enabled">
                   <span class="entry_label">Average data from all tissues?</span>
                   <form>
                     <switch id="tissues_enabled" name="tissues_enabled" ng-model="guidesFactory.data.tissues_disabled" class="green"></switch>

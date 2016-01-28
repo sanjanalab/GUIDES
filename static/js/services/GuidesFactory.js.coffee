@@ -8,7 +8,8 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       'genes' : []
       'tissues' : []
       'quantity': 60
-      'tissues_disabled': true # does the user want to consider tissue expression?
+      'gtex_enabled': true
+      'tissues_disabled': true # does the user want to consider *individualized* tissue expression?
 
     # paramters for getting genes from file
     genesFromFile: []

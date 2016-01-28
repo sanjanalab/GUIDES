@@ -49,6 +49,7 @@ def generate():
   species = 'human'
   quantity = post.get('quantity')
   tissues = post.get('tissues')
+  gtex_enabled = post.get('gtex_enabled')
 
   # Validations
   if genes == None:
@@ -68,7 +69,7 @@ def generate():
 
   # Iterate over genes, finding guides for each
   for g in genes:
-    ranker.rank(g['ensembl_id'], g['name'], quantity)
+    ranker.rank(g['ensembl_id'], g['name'], quantity, gtex_enabled)
 
   guides_by_exon = ranker.get_guides_by_exon()
   guide_count = ranker.get_count_selected_guides()

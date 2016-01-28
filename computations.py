@@ -52,7 +52,7 @@ class Ranker():
 
   # ensembl_gene - ensembl encocoding for the gene (grCH37)
   # gene_name - user-friendly name for the gene
-  def rank(self, ensembl_gene, gene_name, quantity):
+  def rank(self, ensembl_gene, gene_name, quantity, gtex_enabled):
     # Get the revcompl of a sequence print revcompl("AGTCAGCAT")
     revcompl = lambda x: ''.join([{'A':'T','C':'G','G':'C','T':'A'}[B] for B in x][::-1])
 
@@ -83,7 +83,11 @@ class Ranker():
     # For this gene, analyze top 4 exons, at most
     q = PriorityQueue()
 
-    exons_to_analyze = min(4, len(df_results))
+    # Focus on top 4 exons if gtex_enabled...otherwise use all.
+    exons_to_analyze = len(df_results)
+    if gtex_enabled == True:
+      exons_to_analyze = min(4, len(df_results))
+
     total_exons = len(df_results)
 
     # for i in range(min(4, len(df_results))):
