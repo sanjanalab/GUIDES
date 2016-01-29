@@ -9,7 +9,7 @@
     "angular-chart.js": "^0.8.8",
     "angular-google-analytics": "^1.1.5",
     "angular-sanitize": "^1.4.8",
-    "angular-ui-switch": "^0.1.1",
+    "angular-ui-switch": "git+https://git@github.com/EskoCruz/angular-ui-switch.git",
     "chart.js": "^1.0.2",
     "coffee-script": "^1.7.1",
     "less": "^1.7.5",

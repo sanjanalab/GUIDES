@@ -354,7 +354,6 @@ svg path, svg polygon {
   height: 37px;
   background-color: #2B333B;
   color: #c2c5ca;
-  text-align: center;
   margin-left: auto;
   margin-right: auto;
   margin-top: 10px;
@@ -364,8 +363,19 @@ svg path, svg polygon {
   position: relative;
   top: 21.5%;
   font-family: 'Open Sans';
-  color: #85898C;
-  font-weight: 600;
+  color: #fff;
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.left-table-header {
+  float: left;
+  margin-left: 20px;
+}
+
+.right-table-header {
+  float: right;
+  margin-right: 20px;
 }
 
 // align center for all columns besides second (sequence)
@@ -588,7 +598,7 @@ li:hover .sidebar-primary-item-action {
 
 .guide-count-box {
   position: absolute;
-  width: 355px;
+  width: 320px;
   right: 0px;
   color: #2B333B;
   height: 100%;
@@ -677,18 +687,18 @@ li:hover .sidebar-primary-item-action {
 
 #hero .down span.arrow {
   color: #333;
-    width: 75px;
-    height: 75px;
-    position: relative;
-    cursor: pointer;
-    text-align: center;
-    line-height: 75px;
-    border-radius: 37.5px;
-    border-radius: 50%;
-    background: #fff200;
-    box-shadow: 0 6px 20px 0 rgba(0,0,0,0.09),0 8px 17px 0 rgba(0,0,0,0.08);
-    -webkit-transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
-    transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
+  width: 75px;
+  height: 75px;
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  line-height: 75px;
+  border-radius: 37.5px;
+  border-radius: 50%;
+  background: #fff200;
+  box-shadow: 0 6px 20px 0 rgba(0,0,0,0.09),0 8px 17px 0 rgba(0,0,0,0.08);
+  -webkit-transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
+  transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
 }
 
 // Placeholder text for genes and tissues
@@ -716,6 +726,10 @@ li:hover .sidebar-primary-item-action {
 .switch.checked {
   background: rgb(255, 64, 129);
   border-color: rgb(255, 64, 129);
+}
+
+#show_different_guides {
+  margin-left: 4px;
 }
 
 // Charts on designer page

@@ -231,6 +231,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
     $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
       computeGuidesData(guidesData["gene_to_exon"])
 
+  # individual guide selection
+  $scope.show_different_guides = false
+
   $scope.guideSelected = (guide) ->
     exon_key = guide.exon - 1 # dynamically update chart
     if guide.selected == false
