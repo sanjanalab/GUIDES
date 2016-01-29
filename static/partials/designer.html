@@ -56,6 +56,36 @@
               </div>
             </span>
           </li>
+          <hr class="gene-tissue-seperator" ng-if="guidesReady">
+          <li class="sidebar-header" ng-if="guidesReady">Actions</li>
+          <li class="sidebar-primary-item-action" ng-if="guidesReady">
+            <span class="sidebar-primary-item-action">
+              <div class="x-close-container">
+                <span class="x-close"><i class="fa fa-repeat"></i></span>
+              </div>
+              <div class="sidebar-primary-item-action-text-container">
+                <a href="/#/" class="sidebar-primary-item-action">
+                  <span class="sidebar-primary-item-action-text">
+   Start Over
+                  </span>
+                </a>
+              </div>
+            </span>
+          </li>
+          <li class="sidebar-primary-item-action" ng-if="guidesReady">
+            <span class="sidebar-primary-item-action">
+              <div class="x-close-container">
+                <span class="x-close"><i class="fa fa-download"></i></span>
+              </div>
+              <div class="sidebar-primary-item-action-text-container">
+                <a class="sidebar-primary-item-action" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']">
+                  <span class="sidebar-primary-item-action-text">
+   Export Library (.csv)
+                  </span>
+                </a>
+              </div>
+            </span>
+          </li>
         </ul>
       </div>
     </div>
