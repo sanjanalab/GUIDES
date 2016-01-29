@@ -94,14 +94,15 @@
                   </form>
                 </div>
 
-                <div class="entry_container" ng-hide="guidesFactory.data.tissues_disabled" tooltip-placement="left" uib-tooltip="Which tissues are you targeting? You can add more later." tooltip-trigger="outsideClick">
+                <div class="entry_container" ng-hide="guidesFactory.data.tissues_disabled" tooltip-placement="left" uib-tooltip="Which tissues are you targeting? You can add more later." tooltip-trigger="outsideClick" ng-class="{'genes-warning': tissuesWarning}">
                   <span class="entry_label">Tissues:</span> 
                   <ui-select multiple ng-model="guidesFactory.data.tissues" theme="bootstrap" limit="10" style="width: 100%; background: none; background-color: transparent">
                     <ui-select-match placeholder="Select tissues...">{{$item}}</ui-select-match>
                     <ui-select-choices repeat="tissue in guidesFactory.available.tissues | filter: $select.search | limitTo: 10">
                       <div ng-bind-html="tissue | highlight: $select.search"></div>
                     </ui-select-choices>
-                  </ui-select>
+                  </ui-select>                    
+                  <div ng-show="tissuesWarning" class="bottom-warning-text">Please enter a list of tissues.</div> 
                 </div>
 
               </div>
