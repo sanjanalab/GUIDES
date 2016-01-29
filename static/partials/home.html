@@ -46,7 +46,7 @@
                     <span class="entry_label">Genes:</span> 
                     <ui-select multiple ng-model="guidesFactory.data.genes" theme="bootstrap" limit="10" ng-disabled ="disabled" style="width: 100%;  background: none; background-color: transparent">
                     <ui-select-match placeholder="Enter genes... or drag and drop a list (.txt)."> {{$item.name}}</ui-select-match>
-                     <ui-select-choices repeat="gene in guidesFactory.available.genes | propsFilter: {name: $select.  search, ensembl_id: $select.search} | limitTo:  10">
+                     <ui-select-choices repeat="gene in guidesFactory.available.genes | propsFilter: {name: $select.  search, ensembl_id: $select.search, description: $select.search} | limitTo:  10">
                         <div ng-bind-html="gene.name | highlight: $select.search"></div>
                         <small>
               <!--        
