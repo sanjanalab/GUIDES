@@ -23,7 +23,7 @@ Directives.directive 'drawindividualexon', ['$timeout', '$window', ($timeout, $w
     console.log scope.gRNA_count_y
 
     resizeFunction = () ->
-      scope.svgUnit = $('#exon_graph')[0].getBoundingClientRect().width / (3 * scope.exonsLength + 1)
+      scope.svgUnit = ($('#exon_graph')[0].getBoundingClientRect().width - 20 - 20) / (3 * scope.exonsLength + 1)
       scope.modifySvgUnit({unit: scope.svgUnit})
       if 2 * scope.svgUnit <= 41
         scope.gRNA_count_y = 55

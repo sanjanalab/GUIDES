@@ -18,7 +18,8 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
     scaleIntegersOnly: true,
     scaleBeginAtZero: true,
     scaleShowGridLines : false,
-    legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+    #legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
+    legendTemplate: "I'm a legend template."
     scaleOverride: true,
     scaleSteps : 1,
     scaleStepWidth: 1,
@@ -151,6 +152,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
   $scope.setGene = (idx) ->
     $scope.gene = $scope.gene_to_exon[idx]
     expression_labels = []
+    guide_labels = []
     expression_data1 = []
     expression_data2 = []
     guides_data = []
@@ -168,8 +170,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
       expression_data1.push exon.expression_overall / max_expression
       expression_data2.push exon.expression_median / max_expression
       expression_labels.push('Exon ' + (key+1))
+      guide_labels.push('') # empty labels
     $scope.chart_config.expression.labels = expression_labels
-    $scope.chart_config.guides.labels = expression_labels
+    $scope.chart_config.guides.labels = guide_labels
     $scope.chart_config.guides.data = [guides_data]
     if guidesFactory.data.tissues_enabled
       $scope.chart_config.expression.data = [expression_data1,expression_data2]

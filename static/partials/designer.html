@@ -96,11 +96,11 @@
             <div class="col-md-12">
               <div class="designer-gene-title">{{ gene.name }}: <span>{{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</span></div>
               <guides-bar-chart></guides-bar-chart>
-              <svg width="100%" x="20" height="100" ng-if="guidesReady" id="exon_graph">
+              <svg width="100%" x="20" height="50" ng-if="guidesReady" id="exon_graph">
                 <g id="all_exons">
-                  <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="50" id="connector_rect"></rect>
+                  <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="25" id="connector_rect"></rect>
               
-                  <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" modify-svg-unit="modifySvgUnit(unit)" ng-repeat="exon in gene.exons" y="25">
+                  <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" modify-svg-unit="modifySvgUnit(unit)" ng-repeat="exon in gene.exons" y="0">
                   </g>
                 </g>
               </svg>
