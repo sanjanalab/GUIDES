@@ -4,19 +4,25 @@ Directives.directive 'selectAllCheckbox', () ->
   scope: {
     checkboxes: '='
     counter: '='
+    chartdata: '='
+    guidechange: '&'
   }
   template: '<input type="checkbox" ng-model="master" ng-change="masterChange()">'
   controller: ($scope, $element) ->
     $scope.masterChange = () ->
       if $scope.master
         angular.forEach $scope.checkboxes, (cb, idx) ->
-          if cb.selected == false
-            $scope.counter += 1
+          $scope.guidechange(cb)
+          # if cb.selected == false
+          #   $scope.counter += 1
+          #   $scope.chartdata[cb.exon - 1] += 1
           cb.selected = true
       else
         angular.forEach $scope.checkboxes, (cb, idx) ->
-          if cb.selected == true
-            $scope.counter -= 1
+          $scope.guidechange(cb)
+          # if cb.selected == true
+          #   $scope.counter -= 1
+          #   $scope.chartdata[cb.exon - 1] -= 1
           cb.selected = false
 
     $scope.$watch 'checkboxes', (() ->

@@ -36,7 +36,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
     'expression': {
       'data':    [[]] # set later
       'labels':  [] # set later
-      'series':  ['Mean All Tissues', 'Mean Selected Tissues']
+      'series':  ['Mean All Tissues', 'Mean Selected Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
       'options': expression_options
       'colors': [
         {
@@ -78,6 +78,10 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
       ]
     }
   }
+
+  # Change series if we are not going to display median
+  if guidesFactory.data.tissues_disabled
+    $scope.chart_config.expression.series = ['Mean All Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
 
   # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive. 
   $scope.modifySvgUnit = (unit) ->
@@ -156,29 +160,45 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
     guide_labels = []
     expression_data1 = []
     expression_data2 = []
+    expression_data = []
     guides_data = []
+
+    # Setup the correct number of arrays to store our data later.
+    # Assumption: Every exon has same number of expression values.
+    # ...but this is required anyway by our chart library.
+    angular.forEach $scope.gene.exons[0].expression, (tissue_value, key) ->
+      expression_data.push []
     # find normalizing constant
     # Normalize by max(max(expression_overalls), max(expression_median))
     max_expression = 0
     angular.forEach $scope.gene.exons, (exon, key) ->
-      if exon.expression_overall > max_expression
-        max_expression = exon.expression_overall
-      if exon.expression_median > max_expression
-        max_expression = exon.expression_median
+      angular.forEach exon.expression, (tissue_value, key) ->
+        if tissue_value > max_expression
+          max_expression = tissue_value
       guides_count = ($filter('filter')(exon.gRNAs, {selected:true}, true)).length
       guides_data.push guides_count
     angular.forEach $scope.gene.exons, (exon, key) ->
-      expression_data1.push exon.expression_overall / max_expression
-      expression_data2.push exon.expression_median / max_expression
+      if guidesFactory.data.tissues_disabled # don't use median
+        expression_data[0].push exon.expression.overall / max_expression
+        expression_data[1].push exon.expression.brain / max_expression
+        expression_data[2].push exon.expression.heart / max_expression
+        expression_data[3].push exon.expression.kidney / max_expression
+        expression_data[4].push exon.expression.liver / max_expression
+        expression_data[5].push exon.expression.skin / max_expression
+      else
+        expression_data[0].push exon.expression.overall / max_expression
+        expression_data[1].push exon.expression.median / max_expression
+        expression_data[2].push exon.expression.brain / max_expression
+        expression_data[3].push exon.expression.heart / max_expression
+        expression_data[4].push exon.expression.kidney / max_expression
+        expression_data[5].push exon.expression.liver / max_expression
+        expression_data[6].push exon.expression.skin / max_expression        
       expression_labels.push('Exon ' + (key+1))
       guide_labels.push('') # empty labels
     $scope.chart_config.expression.labels = expression_labels
     $scope.chart_config.guides.labels = guide_labels
     $scope.chart_config.guides.data = [guides_data]
-    if guidesFactory.data.tissues_enabled
-      $scope.chart_config.expression.data = [expression_data1,expression_data2]
-    else
-      $scope.chart_config.expression.data = [expression_data1]
+    $scope.chart_config.expression.data = expression_data
 
   # returns the actual exons
   $scope.exonsUtilized = (gene) ->
