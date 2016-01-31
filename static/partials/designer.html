@@ -1,5 +1,13 @@
-<div cg-busy="{promise:generateGuidesPromise,templateUrl:'static/partials/angular-busy.html',minDuration:10}">
-<div id="full-page">
+<div ng-if="guidesReady == false" style="background:url('static/img/double-helix-spin.gif');background-position:50% 50%;background-repeat:no-repeat">
+
+   <div style="text-align:center;font-size:26px;position:absolute;top:45%;width:100%;text-shadow:1px 1px 2px white, -1px -1px 2px white,-4px 4px 4px white,-4px 4px 4px white">
+    Step 2) Designing your library...
+    <div class="library-summary">Imported {{gene_statistics.actual}} of {{gene_statistics.expected}} genes.</div>
+
+   </div>
+
+</div>
+<div id="full-page" ng-if="guidesReady">
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="navbar-inner">
       <div class="container-fluid">
@@ -141,5 +149,3 @@
       </div>
     </div>
   </div>
-</div>
-</div>

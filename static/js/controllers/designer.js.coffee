@@ -1,4 +1,5 @@
 FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'Analytics', ($scope, $filter, GuidesFactory, Analytics) ->
+  $scope.guidesReady = false
   guidesFactory = new GuidesFactory()
   $scope.generateGuidesPromise = guidesFactory.generateGuides()
   $scope.gene_statistics = guidesFactory.gene_statistics
@@ -19,7 +20,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
     scaleBeginAtZero: true,
     scaleShowGridLines : false,
     #legendTemplate : "<ul class=\"<%=name.toLowerCase()%>-legend\"><% for (var i=0; i<datasets.length; i++){%><li><span style=\"background-color:<%=datasets[i].fillColor%>\"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>"
-    legendTemplate: "I'm a legend template."
+    legendTemplate: "",
     scaleOverride: true,
     scaleSteps : 1,
     scaleStepWidth: 1,
@@ -231,8 +232,10 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
             found = true
             break
 
+    $scope.guidesReady = false
     $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
       computeGuidesData(guidesData["gene_to_exon"])
+      $scope.guidesReady = true
 
   # individual guide selection
   $scope.show_different_guides = false
