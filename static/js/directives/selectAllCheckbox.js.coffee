@@ -12,18 +12,12 @@ Directives.directive 'selectAllCheckbox', () ->
     $scope.masterChange = () ->
       if $scope.master
         angular.forEach $scope.checkboxes, (cb, idx) ->
-          $scope.guidechange(cb)
-          # if cb.selected == false
-          #   $scope.counter += 1
-          #   $scope.chartdata[cb.exon - 1] += 1
           cb.selected = true
+          $scope.guidechange({guide:cb})
       else
         angular.forEach $scope.checkboxes, (cb, idx) ->
-          $scope.guidechange(cb)
-          # if cb.selected == true
-          #   $scope.counter -= 1
-          #   $scope.chartdata[cb.exon - 1] -= 1
           cb.selected = false
+          $scope.guidechange({guide:cb})
 
     $scope.$watch 'checkboxes', (() ->
       allSet = true

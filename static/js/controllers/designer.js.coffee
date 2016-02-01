@@ -261,6 +261,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
   $scope.show_different_guides = false
 
   $scope.guideSelected = (guide) ->
+    console.log guide
     exon_key = guide.exon - 1 # dynamically update chart
     if guide.selected == false
       $scope.countSelectedGuides -= 1
