@@ -260,6 +260,34 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
   # individual guide selection
   $scope.show_different_guides = false
 
+  # UI-Select setup
+  $scope.guidesFactory = guidesFactory # only used by ui-select!
+  $scope.selectedGene = (gene) ->
+    guidesFactory.data.genes.push gene
+    $scope.guidesReady = false
+    $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
+      computeGuidesData(guidesData["gene_to_exon"])
+      $scope.guidesReady = true
+
+  $scope.selectedTissue = (tissue) ->
+    guidesFactory.data.tissues.push tissue
+    $scope.guidesReady = false
+    $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
+      computeGuidesData(guidesData["gene_to_exon"])
+      $scope.guidesReady = true
+
+  # $scope.additionalGene = "" # what the person is typing.
+  # $scope.$watch 'additionalGene', () ->
+  #   console.log "hi"
+  #   console.log $scope.additionalGene
+  #   guidesFactory.data.genes.push $scope.additionalGene
+  #   $scope.guidesReady = false
+  #   $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
+  #     computeGuidesData(guidesData["gene_to_exon"])
+  #     $scope.guidesReady = true
+  # , true
+
+
   $scope.guideSelected = (guide) ->
     console.log guide
     exon_key = guide.exon - 1 # dynamically update chart

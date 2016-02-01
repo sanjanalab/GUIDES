@@ -48,6 +48,17 @@
               </div>
             </span>
           </li>
+          <li ng-if="guidesReady">
+            <ui-select ng-model="additionalGene" on-select="selectedGene(additionalGene)" theme="bootstrap" style="width: 100%;  background: none; background-color: transparent">
+              <ui-select-match placeholder="Type your gene here..."> {{$item.name}}</ui-select-match>
+              <ui-select-choices repeat="gene in guidesFactory.available.genes | propsFilter: {name: $select.  search, ensembl_id: $select.search, description: $select.search} | limitTo:  10">
+                <div ng-bind-html="gene.name | highlight: $select.search"></div>
+                <small>
+                  <span ng-bind-html="''+gene.description | highlight: $select.search"></span>
+                </small>
+              </ui-select-choices>
+            </ui-select>
+          </li>
           <hr class="gene-tissue-seperator" ng-if="tissues_enabled && guidesReady">
           <li class="sidebar-header" ng-if="tissues_enabled && guidesReady">Tissues</li>
           <li ng-repeat="thetissue in tissues" class="sidebar-primary-item-action" ng-if="tissues_enabled && guidesReady">
@@ -63,6 +74,14 @@
                 </a>
               </div>
             </span>
+          </li>
+          <li ng-if="tissues_enabled && guidesReady">
+            <ui-select ng-model="additionalTissue" on-select="selectedTissue(additionalTissue)" theme="bootstrap" style="width: 100%;  background: none; background-color: transparent">
+              <ui-select-match placeholder="Type your tissue here..."> {{$item.name}}</ui-select-match>
+                <ui-select-choices repeat="tissue in guidesFactory.available.tissues | filter: $select.search | limitTo: 10">
+                  <div ng-bind-html="tissue | highlight: $select.search"></div>
+                </ui-select-choices>
+            </ui-select>
           </li>
           <hr class="gene-tissue-seperator" ng-if="guidesReady">
           <li class="sidebar-header" ng-if="guidesReady">Actions</li>
