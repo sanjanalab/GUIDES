@@ -47,6 +47,15 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
       else
         console.log $scope.file.$error
 
+  # Slider changes
+  $scope.md_slider_quantity = 20
+  slider_vals = [1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100]
+  $scope.$watch 'md_slider_quantity', (value) ->
+    if value < 100
+      $scope.guidesFactory.data.quantity = slider_vals[Math.floor(value/4)]
+    else
+      $scope.guidesFactory.data.quantity = 100
+
   # From pre-calculated experimental results
   $scope.waitTime = () ->
     3 + Math.max(30,($scope.guidesFactory.data.quantity - 100)) // 8 * $scope.guidesFactory.data.genes.length

@@ -60,12 +60,12 @@
                   </div>
                 </div>
           
-                <div class="entry_container" tooltip-placement="left" uib-tooltip="How many guides per gene? You can add more later.">
+                <div class="entry_container" tooltip-placement="left" uib-tooltip="How many guides per gene? You can add more later. Choose using the slider or by typing into the number field.">
                   <span class="entry_label">Library size:</span></br>
                   <div class="the_slider">
                     <md-content style="margin: 16px 0; padding: 0px 16px; background-color: transparent;">
                     <div layout>
-                      <md-slider flex min="0" max="100" ng-model="guidesFactory.data.quantity" aria-label="red" id="red-slider" class>
+                      <md-slider flex min="0" max="100" ng-model="md_slider_quantity" aria-label="red" id="red-slider" class>
                       </md-slider>
                       <div flex="20" layout layout-align="center center">
                         <input flex type="number" ng-model="guidesFactory.data.quantity" aria-label="red" aria-controls="red-slider">
