@@ -121,7 +121,11 @@
         <div class="container-fluid" id='container'>
           <div class="row">
             <div class="col-md-12">
-              <div class="designer-gene-title">{{ gene.name }}: <span>{{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</span></div>
+              <div class="designer-gene-title">{{ gene.name }}: <span>{{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</span>
+                <span id="right-designer-gene-title">
+                  Choose different guides <switch id="show_different_guides" name="show_different_guides" ng-model="show_different_guides" ng-disabled="false" class="sm"></switch>
+                </span>
+              </div>
               <guides-bar-chart></guides-bar-chart>
               <svg width="100%" x="20" height="50" ng-if="guidesReady" id="exon_graph">
                 <g id="all_exons">
@@ -139,9 +143,6 @@
               <div class="table-header">
                 <span class="left-table-header">
                   Customize your guide selection.
-                </span>
-                <span class="right-table-header">
-                  Choose different guides <switch id="show_different_guides" name="show_different_guides" ng-model="show_different_guides" ng-disabled="false" class="sm"></switch>
                 </span>
               </div>
               <table class="table">
