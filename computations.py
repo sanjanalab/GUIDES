@@ -7,9 +7,12 @@ import pickle
 import seq_generator
 from settings import APP_STATIC
 import os
+import itertools
 
 class GuideRNA():
   """Holder of gRNA information"""
+  newid = itertools.count().next
+
   def __init__(self, selected, start, seq, PAM, score, exon_ranking, ensembl_gene, gene_name):
     self.start = start
     self.seq = seq
@@ -20,6 +23,8 @@ class GuideRNA():
     self.gene_name = gene_name
     self.selected = selected
 
+    self.uid = "customLibrary_guide" + str(GuideRNA.newid()).zfill(4)
+
   def serialize_for_display(self):
     """Serialize for the way we are returning json"""
     return {
@@ -27,7 +32,8 @@ class GuideRNA():
       "start": self.start,
       "seq": self.seq,
       "PAM": self.PAM,
-      "selected": self.selected
+      "selected": self.selected,
+      "uid": self.uid
     }
 
   # Comparison technique - describes ranking DISCUSS (include exon_ranking?)

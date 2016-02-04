@@ -24,7 +24,7 @@
           <span>
             Guides in Library: {{ countSelectedGuides }}
           </span>
-          <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']"> Export Library (.csv)</button>
+          <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon', 'UID']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon', 'uid']"> Export Library (.csv)</button>
         </div>
       </div>
     </div>
@@ -105,7 +105,7 @@
                 <span class="x-close"><i class="fa fa-download"></i></span>
               </div>
               <div class="sidebar-primary-item-action-text-container">
-                <a class="sidebar-primary-item-action" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon']">
+                <a class="sidebar-primary-item-action" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon', 'UID']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon', 'uid']">
                   <span class="sidebar-primary-item-action-text">
    Export Library (.csv)
                   </span>

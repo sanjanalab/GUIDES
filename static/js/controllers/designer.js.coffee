@@ -300,7 +300,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
 
   $scope.getGuidesCSV = ->
     guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
-    guidesCSV = $filter('orderBy')(guidesCSV, 'score', true)
+    guidesCSV = $filter('orderBy')(guidesCSV, ['gene','score'], true)
     guidesCSV
 
 ]
