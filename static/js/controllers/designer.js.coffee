@@ -28,6 +28,53 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
     barShowStroke: false
   }
 
+  expression_colors = [
+        {
+          "fillColor": "#2B333B" # dark color from sidebar
+        },
+        {
+          "fillColor": "#a0a0a0"
+        },
+        {
+          "fillColor": "#bdbdbd"
+        },
+        {
+          "fillColor": "#c7c7c7"
+        },
+        {
+          "fillColor": "#dadada"
+        },
+        {
+          "fillColor": "#f2eaea"
+        }
+      ]
+
+  if $scope.tissues_enabled
+    expression_colors = [
+        {
+          "fillColor": "#2B333B" # dark color from sidebar
+        },
+        {
+          "fillColor": "#51D2B7"
+        },
+        {
+          "fillColor": "#a0a0a0"
+        },
+        {
+          "fillColor": "#bdbdbd"
+        },
+        {
+          "fillColor": "#c7c7c7"
+        },
+        {
+          "fillColor": "#dadada"
+        },
+        {
+          "fillColor": "#f2eaea"
+        }
+      ]
+
+
   expression_options = base_options
   guide_options = base_options
   guide_options.scaleOverride = false
@@ -38,22 +85,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
       'labels':  [] # set later
       'series':  ['Mean All Tissues', 'Mean Selected Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
       'options': expression_options
-      'colors': [
-        {
-          "fillColor": "#2B333B" # dark color from sidebar
-        },
-        {
-          "fillColor": "#51D2B7" # light gray from exon background
-        },
-        {
-          "fillColor": "rgba(224, 108, 112, 1)",
-          "strokeColor": "rgba(207,100,103,1)",
-          "pointColor": "rgba(220,220,220,1)",
-          "pointStrokeColor": "#fff",
-          "pointHighlightFill": "#fff",
-          "pointHighlightStroke": "rgba(151,187,205,0.8)"
-        }
-      ]
+      'colors': expression_colors
     },
     'guides': {
       'data':    [[]] # set later
