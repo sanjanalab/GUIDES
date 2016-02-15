@@ -13,7 +13,7 @@
               </div>
               <div class="social col-xs-9 col-sm-9 col-md-10 col-lg-10">
                 <div class="social-links">
-                  <a href="" class="top-left-link">About</a>
+                  <a href="/#/about" class="top-left-link">About</a>
                   <a href="http://zlab.mit.edu/" class="top-left-link">Team</a>
                   <a href="mailto:cld@mit.edu" class="top-left-link">Contact Us</a>
                   <a href="https://github.com/joshim5/CRISPR-Library-Designer/issues" class="top-left-link">Report a Bug</a>
@@ -26,7 +26,7 @@
                     Design your own custom CRISPR libraries.
                 </h1>
                 <h2>
-                  How does it work?<a ng-mouseenter="learn_more_to_black()" ng-mouseleave="learn_more_to_white()" href="" style="color: {{ learn_more_fill }}">Learn more
+                  How does it work?<a ng-mouseenter="learn_more_to_black()" ng-mouseleave="learn_more_to_white()" href="/#/about" style="color: {{ learn_more_fill }}">Learn more
                   <svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width=" 32px" height="32px" viewBox="0 0 32 32" enable-background="new 0 0 32 32" xml:space="preserve">
                     <g>
                       <path fill="{{ learn_more_fill }}" d="M15.901,31.355c-8.503,0-15.421-6.918-15.421-15.42c0-8.503,6.918-15.421,15.421-15.421
@@ -43,7 +43,7 @@
                 <h2>Step 1) Experimental setup.</h2>
                 <div class="entry_container" tooltip-placement="left" uib-tooltip="Which genes are you targeting? You can drag and drop a comma seperated list of genes (.txt). You can add more later." tooltip-trigger="outsideClick">
                   <span class="entry_label" id="genes_entry_label">Enter genes or drag and drop a list (.txt).</span> 
-                  <div ngf-drop ng-model="file" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="false" accept="text/plain" ngf-pattern="text/plain" ng-class="{'genes-warning': genesWarning}" id="genes_container">
+                  <div ngf-drop ng-model="file" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="false" accept="text/plain" ngf-pattern="text/plain" id="genes_container">
                     <ui-select multiple ng-model="guidesFactory.data.genes" theme="bootstrap" limit="10" ng-disabled ="disabled" style="width: 100%;  background: none; background-color: transparent">
                     <ui-select-match placeholder="Start typing..."> {{$item.name}}</ui-select-match>
                      <ui-select-choices repeat="gene in guidesFactory.available.genes | propsFilter: {name: $select.  search, ensembl_id: $select.search} | limitTo:  10">
@@ -56,7 +56,7 @@
                         </small>
                       </ui-select-choices>
                     </ui-select>
-                    <div ng-show="genesWarning" class="bottom-warning-text">Please enter a list of genes.</div> 
+                    <span ng-show="genesWarning" class="bottom-warning-text">Please enter a list of genes.</span> 
                   </div>
                 </div>
           
@@ -82,7 +82,7 @@
 
                 <div class="entry_container" tooltip-placement="left" uib-tooltip="More species coming soon.">
                   <span class="entry_label">Target genome:</span>
-                  <select class="genome-select" name="genomeSelect" ng-model="guidesFactory.data.genome">
+                  <select class="form-control genome-select" name="genomeSelect" ng-model="guidesFactory.data.genome">
                     <option value="hum">Human (Homo sapiens GRCh37)</option>
                   </select>
                 </div>

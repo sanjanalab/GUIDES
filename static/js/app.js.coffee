@@ -20,7 +20,11 @@ FlaskStart.config ['$routeProvider', '$locationProvider', 'AnalyticsProvider', (
       $location.url('/')
     deferred.promise
 
-  $routeProvider.when "/designer", {
+  $routeProvider.when "/about", {
+    templateUrl: "static/partials/about.html",
+    controller: 'AboutCtrl'
+  }
+  .when "/designer", {
     templateUrl: "static/partials/designer.html", 
     controller: 'DesignerCtrl', 
     resolve: {

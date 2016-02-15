@@ -19,13 +19,15 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
   $scope.genesWarning = false
   $scope.tissuesWarning = false
 
-  $scope.$on '$locationChangeStart', (event) ->
-    if $scope.guidesFactory.data.genes.length < 1
-      $scope.genesWarning = true
-      event.preventDefault()
-    if not $scope.guidesFactory.data.tissues_disabled and $scope.guidesFactory.data.tissues.length < 1
-      $scope.tissuesWarning = true
-      event.preventDefault()
+  $scope.$on '$locationChangeStart', (event, newUrl) ->
+    urlComps = newUrl.split('/')
+    if urlComps[urlComps.length - 1] == "designer"
+      if $scope.guidesFactory.data.genes.length < 1
+        $scope.genesWarning = true
+        event.preventDefault()
+      if not $scope.guidesFactory.data.tissues_disabled and $scope.guidesFactory.data.tissues.length < 1
+        $scope.tissuesWarning = true
+        event.preventDefault()
 
   # file upload
   $scope.$watch 'file', () ->

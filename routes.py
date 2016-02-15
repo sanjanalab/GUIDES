@@ -36,6 +36,7 @@ def postprocess_request(response):
 ### pass routing to angular
 @app.route('/')
 @app.route('/designer')
+@app.route('/about')
 def index_view():
   return render_template('index.html')
 
