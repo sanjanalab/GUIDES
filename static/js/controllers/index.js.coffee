@@ -33,16 +33,25 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
   $scope.$watch 'file', () ->
     if $scope.file
       if not $scope.file.$error
-        # add "Genes form file..." button if necessary
-        if not $scope.guidesFactory.hasUploadedFile()
-          $scope.guidesFactory.noteFileUploaded()
-
         # read file and give contents to factory for parsing later
         reader = new FileReader()
         reader.onload = (e) ->
           text = reader.result
-          newGenesFromFile = text.split(/[\s\t,#| ]+/)
-          $scope.guidesFactory.genesFromFile = $scope.guidesFactory.genesFromFile.push.apply($scope.guidesFactory.genesFromFile, newGenesFromFile)
+          text = text.replace(/[\"\'=>]+/g,'')
+          newGenesFromFile = text.split(/[\s\t,;#\| ]+/)
+          $scope.guidesFactory.data.genesFromFile = newGenesFromFile
+
+          # change the text for file uploaded
+          # add "Genes from file..." button if necessary
+          displayTxt = "Genes from file..."
+          if newGenesFromFile.length > 2
+            displayTxt = newGenesFromFile[0] + ", " + newGenesFromFile[1] + ", ..."
+          else if newGenesFromFile.length == 2
+            displayTxt = newGenesFromFile[0] + ", " + newGenesFromFile[1]
+          else if newGenesFromFile.length == 1
+            displayTxt = newGenesFromFile[0]
+          $scope.guidesFactory.noteFileUploaded(displayTxt)
+
         reader.readAsText($scope.file) # assume UTF-8 encoding
       else
         console.log $scope.file.$error

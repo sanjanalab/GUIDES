@@ -177,7 +177,7 @@
                   <th><a tooltip-placement="left" uib-tooltip="Efficiency scores are computed using the techniques described by (1) Doench, et al., 2014; and (2) Fusi, et al., 2016., and presented as (1)/(2)." ng-click="orderByField='score'; reverseSort = !reverseSort">On-target Efficiency </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                   <th><a href="" ng-click="orderByField='exon'; reverseSort = !reverseSort">Exon targeted by guide </a><span ng-show="orderByField == 'exon'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                 </tr>
-                <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:orderByField:reverseSort" ng-hide="!show_different_guides && !guide.selected" class="guide-table-row" ng-mouseover="setExonHovered(guide.exon)" ng-mouseleave="setExonHovered(-1)">
+                <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:orderByField:reverseSort" ng-hide="!show_different_guides && !guide.selected" class="guide-table-row" <!-- ng-mouseover="setExonHovered(guide.exon)" ng-mouseleave="setExonHovered(-1)" -->>
                   <td><input ng-show="show_different_guides" type="checkbox" ng-model="guide.selected" ng-change="guideSelected(guide)"></td>
                   <td class="nt-sequence">{{ guide.seq }}</td>
                   <td class="nt-sequence">{{ guide.PAM }}</td>

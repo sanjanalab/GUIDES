@@ -42,11 +42,11 @@ Directives.directive 'drawindividualexon', ['$timeout', '$window', ($timeout, $w
       resizeFunction()
       scope.$apply()
 
-    scope.$watch 'exonHovered', (val) ->
-      if val == scope.toInt(scope.index) + 1
-        scope.hoveringExon = true
-      else
-        scope.hoveringExon = false
+    # scope.$watch 'exonHovered', (val) ->
+    #   if val == scope.toInt(scope.index) + 1
+    #     scope.hoveringExon = true
+    #   else
+    #     scope.hoveringExon = false
 
     # Kick things off
     resizeFunction()

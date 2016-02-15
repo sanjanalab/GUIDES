@@ -82,7 +82,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
     'expression': {
       'data':    [[]] # set later
       'labels':  [] # set later
-      'series':  ['Mean All Tissues', 'Mean Selected Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
+      'series':  ['All Tissues', 'Selected Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
       'options': expression_options
       'colors': expression_colors
     },
@@ -112,7 +112,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
 
   # Change series if we are not going to display median
   if guidesFactory.data.tissues_disabled
-    $scope.chart_config.expression.series = ['Mean All Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
+    $scope.chart_config.expression.series = ['All Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
 
   # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive. 
   $scope.modifySvgUnit = (unit) ->

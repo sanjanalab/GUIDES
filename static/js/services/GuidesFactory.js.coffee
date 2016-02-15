@@ -11,9 +11,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       'quantity': 60
       'gtex_enabled': true
       'tissues_disabled': true # does the user want to consider *individualized* tissue expression?
-
-    # paramters for getting genes from file
-    genesFromFile: []
+      'genesFromFile': []
 
     # expected --> how many we would get if user's file is 100% correct.
     # actual   --> how much we could actually derived from the user's file.
@@ -22,15 +20,19 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       actual: 0
 
     hasUploadedFile: () ->
-      ret = false
+      ret = -1
       angular.forEach this.data.genes, (gene, key) ->
         if gene.ensembl_id == "GENES_FROM_FILE"
           ret = key
       return ret
 
-    noteFileUploaded: () ->
+    noteFileUploaded: (name) ->
+      idx = this.hasUploadedFile
+      if idx != -1
+        this.data.genes.splice(idx, 1)
+        
       this.data.genes.push({
-        'name': "Genes from file..."
+        'name': name
         'ensembl_id': "GENES_FROM_FILE"
       })
 
@@ -49,12 +51,12 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       $q (resolve, reject) ->
         expected_genes_num = this_.data.genes.length
         idx = this_.hasUploadedFile()
-        if idx and this_.genesFromFile
-          expected_genes_num = expected_genes_num + this_.genesFromFile.length - 1 # subtract "GENES_FROM_FILE holder"
+        if (idx != -1) and this_.data.genesFromFile
+          expected_genes_num = expected_genes_num + this_.data.genesFromFile.length - 1 # subtract "GENES_FROM_FILE holder"
           this_.data.genes.splice(idx, 1) # remove the "GENES_FROM_FILE holder"
-          for geneText in this_.genesFromFile
+          for geneText in this_.data.genesFromFile
             for gene in this_.available.genes
-              if gene.name == geneText or gene.ensembl_id == geneText
+              if gene.name.toUpperCase() == geneText.toUpperCase() or gene.ensembl_id == geneText
                 this_.data.genes.push(gene)
                 break
             # replace (for gene in .... break) with below, if you don't need EXACT comparisons.
@@ -62,7 +64,6 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
             # matchedGenes.sort()
             # if matchedGenes.length > 0
             #   this.data.genes.push(matchedGenes[0])
-  
         this_.gene_statistics.expected = expected_genes_num
         this_.gene_statistics.actual = this_.data.genes.length
         resolve()
