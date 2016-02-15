@@ -15,7 +15,7 @@
                 <div class="social-links">
                   <a href="" class="top-left-link">About</a>
                   <a href="http://zlab.mit.edu/" class="top-left-link">Team</a>
-                  <a href="mailto:jmeier@college.harvard.edu" class="top-left-link">Contact Us</a>
+                  <a href="mailto:cld@mit.edu" class="top-left-link">Contact Us</a>
                   <a href="https://github.com/joshim5/CRISPR-Library-Designer/issues" class="top-left-link">Report a Bug</a>
                 </div>
               </div>
@@ -78,6 +78,13 @@
                       </div>
                     </div>
                   </div>
+                </div>
+
+                <div class="entry_container" tooltip-placement="left" uib-tooltip="More species coming soon.">
+                  <span class="entry_label">Target genome:</span>
+                  <select class="genome-select" name="genomeSelect" ng-model="guidesFactory.data.genome">
+                    <option value="hum">Human (Homo sapiens GRCh37)</option>
+                  </select>
                 </div>
 
                 <div class="entry_container" style="overflow:auto" tooltip-placement="left" uib-tooltip="We use RNA-seq data from the GTEx Consoritum to target the most constitutively expressed exons among your genes.">

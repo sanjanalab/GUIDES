@@ -6,6 +6,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
 
     data: # currently selected
       'genes' : []
+      'genome': 'hum'
       'tissues' : []
       'quantity': 60
       'gtex_enabled': true

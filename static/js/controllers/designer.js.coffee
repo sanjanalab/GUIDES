@@ -74,7 +74,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
         }
       ]
 
-
   expression_options = base_options
   guide_options = base_options
   guide_options.scaleOverride = false
@@ -94,7 +93,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
       'options': guide_options
       'colors': [
         {
-          "fillColor": "#2B333B" # dark color from sidebar
+          "fillColor": "#2B333B"
         },
         {
           "fillColor": "#51D2B7" # light gray from exon background
@@ -123,6 +122,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
 
   # Initialize
   $scope.modifySvgUnit(15)
+  $scope.exonHovered = -1
 
   computeGuidesData = (gene_to_exon) ->
     # $scope.guidesData = guidesData["gene_to_exon"]
@@ -227,6 +227,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
         expression_data[6].push (exon.expression.skin / max_expression).toFixed(2)
       expression_labels.push('Exon ' + (key+1))
       guide_labels.push('') # empty labels
+
     $scope.chart_config.expression.labels = expression_labels
     $scope.chart_config.guides.labels = guide_labels
     $scope.chart_config.guides.data = [guides_data]
@@ -321,7 +322,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
 
 
   $scope.guideSelected = (guide) ->
-    console.log guide
     exon_key = guide.exon - 1 # dynamically update chart
     if guide.selected == false
       $scope.countSelectedGuides -= 1
@@ -330,9 +330,26 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
       $scope.countSelectedGuides += 1
       $scope.chart_config.guides.data[0][exon_key] += 1
 
+  # not in usage right now
+  # colorBar = (exon, color) ->
+  #   $scope.chart_config.guides.colors[0]["fillColor"][exon] = color
+
+  $scope.setExonHovered = (val) ->
+    $scope.exonHovered = val
+
+  $scope.guideMouseLeave = () ->
+    $scope.exonHovered = -1
+
+  pad = (n, width, z) ->
+    z = z or '0'
+    n = n + ''
+    if n.length >= width then n else new Array(width - n.length + 1).join(z) + n
+
   $scope.getGuidesCSV = ->
     guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
     guidesCSV = $filter('orderBy')(guidesCSV, ['gene','score'], true)
+    angular.forEach guidesCSV, (guide, idx) ->
+      guide.uid = "customLibrary_guide" + pad(idx, 4)
     guidesCSV
 
 ]

@@ -39,10 +39,8 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
         reader = new FileReader()
         reader.onload = (e) ->
           text = reader.result
-          newGenesFromFile = text.split(',')
+          newGenesFromFile = text.split(/[\s\t,#| ]+/)
           $scope.guidesFactory.genesFromFile = $scope.guidesFactory.genesFromFile.push.apply($scope.guidesFactory.genesFromFile, newGenesFromFile)
-          console.log "Just set genesFromFile!"
-          console.log $scope.guidesFactory.genesFromFile 
         reader.readAsText($scope.file) # assume UTF-8 encoding
       else
         console.log $scope.file.$error

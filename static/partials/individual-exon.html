@@ -1,9 +1,9 @@
-<rect class="exon" fill="#fff" height="50" ng-attr-width="{{2 * svgUnit}}" stroke="#aaa" ng-attr-x="{{ 20 + svgUnit + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y)}}"></rect>
+<rect class="exon" ng-class="{'exon_hover': hoveringExon}" height="50" ng-attr-width="{{2 * svgUnit}}" stroke="#aaa" ng-attr-x="{{ 20 + svgUnit + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y)}}"></rect>
 
-<text class="gRNA_count" fill="#111" font-size="16" ng-attr-x="{{ 20 + svgUnit*2.0  + toInt(index)*3*svgUnit }}" ng-attr-y="{{ gRNA_count_y }}" style="text-anchor: middle;">
+<text class="gRNA_count" ng-class="{'gRNA_count_hover': hoveringExon}" font-size="16" ng-attr-x="{{ 20 + svgUnit*2.0  + toInt(index)*3*svgUnit }}" ng-attr-y="{{ gRNA_count_y }}" style="text-anchor: middle;">
   {{ (exon.gRNAs | filter:{selected:true}).length }}
 </text>
 
-<text class="exon_label" fill="#111" font-size="12" ng-attr-x="{{20 + svgUnit*2.0 + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y) + 40}}" style="text-anchor: middle;" ng-if="2 * svgUnit > 41">
+<text class="exon_label" ng-class="{'exon_label_hover': hoveringExon}" font-size="12" ng-attr-x="{{20 + svgUnit*2.0 + toInt(index)*3*svgUnit }}" ng-attr-y="{{toInt(y) + 40}}" style="text-anchor: middle;" ng-if="2 * svgUnit > 41">
   {{ (exon.gRNAs | filter:{selected:true}).length == 1 ? 'guide' : 'guides' }}
 </text>

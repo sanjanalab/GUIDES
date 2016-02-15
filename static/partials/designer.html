@@ -14,15 +14,9 @@
         <div class="logo-box">
           <a href="/#/"><span>CRISPR Library Designer</span></a>
         </div>
-        <div class="search-box form-group"> 
-          <div class="input-group">
-            <input type="text" class="form-control" id="search-str" placeholder="Search for additional genes or tissues..." ng-model="geneTissueQuery">
-            <div class="input-group-addon" ng-click="geneTissueSearch()"><i class="fa fa-search"></i></div>
-          </div>
-        </div>
         <div class="guide-count-box">
           <span>
-            Guides in Library: {{ countSelectedGuides }}
+            Total guides in library: {{ countSelectedGuides }}
           </span>
           <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon', 'UID']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon', 'uid']"> Export Library (.csv)</button>
         </div>
@@ -113,6 +107,34 @@
               </div>
             </span>
           </li>
+          <li class="sidebar-primary-item-action" ng-if="guidesReady">
+            <span class="sidebar-primary-item-action">
+              <div class="x-close-container">
+                <span class="x-close"><i class="fa fa-comment"></i></span>
+              </div>
+              <div class="sidebar-primary-item-action-text-container">
+                <a href="mailto:cld@mit.edu" class="sidebar-primary-item-action">
+                  <span class="sidebar-primary-item-action-text">
+   Send Feedback
+                  </span>
+                </a>
+              </div>
+            </span>
+          </li>
+          <li class="sidebar-primary-item-action" ng-if="guidesReady">
+            <span class="sidebar-primary-item-action">
+              <div class="x-close-container">
+                <span class="x-close"><i class="fa fa-flag"></i></span>
+              </div>
+              <div class="sidebar-primary-item-action-text-container">
+                <a href="https://github.com/joshim5/CRISPR-Library-Designer/issues" class="sidebar-primary-item-action">
+                  <span class="sidebar-primary-item-action-text">
+   Report a Bug
+                  </span>
+                </a>
+              </div>
+            </span>
+          </li>
         </ul>
       </div>
     </div>
@@ -126,16 +148,16 @@
                   Choose different guides <switch id="show_different_guides" name="show_different_guides" ng-model="show_different_guides" ng-disabled="false" class="sm"></switch>
                 </span>
               </div>
-              <guides-bar-chart></guides-bar-chart>
-              <svg width="100%" x="20" height="50" ng-if="guidesReady" id="exon_graph">
+              <guides-bar-chart ng-hide="show_different_guides"></guides-bar-chart>
+              <svg width="100%" x="20" height="50" ng-if="guidesReady" id="exon_graph" ng-hide="show_different_guides">
                 <g id="all_exons">
                   <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="25" id="connector_rect"></rect>
               
-                  <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" modify-svg-unit="modifySvgUnit(unit)" ng-repeat="exon in gene.exons" y="0">
+                  <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" modify-svg-unit="modifySvgUnit(unit)" exon-hovered="exonHovered" ng-repeat="exon in gene.exons" y="0">
                   </g>
                 </g>
               </svg>
-              <expression-bar-chart></expression-bar-chart>
+              <expression-bar-chart ng-hide="show_different_guides"></expression-bar-chart>
             </div>
           </div>
           <div class="row">
@@ -145,17 +167,17 @@
                   Customize your guide selection.
                 </span>
               </div>
-              <table class="table">
+              <table class="table guide-table">
                 <tr>
                   <th>
                     <select-all-checkbox checkboxes="all_gRNAs[gene.name]" counter="countSelectedGuides" ng-show="show_different_guides" chartdata="chart_config.guides.data[0]" guidechange="guideSelected(guide)"></select-all-checkbox>
                   </th>
-                  <th>Guide Sequence (5' <i class="fa fa-long-arrow-right"></i> 3')</th>
-                  <th>PAM</th>
+                  <th><a href="" ng-click="orderByField='seq'; reverseSort = !reverseSort">Guide Sequence (5' <i class="fa fa-long-arrow-right"></i> 3') </a><span ng-show="orderByField == 'seq'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
+                  <th><a href="" ng-click="orderByField='PAM'; reverseSort = !reverseSort">PAM </a><span ng-show="orderByField == 'PAM'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                   <th><a tooltip-placement="left" uib-tooltip="Efficiency scores are computed using the techniques described by (1) Doench, et al., 2014; and (2) Fusi, et al., 2016., and presented as (1)/(2)." ng-click="orderByField='score'; reverseSort = !reverseSort">On-target Efficiency </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                   <th><a href="" ng-click="orderByField='exon'; reverseSort = !reverseSort">Exon targeted by guide </a><span ng-show="orderByField == 'exon'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                 </tr>
-                <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:orderByField:reverseSort" ng-hide="!show_different_guides && !guide.selected">
+                <tr ng-repeat="guide in all_gRNAs[gene.name] | orderBy:orderByField:reverseSort" ng-hide="!show_different_guides && !guide.selected" class="guide-table-row" ng-mouseover="setExonHovered(guide.exon)" ng-mouseleave="setExonHovered(-1)">
                   <td><input ng-show="show_different_guides" type="checkbox" ng-model="guide.selected" ng-change="guideSelected(guide)"></td>
                   <td class="nt-sequence">{{ guide.seq }}</td>
                   <td class="nt-sequence">{{ guide.PAM }}</td>

@@ -126,14 +126,19 @@ md-content .layout-row input {
 // for sorting on designer page
 .table th a {
   color: #000;
+  cursor: pointer;
+}
 
+.guide-table tr:hover {
+  //font-weight: 600;
+  color: #000;
+  //background-color:#000;
 }
 
 // for angular busy
 .library-summary {
   font-size: 16px;
 }
-
 
 // Styling of entry labels on the home page
 .details-holder {
@@ -184,6 +189,11 @@ md-content .layout-row input {
 
 .entry_container div {
   box-shadow: none;
+}
+
+.genome-select {
+  margin-bottom: 6px;
+  margin-top: 6px;
 }
 
 #ul-container-select-choices {
@@ -475,6 +485,30 @@ text.gRNA_count text.exon_label {
   font-family: 'Open Sans';
 }
 
+.exon { 
+  fill: #fff;
+}
+
+.exon_hover {
+  fill: #111;
+}
+
+.gRNA_count {
+  fill: #111;
+}
+
+.gRNA_count_hover {
+  fill: #fff;
+}
+
+.exon_label {
+  fill: #111;
+}
+
+.exon_label_hover {
+  fill: #fff;
+}
+
 // Sidebar: ul - li - a - span - text
 // all have .sidebar-primary-item-action
 
@@ -628,7 +662,7 @@ li:hover .sidebar-primary-item-action {
 
 .guide-count-box {
   position: absolute;
-  width: 320px;
+  width: 340px;
   right: 0px;
   color: #2B333B;
   height: 100%;
