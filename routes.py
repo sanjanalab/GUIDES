@@ -54,7 +54,7 @@ def generate():
 
   # Validations
   if genes == None:
-    genes = [{u'ensembl_id': u'ENSG00000186092.4', u'$$hashKey': u'object:50', u'name': u'OR4F5'}]
+    genes = [{u'ensembl_id': u'ENSG00000186575.13', u'$$hashKey': u'object:50', u'name': u'NF2'}]
   if species == None:
     species = "human"
   if quantity == None:
