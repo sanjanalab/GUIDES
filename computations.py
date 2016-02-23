@@ -44,16 +44,29 @@ class GuideRNA():
 # Species info is not yet incorporated
 class Ranker():
   """Finds and ranks gRNAs from a given gene and species"""
-  def __init__(self, genome, species, tissues, gtex_enabled, tissues_enabled):
+  def __init__(self, genome, species, tissues, gtex_enabled, tissues_enabled, PAM='NGG', prime5=True, protospacer_len=20, scoring_alg={"Doench"}):
     self.genome = genome
     self.species = species
     self.tissues = tissues
     self.gtex_enabled = gtex_enabled
     self.tissues_enabled = tissues_enabled
+    self.PAM_len = len(PAM)
+    self.prime5 = prime5
+    self.protospacer_len = protospacer_len
+    self.scoring_alg = scoring_alg
+
     self.genes = []
     self.gRNAs = []
     self.countSelectedGuides = 0
     self.expression_values = {}
+
+    # Prepare PAM
+    PAM = PAM.upper()
+    PAM = PAM.replace('N', '[ATCG]')
+    self.PAM = "(?=" + PAM + ")"
+
+    # Doench score
+    self.use_Doench = "Doench" in scoring_alg
 
     # Load pre-processed GTEx data
     self.df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
@@ -113,32 +126,28 @@ class Ranker():
 
       # Search for the NGG PAM, beginning after the 21st base pair. DISCUSS (introns needed?)
       # Makes no sense to run if sequence is too short
-      if len(seq) < 30:
+      if self.use_Doench and len(seq) < 30:
         i += 1
         continue
 
-      def process_guide(selected, max_queue_size, seq):
-        end = m.start() + 21 # add 21 because are looking at seq[21:]
-        assert seq[end] == seq[end+1] == 'G'
+      def process_guide(m, selected, max_queue_size, seq): # m for match
+        PAM_start = m.start()
+        score = 0
+        if self.use_Doench:
+          # Doench score requires the 4 before and 6 after 20-mer (gives 30-mer)
+          mer30 = seq[PAM_start-self.protospacer_len-4:PAM_start+self.PAM_len+3]
+          if len(mer30) == 30:
+            score = doench_score.calc_score(mer30)
 
-        # Doench score requires the 4 before and 6 after 20-mer (gives 30-mer)
-        # 012345678901234567890123456789
-        # Recall that end points to first G = 21st base pair 
-        mer30 = seq[end-22-3:end+8-3]
-
-        # For reference:
-        # -- 20mer: seq[end-20 : end]
-        # -- PAM: seq[end : end+3]
-
-        # We might too far to the right
-        if (len(mer30)) != 30:
-          return
-
-        # Calculate the doench score
-        score = doench_score.calc_score(mer30)
-        mer20 = mer30[4:24]
-        PAM =   mer30[24:27]
-        potential_gRNA = GuideRNA(selected, end-20, mer20, PAM, score, gtex_exon_num, ensembl_gene, gene_name)
+        protospacer = ""
+        PAM = ""
+        if self.prime5:
+          protospacer = seq[PAM_start-self.protospacer_len:PAM_start]
+          PAM = seq[PAM_start:PAM_start+self.PAM_len]
+        else:
+          protospacer = seq[PAM_start+self.PAM_len:PAM_start+self.PAM_len+self.protospacer_len]
+          PAM = seq[PAM_start:PAM_start+self.PAM_len]
+        potential_gRNA = GuideRNA(selected, PAM_start-self.protospacer_len, protospacer, PAM, score, gtex_exon_num, ensembl_gene, gene_name)
 
         # If there's enough room, add it, no question.
         if q.qsize() < max_queue_size:
@@ -151,11 +160,19 @@ class Ranker():
           else:
             q.put(lowest_gRNA)
 
-      for m in re.finditer(r'(?=GG)', seq[21:]):
-        process_guide(True, quantity, seq)
+      for m in re.finditer(self.PAM, seq):
+        if self.prime5 and (m.start() < self.protospacer_len or m.start() + self.PAM_len > len(seq)):
+          continue
+        elif not self.prime5 and (m.start() + self.PAM_len + self.protospacer_len > len(seq)):
+          continue
+        process_guide(m, True, quantity, seq)
       seq_rc = revcompl(seq)
-      for m in re.finditer(r'(?=GG)', seq_rc[21:]):
-        process_guide(True, quantity, seq_rc)
+      for m in re.finditer(self.PAM, seq_rc):
+        if self.prime5 and (m.start() < self.protospacer_len or m.start() + self.PAM_len > len(seq)):
+          continue
+        elif not self.prime5 and (m.start() + self.PAM_len + self.protospacer_len > len(seq)):
+          continue
+        process_guide(m, True, quantity, seq_rc)
       i += 1
 
     # Pop gRNAs into our 'permanent' storage 
@@ -178,31 +195,28 @@ class Ranker():
 
       # Search for the NGG PAM, beginning after the 21st base pair. DISCUSS (introns needed?)
       # Makes no sense to run if sequence is too short
-      if len(seq) < 30:
+      if self.use_Doench and len(seq) < 30:
         i += 1
         continue
 
-      def process_guide(selected, max_queue_size, seq):
-        end = m.start() + 21 # add 21 because we are looking at seq[21:]
-        assert seq[end] == seq[end+1] == 'G'
+      def process_guide(m, selected, max_queue_size, seq): # m for match
+        PAM_start = m.start()
+        score = 0
+        if self.use_Doench:
+          # Doench score requires the 4 before and 6 after 20-mer (gives 30-mer)
+          mer30 = seq[PAM_start-self.protospacer_len-4:PAM_start+self.PAM_len+3]
+          if len(mer30) == 30:
+            score = doench_score.calc_score(mer30)
 
-        # Doench score requires the 4 before and 6 after 20-mer (gives 30-mer)
-        # Recall that end points to first G = 21st base pair 
-        mer30 = seq[end-22-3:end+8-3]
-
-        # For reference:
-        # -- 20mer: seq[end-20 : end]
-        # -- PAM: seq[end : end+3]
-
-        # We might too far to the right
-        if (len(mer30)) != 30:
-          return
-
-        # Calculate the doench score
-        score = doench_score.calc_score(mer30)
-        mer20 = mer30[4:24]
-        PAM =   mer30[24:27]
-        potential_gRNA = GuideRNA(selected, end-20, mer20, PAM, score, gtex_exon_num, ensembl_gene, gene_name)
+        protospacer = ""
+        PAM = ""
+        if self.prime5:
+          protospacer = seq[PAM_start-self.protospacer_len:PAM_start]
+          PAM = seq[PAM_start:PAM_start+self.PAM_len]
+        else:
+          protospacer = seq[PAM_start+self.PAM_len:PAM_start+self.PAM_len+self.protospacer_len]
+          PAM = seq[PAM_start:PAM_start+self.PAM_len]
+        potential_gRNA = GuideRNA(selected, PAM_start-self.protospacer_len, protospacer, PAM, score, gtex_exon_num, ensembl_gene, gene_name)
 
         # If there's enough room, add it, no question.
         if q.qsize() < max_queue_size:
@@ -215,11 +229,19 @@ class Ranker():
           else:
             q.put(lowest_gRNA)
 
-      for m in re.finditer(r'(?=GG)', seq[21:]):
-        process_guide(False, min_per_exon, seq)
+      for m in re.finditer(self.PAM, seq):
+        if self.prime5 and (m.start() < self.protospacer_len or m.start() + self.PAM_len > len(seq)):
+          continue
+        elif not self.prime5 and (m.start() + self.PAM_len + self.protospacer_len > len(seq)):
+          continue
+        process_guide(m, False, min_per_exon, seq)
       seq_rc = revcompl(seq)
-      for m in re.finditer(r'(?=GG)', seq_rc[21:]):
-        process_guide(False, min_per_exon, seq_rc)
+      for m in re.finditer(self.PAM, seq_rc):
+        if self.prime5 and (m.start() < self.protospacer_len or m.start() + self.PAM_len > len(seq)):
+          continue
+        elif not self.prime5 and (m.start() + self.PAM_len + self.protospacer_len > len(seq)):
+          continue
+        process_guide(m, False, min_per_exon, seq_rc)
 
       # Deposit the guides for this exon into our permanent source
       while not q.empty():
