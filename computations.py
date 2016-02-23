@@ -60,9 +60,9 @@ class Ranker():
     self.expression_values = {}
 
     # Prepare PAM
-    PAM = PAM.upper()
-    PAM = PAM.replace('N', '[ATCG]')
-    self.PAM = "(?=" + PAM + ")"
+    PAM_mod = PAM.upper()
+    PAM_mod = PAM_mod.replace('N', '[ATCG]')
+    self.PAM = "(?=" + PAM_mod + ")"
 
     # Doench score
     self.use_Doench = (PAM == 'NGG' and prime5 == True and protospacer_len == 20)

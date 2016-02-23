@@ -51,6 +51,9 @@ def generate():
   quantity = post.get('quantity')
   tissues = post.get('tissues')
   gtex_enabled = post.get('gtex_enabled')
+  PAM = post.get('PAM')
+  prime5 = post.get('prime5')
+  protospacer_len = int(post.get('protospacer_len'))
 
   # Validations
   if genes == None:
@@ -67,7 +70,7 @@ def generate():
 
   # Setup ranker
   tissues_enabled = False if len(tissues) == 31 else True # true, unless all tissues are selected (average all)
-  ranker = computations.Ranker(genome["human"], species, tissues, gtex_enabled, tissues_enabled)
+  ranker = computations.Ranker(genome["human"], species, tissues, gtex_enabled, tissues_enabled, PAM, prime5, protospacer_len)
 
   # Iterate over genes, finding guides for each
   for g in genes:
