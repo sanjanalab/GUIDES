@@ -44,7 +44,7 @@ class GuideRNA():
 # Species info is not yet incorporated
 class Ranker():
   """Finds and ranks gRNAs from a given gene and species"""
-  def __init__(self, genome, species, tissues, gtex_enabled, tissues_enabled, PAM='NGG', prime5=True, protospacer_len=20, scoring_alg={"Doench"}):
+  def __init__(self, genome, species, tissues, gtex_enabled, tissues_enabled, PAM='NGG', prime5=True, protospacer_len=20):
     self.genome = genome
     self.species = species
     self.tissues = tissues
@@ -53,7 +53,6 @@ class Ranker():
     self.PAM_len = len(PAM)
     self.prime5 = prime5
     self.protospacer_len = protospacer_len
-    self.scoring_alg = scoring_alg
 
     self.genes = []
     self.gRNAs = []
@@ -66,7 +65,7 @@ class Ranker():
     self.PAM = "(?=" + PAM + ")"
 
     # Doench score
-    self.use_Doench = "Doench" in scoring_alg
+    self.use_Doench = (PAM == 'NGG' and prime5 == True and protospacer_len == 20)
 
     # Load pre-processed GTEx data
     self.df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))

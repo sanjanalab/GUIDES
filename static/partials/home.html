@@ -115,6 +115,44 @@
                   <div ng-show="tissuesWarning" class="bottom-warning-text">Please enter a list of tissues.</div> 
                 </div>
 
+                <div class="entry_container" style="overflow:auto" tooltip-placement="left" uib-tooltip="Customize your PAM and protospacer.">
+                  <span class="entry_label">Manually Configure PAM?</span>
+                  <form>
+                    <switch id="advanced_options_enabled" name="advanced_options_enabled" ng-model="guidesFactory.data.advanced_options_enabled" class="green"></switch>
+                  </form>
+                </div>
+
+                <div class="entry_container" ng-show="guidesFactory.data.advanced_options_enabled">
+                  <div class="input-group">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ guidesFactory.data.prime5 ? "5'" : "3'" }}
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li class="dropdown-header">PAM Orientation</li>
+                        <li><a href="" ng-click="guidesFactory.data.prime5 = true">5'</a></li>
+                        <li><a href="" ng-click="guidesFactory.data.prime5 = false">3'</a></li>
+                      </ul>
+                    </div>
+                    <input type="text" class="form-control" ng-model="guidesFactory.data.PAM" placeholder="Your PAM here (i.e. NGG)...">
+                    <div class="input-group-btn">
+                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        {{ guidesFactory.data.protospacer_len }}
+                        <span class="caret"></span>
+                      </button>
+                      <ul class="dropdown-menu">
+                        <li class="dropdown-header">Protospacer Length (nt)</li>
+                        <li><a href="" ng-click="guidesFactory.data.protospacer_len = 18">18</a></li>
+                        <li><a href="" ng-click="guidesFactory.data.protospacer_len = 19">19</a></li>
+                        <li><a href="" ng-click="guidesFactory.data.protospacer_len = 20">20</a></li>
+                        <li><a href="" ng-click="guidesFactory.data.protospacer_len = 21">21</a></li>
+                        <li><a href="" ng-click="guidesFactory.data.protospacer_len = 22">22</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+
               </div>
             </div>
 

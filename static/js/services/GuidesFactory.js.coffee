@@ -12,6 +12,10 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       'gtex_enabled': true
       'tissues_disabled': true # does the user want to consider *individualized* tissue expression?
       'genesFromFile': []
+      'advanced_options_enabled': false
+      'PAM': 'NGG'
+      'prime5': true
+      'protospacer_len': 20
 
     # expected --> how many we would get if user's file is 100% correct.
     # actual   --> how much we could actually derived from the user's file.
