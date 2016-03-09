@@ -4,6 +4,7 @@ import re
 import pandas as pd
 import numpy as np
 import pickle
+import cpickle
 from seq_generator import ExonError
 import seq_generator
 from settings import APP_STATIC
@@ -80,7 +81,7 @@ class Ranker():
       filename = gene_exon + ".json"
       path = os.path.join('static/data/GRCh37_guides_cpickle/', filename)
       with open(path) as datafile:
-        gRNAs = pickle.load(datafile)
+        gRNAs = cpickle.load(datafile)
         return gRNAs
     except IOError:
       raise ExonError(gene, exon)
@@ -137,45 +138,16 @@ class Ranker():
       gtex_gene_exon = str(df_results.iloc[i]['Id'])
       gtex_exon_num = int(df_results.iloc[i]['exon_num'])
 
+      # Get precomputed gRNAs from pickle
       gRNAs = self.getGuides(gtex_gene_exon)
 
-      for guide in gRNAs:
-        potential_gRNA = GuideRNA(True, guide["start"], guide["seq"], guide["PAM"], guide["score"], gtex_exon_num, ensembl_gene, gene_name)
-        if q.qsize() >= quantity:
-          break
-        q.put(potential_gRNA)
+      # Mark k = 10 after quantity as unselected
+      for guide in gRNAs[quantity:quantity+10]:
+        guide.selected = False
 
-      i += 1
-
-    while not q.empty():
-      gRNA = q.get()
-      if gRNA.selected:
-        self.countSelectedGuides += 1
-      self.gRNAs.append(gRNA)
-
-    # add at least k=10 guides from other exons, marked unselected
-    surplus_per_exon = 10
-    while i < total_exons:
-      # make a new priority queue for this analysis
-      q = PriorityQueue()
-
-      # Generate pseudogenome
-      gtex_gene_exon = str(df_results.iloc[i]['Id'])
-      gtex_exon_num = int(df_results.iloc[i]['exon_num'])
-
-      gRNAs = self.getGuides(gtex_gene_exon)
-
-      for guide in gRNAs:
-        potential_gRNA = GuideRNA(False, guide["start"], guide["seq"], guide["PAM"], guide["score"], gtex_exon_num, ensembl_gene, gene_name)
-        if q.qsize() >= surplus_per_exon:
-          break
-        q.put(potential_gRNA)
-
-      while not q.empty():
-        gRNA = q.get()
-        if gRNA.selected:
-          self.countSelectedGuides += 1
-        self.gRNAs.append(gRNA)
+      # Add the selected and unselected to our repository of guides
+      self.gRNAs.extend(gRNAs[0:quantity+10])
+      self.countSelectedGuides += quantity
 
       i += 1
 
@@ -214,9 +186,7 @@ class Ranker():
       gene_to_exon[guide.gene_name]['exons'][guide.exon_ranking]['gRNAs'].append(guide.serialize_for_display())
 
     # Convert associative array to ordered array
-    guides_by_exon = []
-    for _, value in gene_to_exon.iteritems():
-      guides_by_exon.append(value)
+    guides_by_exon = gene_to_exon.items()
 
     return guides_by_exon
 
