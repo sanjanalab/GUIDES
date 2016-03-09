@@ -78,10 +78,10 @@ class Ranker():
   def getGuides(self, gene_exon):
     try:
       filename = gene_exon + ".json"
-      path = os.path.join('static/data/GRCh37_guides/', filename)
+      path = os.path.join('static/data/GRCh37_guides_cpickle/', filename)
       with open(path) as datafile:
-        data = json.load(datafile)
-        return data["gRNAs"]
+        gRNAs = pickle.load(datafile)
+        return gRNAs
     except IOError:
       raise ExonError(gene, exon)
 
