@@ -4,10 +4,14 @@ import re
 import pandas as pd
 import numpy as np
 import pickle
+from seq_generator import ExonError
 import seq_generator
 from settings import APP_STATIC
 import os
 import itertools
+import json
+
+df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
 
 class GuideRNA():
   """Holder of gRNA information"""
@@ -69,7 +73,17 @@ class Ranker():
     self.use_Doench = "Doench" in scoring_alg
 
     # Load pre-processed GTEx data
-    self.df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
+    self.df_normalized = df_normalized
+
+  def getGuides(self, gene_exon):
+    try:
+      filename = gene_exon + ".json"
+      path = os.path.join('static/data/GRCh37_guides/', filename)
+      with open(path) as datafile:
+        data = json.load(datafile)
+        return data["gRNAs"]
+    except IOError:
+      raise ExonError(gene, exon)
 
   # ensembl_gene - ensembl encocoding for the gene (grCH37)
   # gene_name - user-friendly name for the gene
@@ -122,68 +136,25 @@ class Ranker():
       # Generate pseudogenome
       gtex_gene_exon = str(df_results.iloc[i]['Id'])
       gtex_exon_num = int(df_results.iloc[i]['exon_num'])
-      seq = str(self.genome.sequence_gtex_gene(gtex_gene_exon))
 
-      # Search for the NGG PAM, beginning after the 21st base pair. DISCUSS (introns needed?)
-      # Makes no sense to run if sequence is too short
-      if self.use_Doench and len(seq) < 30:
-        i += 1
-        continue
+      gRNAs = self.getGuides(gtex_gene_exon)
 
-      def process_guide(m, selected, max_queue_size, seq): # m for match
-        PAM_start = m.start()
-        score = 0
-        if self.use_Doench:
-          # Doench score requires the 4 before and 6 after 20-mer (gives 30-mer)
-          mer30 = seq[PAM_start-self.protospacer_len-4:PAM_start+self.PAM_len+3]
-          if len(mer30) == 30:
-            score = doench_score.calc_score(mer30)
+      for guide in gRNAs:
+        potential_gRNA = GuideRNA(True, guide["start"], guide["seq"], guide["PAM"], guide["score"], gtex_exon_num, ensembl_gene, gene_name)
+        if q.qsize() >= quantity:
+          break
+        q.put(potential_gRNA)
 
-        protospacer = ""
-        PAM = ""
-        if self.prime5:
-          protospacer = seq[PAM_start-self.protospacer_len:PAM_start]
-          PAM = seq[PAM_start:PAM_start+self.PAM_len]
-        else:
-          protospacer = seq[PAM_start+self.PAM_len:PAM_start+self.PAM_len+self.protospacer_len]
-          PAM = seq[PAM_start:PAM_start+self.PAM_len]
-        potential_gRNA = GuideRNA(selected, PAM_start-self.protospacer_len, protospacer, PAM, score, gtex_exon_num, ensembl_gene, gene_name)
-
-        # If there's enough room, add it, no question.
-        if q.qsize() < max_queue_size:
-          q.put(potential_gRNA)
-        # Otherwise, take higher score
-        else:
-          lowest_gRNA = q.get()
-          if potential_gRNA.score > lowest_gRNA.score:
-            q.put(potential_gRNA)
-          else:
-            q.put(lowest_gRNA)
-
-      for m in re.finditer(self.PAM, seq):
-        if self.prime5 and (m.start() < self.protospacer_len or m.start() + self.PAM_len > len(seq)):
-          continue
-        elif not self.prime5 and (m.start() + self.PAM_len + self.protospacer_len > len(seq)):
-          continue
-        process_guide(m, True, quantity, seq)
-      seq_rc = revcompl(seq)
-      for m in re.finditer(self.PAM, seq_rc):
-        if self.prime5 and (m.start() < self.protospacer_len or m.start() + self.PAM_len > len(seq)):
-          continue
-        elif not self.prime5 and (m.start() + self.PAM_len + self.protospacer_len > len(seq)):
-          continue
-        process_guide(m, True, quantity, seq_rc)
       i += 1
 
-    # Pop gRNAs into our 'permanent' storage 
     while not q.empty():
       gRNA = q.get()
       if gRNA.selected:
         self.countSelectedGuides += 1
       self.gRNAs.append(gRNA)
 
-    # add at least k=10 guides from other exons, mark unselected
-    min_per_exon = 10
+    # add at least k=10 guides from other exons, marked unselected
+    surplus_per_exon = 10
     while i < total_exons:
       # make a new priority queue for this analysis
       q = PriorityQueue()
@@ -191,59 +162,15 @@ class Ranker():
       # Generate pseudogenome
       gtex_gene_exon = str(df_results.iloc[i]['Id'])
       gtex_exon_num = int(df_results.iloc[i]['exon_num'])
-      seq = str(self.genome.sequence_gtex_gene(gtex_gene_exon))
 
-      # Search for the NGG PAM, beginning after the 21st base pair. DISCUSS (introns needed?)
-      # Makes no sense to run if sequence is too short
-      if self.use_Doench and len(seq) < 30:
-        i += 1
-        continue
+      gRNAs = self.getGuides(gtex_gene_exon)
 
-      def process_guide(m, selected, max_queue_size, seq): # m for match
-        PAM_start = m.start()
-        score = 0
-        if self.use_Doench:
-          # Doench score requires the 4 before and 6 after 20-mer (gives 30-mer)
-          mer30 = seq[PAM_start-self.protospacer_len-4:PAM_start+self.PAM_len+3]
-          if len(mer30) == 30:
-            score = doench_score.calc_score(mer30)
+      for guide in gRNAs:
+        potential_gRNA = GuideRNA(False, guide["start"], guide["seq"], guide["PAM"], guide["score"], gtex_exon_num, ensembl_gene, gene_name)
+        if q.qsize() >= surplus_per_exon:
+          break
+        q.put(potential_gRNA)
 
-        protospacer = ""
-        PAM = ""
-        if self.prime5:
-          protospacer = seq[PAM_start-self.protospacer_len:PAM_start]
-          PAM = seq[PAM_start:PAM_start+self.PAM_len]
-        else:
-          protospacer = seq[PAM_start+self.PAM_len:PAM_start+self.PAM_len+self.protospacer_len]
-          PAM = seq[PAM_start:PAM_start+self.PAM_len]
-        potential_gRNA = GuideRNA(selected, PAM_start-self.protospacer_len, protospacer, PAM, score, gtex_exon_num, ensembl_gene, gene_name)
-
-        # If there's enough room, add it, no question.
-        if q.qsize() < max_queue_size:
-          q.put(potential_gRNA)
-        # Otherwise, take higher score
-        else:
-          lowest_gRNA = q.get()
-          if potential_gRNA.score > lowest_gRNA.score:
-            q.put(potential_gRNA)
-          else:
-            q.put(lowest_gRNA)
-
-      for m in re.finditer(self.PAM, seq):
-        if self.prime5 and (m.start() < self.protospacer_len or m.start() + self.PAM_len > len(seq)):
-          continue
-        elif not self.prime5 and (m.start() + self.PAM_len + self.protospacer_len > len(seq)):
-          continue
-        process_guide(m, False, min_per_exon, seq)
-      seq_rc = revcompl(seq)
-      for m in re.finditer(self.PAM, seq_rc):
-        if self.prime5 and (m.start() < self.protospacer_len or m.start() + self.PAM_len > len(seq)):
-          continue
-        elif not self.prime5 and (m.start() + self.PAM_len + self.protospacer_len > len(seq)):
-          continue
-        process_guide(m, False, min_per_exon, seq_rc)
-
-      # Deposit the guides for this exon into our permanent source
       while not q.empty():
         gRNA = q.get()
         if gRNA.selected:

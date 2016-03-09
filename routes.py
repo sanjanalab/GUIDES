@@ -10,6 +10,8 @@ import seq_generator
 import computations
 from settings import APP_STATIC
 import os
+import json
+import time
 
 genome = {
   "human" : seq_generator.FastGenome()
@@ -43,6 +45,8 @@ def index_view():
 ### API
 @app.route('/generate', methods=['POST'])
 def generate():
+  t0 = time.time()
+
   # Retrieve arguments
   post = request.get_json()
 
@@ -51,6 +55,9 @@ def generate():
   quantity = post.get('quantity')
   tissues = post.get('tissues')
   gtex_enabled = post.get('gtex_enabled')
+
+  print "got post arguments"
+  print time.time() - t0, "seconds wall time"
 
   # Validations
   if genes == None:
@@ -69,13 +76,21 @@ def generate():
   tissues_enabled = False if len(tissues) == 31 else True # true, unless all tissues are selected (average all)
   ranker = computations.Ranker(genome["human"], species, tissues, gtex_enabled, tissues_enabled)
 
+  print "setup ranker"
+  print time.time() - t0, "seconds wall time"
+
   # Iterate over genes, finding guides for each
   for g in genes:
     ranker.rank(g['ensembl_id'], g['name'], quantity)
 
   guides_by_exon = ranker.get_guides_by_exon()
   guide_count = ranker.get_count_selected_guides()
-  return jsonify(gene_to_exon=guides_by_exon, guide_count=guide_count)
+  result = jsonify(gene_to_exon=guides_by_exon, guide_count=guide_count)
+  
+  print "returning results"
+  print time.time() - t0, "seconds wall time"
+
+  return result
 
 def test_generate():
   # Generate data
