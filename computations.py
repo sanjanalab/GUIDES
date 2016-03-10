@@ -4,7 +4,8 @@ import re
 import pandas as pd
 import numpy as np
 import pickle
-import cpickle
+import cPickle
+import msgpack
 from seq_generator import ExonError
 import seq_generator
 from settings import APP_STATIC
@@ -13,6 +14,7 @@ import itertools
 import json
 
 df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
+__module__ = os.path.splitext(os.path.basename(__file__))[0]  ### look here ###
 
 class GuideRNA():
   """Holder of gRNA information"""
@@ -76,14 +78,17 @@ class Ranker():
     # Load pre-processed GTEx data
     self.df_normalized = df_normalized
 
+    self.guides_for_exons = {}
+
   def getGuides(self, gene_exon):
     try:
-      filename = gene_exon + ".json"
-      path = os.path.join('static/data/GRCh37_guides_cpickle/', filename)
+      filename = gene_exon + ".p"
+      path = os.path.join('static/data/GRCh37_guides_msgpack/', filename)
       with open(path) as datafile:
-        gRNAs = cpickle.load(datafile)
+        gRNAs = msgpack.load(datafile)
         return gRNAs
     except IOError:
+      gene, exon = gene_exon.split('_')
       raise ExonError(gene, exon)
 
   # ensembl_gene - ensembl encocoding for the gene (grCH37)
@@ -92,34 +97,40 @@ class Ranker():
     # Get the revcompl of a sequence print revcompl("AGTCAGCAT")
     revcompl = lambda x: ''.join([{'A':'T','C':'G','G':'C','T':'A'}[B] for B in x][::-1])
 
-    df_gene = self.df_normalized[self.df_normalized.Id.str.contains(ensembl_gene)]
+    df_gene_filename = ensembl_gene + ".p"
+    df_gene_path = os.path.join('static/data/df_gene_normalized_cpickle', df_gene_filename)
+    df_gene_file = open(df_gene_path, 'r')
+    df_gene = cPickle.load(df_gene_file)
+
     self.genes.append((ensembl_gene, gene_name))
 
     # Sort by exon number, removing first and last exon
     # Recall: Id are entered as ENSG000xxxxx.x_EXONNUM, e.g. ENSG00000000971.11_21
     df_gene['exon_num'] = df_gene['Id'].apply(lambda x: int(x.split('_')[1]))
     # Get median expression for selected tissues
-    df_gene['median'] = df_gene[self.tissues].median(axis=1)
     df_gene['overall'] = df_gene.median(axis=1)
+    df_gene['median'] = df_gene[self.tissues].median(axis=1)
     expression_values = {}
     for index, row in df_gene.iterrows():
       expression_value = {
-        'median': row['median'],
-        'overall': row['overall'],
-        'brain': row['Brain'],
-        'heart': row['Heart'],
-        'kidney': row['Kidney'],
-        'liver': row['Liver'],
-        'skin': row['Skin']
+        'median': -1 * row['median'],
+        'overall': -1 * row['overall'],
+        'brain': -1 * row['Brain'],
+        'heart': -1 * row['Heart'],
+        'kidney': -1 * row['Kidney'],
+        'liver': -1 * row['Liver'],
+        'skin': -1 * row['Skin']
       }
       expression_values[int(row['exon_num'])] = expression_value
     self.expression_values[gene_name] = expression_values
+
+    total_exons = len(df_gene)
 
     if len(df_gene) > 4:
       df_gene = df_gene.sort(['exon_num'], ascending=True).iloc[1:-1]
 
     df_results =  df_gene[['Id', 'median', 'overall','exon_num']]
-    df_results = df_results.sort(['median'], ascending=False)
+    df_results = df_results.sort(['median'], ascending=True)
 
     # For this gene, analyze top 4 exons, at most
     q = PriorityQueue()
@@ -129,27 +140,62 @@ class Ranker():
     if self.gtex_enabled == True:
       exons_to_analyze = min(4, len(df_results))
 
-    total_exons = len(df_results)
-
     # for i in range(min(4, len(df_results))):
     i = 0
+    exon_ends = [0] * total_exons # how many guides in the array do you want to take?
+
+    storedGuides = {}
+
     while (i < total_exons) and (i < exons_to_analyze or q.qsize() < quantity):
       # Generate pseudogenome
       gtex_gene_exon = str(df_results.iloc[i]['Id'])
       gtex_exon_num = int(df_results.iloc[i]['exon_num'])
 
       # Get precomputed gRNAs from pickle
-      gRNAs = self.getGuides(gtex_gene_exon)
+      storedGuides[gtex_exon_num] = self.getGuides(gtex_gene_exon)
+      gRNAs = storedGuides[gtex_exon_num]
 
-      # Mark k = 10 after quantity as unselected
-      for guide in gRNAs[quantity:quantity+10]:
-        guide.selected = False
+      # If there's enough room, add it, no question.
+      add_more = True
+      while q.qsize() < quantity:
+        if exon_ends[gtex_exon_num] >= len(gRNAs):
+          add_more = False
+          break
+        potential_gRNA = gRNAs[exon_ends[gtex_exon_num]]
+        exon_ends[gtex_exon_num] += 1
 
-      # Add the selected and unselected to our repository of guides
-      self.gRNAs.extend(gRNAs[0:quantity+10])
-      self.countSelectedGuides += quantity
+        q.put((potential_gRNA["score"], gtex_exon_num))
+
+      # Otherwise, keep going until we are too low.
+      while add_more:
+        if exon_ends[gtex_exon_num] >= len(gRNAs):
+          add_more = False
+          break
+        lowest_gRNA_score, lowest_gRNA_exon = q.get()
+        potential_gRNA = gRNAs[exon_ends[gtex_exon_num]]
+        if potential_gRNA["score"] > lowest_gRNA_score:
+          q.put((potential_gRNA["score"], gtex_exon_num))
+          exon_ends[gtex_exon_num] += 1
+          exon_ends[lowest_gRNA_exon] -= 1
+        else:
+          q.put((lowest_gRNA_score, lowest_gRNA_exon))
+          add_more = False
 
       i += 1
+
+    # Mark k = 10 after quantity as unselected
+    # add those and beginning ones to guides_for_exons
+    for exon_num in storedGuides.keys():
+      gRNAs = storedGuides[exon_num]
+      for guide in gRNAs[:exon_ends[exon_num]]:
+        guide["selected"] = True
+      for guide in gRNAs[exon_ends[exon_num]:exon_ends[exon_num]+10]:
+        guide["selected"] = False
+      human_gene_exon = gene_name + "+" + str(exon_num)
+      self.guides_for_exons[human_gene_exon] = gRNAs[:exon_ends[exon_num]+10]
+      self.countSelectedGuides += exon_ends[exon_num]
+
+    df_gene_file.close()
 
   def get_guides_by_exon(self):
     # First, setup data as an associative array, to make guide insertion easier
@@ -182,12 +228,15 @@ class Ranker():
         gene_to_exon[gene_name]['exons'].append(exon)
 
     # Iterate through guides and add to appropriate exon
-    for guide in self.gRNAs:
-      gene_to_exon[guide.gene_name]['exons'][guide.exon_ranking]['gRNAs'].append(guide.serialize_for_display())
+    for k, v in self.guides_for_exons.iteritems():
+      gene_name, exon = k.split('+')
+      gene_to_exon[gene_name]['exons'][int(exon)]['gRNAs'] = v
+
+    # for guide in self.gRNAs:
+    #   gene_to_exon[guide["gene_name"]]['exons'][guide["exon_ranking"]]['gRNAs'].append(guide)
 
     # Convert associative array to ordered array
-    guides_by_exon = gene_to_exon.items()
-
+    guides_by_exon = gene_to_exon.values()
     return guides_by_exon
 
   def get_count_selected_guides(self):
