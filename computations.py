@@ -132,10 +132,20 @@ class Ranker():
     # For this gene, analyze top 4 exons, at most
     q = PriorityQueue()
 
+    # Ensure we actually have 4 constitutive exons... if we don't, potentially use fewer.
+    # NOTE: this is therefore capped at 4.
+    constitutive_exon_count = 0
+    for i in range(total_exons):
+      exp_val = df_results.iloc[i]['median']
+      if exp_val > 0.00000000001: # our epsilon value... below this is not real.
+        constitutive_exon_count += 1
+        if constitutive_exon_count == 4:
+          break
+
     # Focus on top 4 exons if gtex_enabled...otherwise use all.
     exons_to_analyze = len(df_results)
     if self.gtex_enabled == True:
-      exons_to_analyze = min(4, len(df_results))
+      exons_to_analyze = min(constitutive_exon_count, len(df_results))
 
     # for i in range(min(4, len(df_results))):
     i = 0
