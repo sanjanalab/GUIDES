@@ -105,21 +105,18 @@ class Ranker():
     self.genes.append((ensembl_gene, gene_name))
 
     # Sort by exon number, removing first and last exon
-    # Recall: Id are entered as ENSG000xxxxx.x_EXONNUM, e.g. ENSG00000000971.11_21
-    df_gene['exon_num'] = df_gene['Id'].apply(lambda x: int(x.split('_')[1]))
-    # Get median expression for selected tissues
-    df_gene['overall'] = df_gene.median(axis=1)
+
     df_gene['median'] = df_gene[self.tissues].median(axis=1)
     expression_values = {}
     for index, row in df_gene.iterrows():
       expression_value = {
-        'median': -1 * row['median'],
-        'overall': -1 * row['overall'],
-        'brain': -1 * row['Brain'],
-        'heart': -1 * row['Heart'],
-        'kidney': -1 * row['Kidney'],
-        'liver': -1 * row['Liver'],
-        'skin': -1 * row['Skin']
+        'median': row['median'],
+        'overall': row['overall'],
+        'brain': row['Brain'],
+        'heart': row['Heart'],
+        'kidney': row['Kidney'],
+        'liver': row['Liver'],
+        'skin':  row['Skin']
       }
       expression_values[int(row['exon_num'])] = expression_value
     self.expression_values[gene_name] = expression_values
@@ -130,7 +127,7 @@ class Ranker():
       df_gene = df_gene.sort(['exon_num'], ascending=True).iloc[1:-1]
 
     df_results =  df_gene[['Id', 'median', 'overall','exon_num']]
-    df_results = df_results.sort(['median'], ascending=True)
+    df_results = df_results.sort(['median'], ascending=False)
 
     # For this gene, analyze top 4 exons, at most
     q = PriorityQueue()

@@ -56,16 +56,13 @@ def generate():
   tissues = post.get('tissues')
   gtex_enabled = post.get('gtex_enabled')
 
-  print "got post arguments"
-  print time.time() - t0, "seconds wall time"
-
   # Validations
   if genes == None:
     genes = [{u'ensembl_id': u'ENSG00000186575.13', u'$$hashKey': u'object:50', u'name': u'NF2'}]
   if species == None:
     species = "human"
   if quantity == None:
-    quantity = 60
+    quantity = 6
   if tissues == None:
     tissues = ["Muscle", "Heart", "Brain"]
 
@@ -76,19 +73,15 @@ def generate():
   tissues_enabled = False if len(tissues) == 31 else True # true, unless all tissues are selected (average all)
   ranker = computations.Ranker(genome["human"], species, tissues, gtex_enabled, tissues_enabled)
 
-  print "setup ranker"
-  print time.time() - t0, "seconds wall time"
-
   # Iterate over genes, finding guides for each
   for g in genes:
     ranker.rank(g['ensembl_id'], g['name'], quantity)
 
   guides_by_exon = ranker.get_guides_by_exon()
   guide_count = ranker.get_count_selected_guides()
-  result = jsonify(gene_to_exon=guides_by_exon, guide_count=guide_count)
-  
-  print "returning results"
-  print time.time() - t0, "seconds wall time"
+  result = jsonify(gene_to_exon = guides_by_exon, guide_count = guide_count)
+
+  print "Spent {0} seconds generating {1} guides/gene for {2} genes.".format(time.time() - t0, quantity, len(genes))
 
   return result
 
@@ -204,14 +197,14 @@ def test_generate():
               "exon": 2,
               "score": 0.933,
               "selected": False
-          },  
-          {   
+          },
+          {
               "id": 1,
               "exon": 4,
               "score": 0.914,
               "selected": True
-          },  
-          {   
+          },
+          {
               "id": 2,
               "exon": 7,
               "score": 0.724,
