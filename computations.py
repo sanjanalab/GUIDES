@@ -16,38 +16,6 @@ import json
 df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
 __module__ = os.path.splitext(os.path.basename(__file__))[0]  ### look here ###
 
-class GuideRNA():
-  """Holder of gRNA information"""
-  newid = itertools.count().next
-
-  def __init__(self, selected, start, seq, PAM, score, exon_ranking, ensembl_gene, gene_name):
-    self.start = start
-    self.seq = seq
-    self.PAM = PAM
-    self.score = score
-    self.exon_ranking = exon_ranking
-    self.ensembl_gene = ensembl_gene
-    self.gene_name = gene_name
-    self.selected = selected
-
-    self.uid = "customLibrary_guide" + str(GuideRNA.newid()).zfill(4)
-
-  def serialize_for_display(self):
-    """Serialize for the way we are returning json"""
-    return {
-      "score": self.score,
-      "start": self.start,
-      "seq": self.seq,
-      "PAM": self.PAM,
-      "selected": self.selected,
-      "uid": self.uid
-    }
-
-  # Comparison technique - describes ranking DISCUSS (include exon_ranking?)
-  # We assume higher deonch score is better -- otherwise, we should swap self and other scores.
-  def __cmp__(self, other):
-    return cmp(self.score, other.score)
-
 # Species info is not yet incorporated
 class Ranker():
   """Finds and ranks gRNAs from a given gene and species"""
@@ -130,8 +98,8 @@ class Ranker():
 
     total_exons = len(df_gene)
 
-    # If we have more than 4 constitutive exons, don't consider the first and last exon.
-    if constitutive_exon_count > 4:
+    # Only consider first and last exon if we don't have enough constitutive exons.
+    if not (self.gtex_enabled and constitutive_exon_count < 4) and len(df_gene) > 2:
       df_gene = df_gene.sort(['exon_num'], ascending=True).iloc[1:-1]
 
     df_results = df_gene[['Id', 'median', 'overall','exon_num']]
@@ -141,9 +109,10 @@ class Ranker():
     q = PriorityQueue()
 
     # Focus on top 4 exons if gtex_enabled...otherwise use all.
-    exons_to_analyze = len(df_results)
+    exon_entries = len(df_results) # we might have removed first and last
+    exons_to_analyze = exon_entries
     if self.gtex_enabled == True:
-      exons_to_analyze = min(4, constitutive_exon_count, len(df_results))
+      exons_to_analyze = min(4, constitutive_exon_count, exon_entries)
 
     # for i in range(min(4, len(df_results))):
     i = 0
@@ -151,8 +120,7 @@ class Ranker():
 
     storedGuides = {}
 
-    while (i < total_exons) and (i < exons_to_analyze or q.qsize() < quantity):
-      # Generate pseudogenome
+    while (i < exon_entries) and (i < total_exons) and (i < exons_to_analyze or q.qsize() < quantity):
       gtex_gene_exon = str(df_results.iloc[i]['Id'])
       gtex_exon_num = int(df_results.iloc[i]['exon_num'])
 

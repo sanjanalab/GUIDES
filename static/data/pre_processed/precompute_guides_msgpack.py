@@ -27,6 +27,9 @@ class GuideRNA():
       "selected": self.selected,
     }
 
+  def __cmp__(self, other):
+    return cmp(self.score, other.score)
+
 params = {
   "PAM": "NGG",
   "protospacer_len": 20,
@@ -110,13 +113,13 @@ with open('genes_list.json') as genes_list_file:
       while not q.empty():
         gRNA = q.get()
         gRNAs.append(gRNA.serialize_for_display())
-
       outfile_name = gene["ensembl_id"] + "_" + str(exon) + ".p"
       output_path = os.path.join('../GRCh37_guides_msgpack/', outfile_name)
       with open(output_path,  'w') as outfile:
-        msgpack.dump(gRNAs, outfile)
+        # Reverse gRNAs list.
+        # Want highest on-target first.
+        msgpack.dump(gRNAs[::-1], outfile)
 
       # prepare next exon
       exon += 1
       seq = gene_exon_file(gene["ensembl_id"], exon)
-
