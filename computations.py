@@ -83,7 +83,7 @@ class Ranker():
   def getGuides(self, gene_exon):
     try:
       filename = gene_exon + ".p"
-      path = os.path.join('static/data/GRCh37_guides_msgpack/', filename)
+      path = os.path.join(os.path.dirname(__file__), 'static/data/GRCh37_guides_msgpack/', filename)
       with open(path) as datafile:
         gRNAs = msgpack.load(datafile)
         return gRNAs
@@ -98,7 +98,7 @@ class Ranker():
     revcompl = lambda x: ''.join([{'A':'T','C':'G','G':'C','T':'A'}[B] for B in x][::-1])
 
     df_gene_filename = ensembl_gene + ".p"
-    df_gene_path = os.path.join('static/data/df_gene_normalized_cpickle', df_gene_filename)
+    df_gene_path = os.path.join(os.path.dirname(__file__), 'static/data/df_gene_normalized_cpickle', df_gene_filename)
     df_gene_file = open(df_gene_path, 'r')
     df_gene = cPickle.load(df_gene_file)
 
@@ -108,7 +108,9 @@ class Ranker():
 
     df_gene['median'] = df_gene[self.tissues].median(axis=1)
     expression_values = {}
+    constitutive_exon_count = 0
     for index, row in df_gene.iterrows():
+      # Remember expression values
       expression_value = {
         'median': row['median'],
         'overall': row['overall'],
@@ -119,33 +121,29 @@ class Ranker():
         'skin':  row['Skin']
       }
       expression_values[int(row['exon_num'])] = expression_value
+
+      # Count number of constitutive exons
+      if row['median'] > 0.0000000001: # our epsilon value... below this is not real.
+        constitutive_exon_count += 1
+
     self.expression_values[gene_name] = expression_values
 
     total_exons = len(df_gene)
 
-    if len(df_gene) > 4:
+    # If we have more than 4 constitutive exons, don't consider the first and last exon.
+    if constitutive_exon_count > 4:
       df_gene = df_gene.sort(['exon_num'], ascending=True).iloc[1:-1]
 
-    df_results =  df_gene[['Id', 'median', 'overall','exon_num']]
+    df_results = df_gene[['Id', 'median', 'overall','exon_num']]
     df_results = df_results.sort(['median'], ascending=False)
 
     # For this gene, analyze top 4 exons, at most
     q = PriorityQueue()
 
-    # Ensure we actually have 4 constitutive exons... if we don't, potentially use fewer.
-    # NOTE: this is therefore capped at 4.
-    constitutive_exon_count = 0
-    for i in range(total_exons):
-      exp_val = df_results.iloc[i]['median']
-      if exp_val > 0.00000000001: # our epsilon value... below this is not real.
-        constitutive_exon_count += 1
-        if constitutive_exon_count == 4:
-          break
-
     # Focus on top 4 exons if gtex_enabled...otherwise use all.
     exons_to_analyze = len(df_results)
     if self.gtex_enabled == True:
-      exons_to_analyze = min(constitutive_exon_count, len(df_results))
+      exons_to_analyze = min(4, constitutive_exon_count, len(df_results))
 
     # for i in range(min(4, len(df_results))):
     i = 0
