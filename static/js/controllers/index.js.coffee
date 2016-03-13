@@ -12,8 +12,7 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
   # selected results is placed directly back into factory
   # this way, we can just push to next controller and everything is ready :)
   $scope.guidesFactory = new GuidesFactory()
-  $scope.guidesFactory.data.gtex_enabled
-  $scope.gtex_enabled = true
+  $scope.guidesFactory.data.gtex_enabled = true
 
   # Validations
   $scope.genesWarning = false
