@@ -3,7 +3,8 @@ GRCh37/
 GRCh37_exons/
 GRCh37_guides/
 GRCh37_guides_cpickle/
-GRCh37_guides_msgpack/
+GRCh37_guides_msgpack_Azimuth/
+GRCh37_guides_msgpack_Doench/
 GRCh38/
 gtex/
 compare_guides_exons.txt

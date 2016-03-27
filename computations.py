@@ -19,7 +19,7 @@ __module__ = os.path.splitext(os.path.basename(__file__))[0]  ### look here ###
 # Species info is not yet incorporated
 class Ranker():
   """Finds and ranks gRNAs from a given gene and species"""
-  def __init__(self, genome, species, tissues, gtex_enabled, tissues_enabled, PAM='NGG', prime5=True, protospacer_len=20, scoring_alg={"Doench"}):
+  def __init__(self, genome, species, tissues, gtex_enabled, tissues_enabled, PAM='NGG', prime5=True, protospacer_len=20, scoring_alg="Azimuth"):
     self.genome = genome
     self.species = species
     self.tissues = tissues
@@ -40,9 +40,6 @@ class Ranker():
     PAM = PAM.replace('N', '[ATCG]')
     self.PAM = "(?=" + PAM + ")"
 
-    # Doench score
-    self.use_Doench = "Doench" in scoring_alg
-
     # Load pre-processed GTEx data
     self.df_normalized = df_normalized
 
@@ -51,7 +48,10 @@ class Ranker():
   def getGuides(self, gene_exon):
     try:
       filename = gene_exon + ".p"
-      path = os.path.join(os.path.dirname(__file__), 'static/data/GRCh37_guides_msgpack/', filename)
+      if self.scoring_alg == "Doench":
+        path = os.path.join(os.path.dirname(__file__), 'static/data/GRCh37_guides_msgpack_Doench/', filename)
+      else:
+        path = os.path.join(os.path.dirname(__file__), 'static/data/GRCh37_guides_msgpack_Azimuth/', filename)
       with open(path) as datafile:
         gRNAs = msgpack.load(datafile)
         return gRNAs
@@ -94,15 +94,14 @@ class Ranker():
       if row['median'] > 0.0000000001: # our epsilon value... below this is not real.
         constitutive_exon_count += 1
 
-    self.expression_values[gene_name] = expression_values
+    self.expression_values[ensembl_gene] = expression_values
 
     total_exons = len(df_gene)
 
     # Only consider first and last exon if we don't have enough constitutive exons.
     if not (self.gtex_enabled and constitutive_exon_count < 4) and len(df_gene) > 2:
       df_gene = df_gene.sort(['exon_num'], ascending=True).iloc[1:-1]
-
-    df_results = df_gene[['Id', 'median', 'overall','exon_num']]
+    df_results = df_gene[['Id', 'median', 'overall', 'exon_num']]
     df_results = df_results.sort(['median'], ascending=False)
 
     # For this gene, analyze top 4 exons, at most
@@ -120,12 +119,15 @@ class Ranker():
 
     storedGuides = {}
 
+    for i in range(total_exons):
+      # Get precomputed gRNAs from pickle
+      gtex_gene_exon = ensembl_gene + "_" + str(i)
+      storedGuides[i] = self.getGuides(gtex_gene_exon)
+
+    i = 0
     while (i < exon_entries) and (i < total_exons) and (i < exons_to_analyze or q.qsize() < quantity):
       gtex_gene_exon = str(df_results.iloc[i]['Id'])
       gtex_exon_num = int(df_results.iloc[i]['exon_num'])
-
-      # Get precomputed gRNAs from pickle
-      storedGuides[gtex_exon_num] = self.getGuides(gtex_gene_exon)
       gRNAs = storedGuides[gtex_exon_num]
 
       # If there's enough room, add it, no question.
@@ -158,13 +160,13 @@ class Ranker():
 
     # Mark k = 10 after quantity as unselected
     # add those and beginning ones to guides_for_exons
-    for exon_num in storedGuides.keys():
+    for exon_num in xrange(total_exons):
       gRNAs = storedGuides[exon_num]
       for guide in gRNAs[:exon_ends[exon_num]]:
         guide["selected"] = True
       for guide in gRNAs[exon_ends[exon_num]:exon_ends[exon_num]+10]:
         guide["selected"] = False
-      human_gene_exon = gene_name + "+" + str(exon_num)
+      human_gene_exon = ensembl_gene + "+" + str(exon_num)
       self.guides_for_exons[human_gene_exon] = gRNAs[:exon_ends[exon_num]+10]
       self.countSelectedGuides += exon_ends[exon_num]
 
@@ -177,7 +179,7 @@ class Ranker():
     for (ensembl_gene, gene_name) in self.genes:
       gene_info = self.genome.gene_info(ensembl_gene)
 
-      gene_to_exon[gene_name] = {
+      gene_to_exon[ensembl_gene] = {
         "name": gene_name,
         "ensembl_gene": ensembl_gene,
         "length": gene_info['txEnd'] - gene_info['txStart'],
@@ -186,9 +188,9 @@ class Ranker():
         "exons": [] # Gets filled in below
       }
 
-      # Prepare each exon and add to gene_to_exon[gene_name].exons
+      # Prepare each exon and add to gene_to_exon[ensembl_gene].exons
       for i in range(gene_info['exonCount']):
-        expression_value = self.expression_values[gene_name][i]
+        expression_value = self.expression_values[ensembl_gene][i]
         expression_value_returned = dict(expression_value)
         if not self.tissues_enabled:
           del expression_value_returned["median"]
@@ -198,12 +200,11 @@ class Ranker():
           "gRNAs": [], # Gets filled in below
           "expression": expression_value_returned
         }
-        gene_to_exon[gene_name]['exons'].append(exon)
-
+        gene_to_exon[ensembl_gene]['exons'].append(exon)
     # Iterate through guides and add to appropriate exon
     for k, v in self.guides_for_exons.iteritems():
-      gene_name, exon = k.split('+')
-      gene_to_exon[gene_name]['exons'][int(exon)]['gRNAs'] = v
+      ensembl_gene, exon = k.split('+')
+      gene_to_exon[ensembl_gene]['exons'][int(exon)]['gRNAs'] = v
 
     # for guide in self.gRNAs:
     #   gene_to_exon[guide["gene_name"]]['exons'][guide["exon_ranking"]]['gRNAs'].append(guide)

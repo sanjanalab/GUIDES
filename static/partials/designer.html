@@ -14,6 +14,14 @@
         <div class="logo-box">
           <a href="/#/"><span>CRISPR Library Designer</span></a>
         </div>
+        <div class="center-designer-box designer-gene-title">
+          <span id="left-designer-gene-title">
+            {{ gene.name }}: <span>{{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</span>
+          </span>
+          <span id="right-designer-gene-title">
+            Choose different guides <switch id="show_different_guides" name="show_different_guides" ng-model="show_different_guides" ng-disabled="false" class="sm"></switch>
+          </span>
+        </div>
         <div class="guide-count-box">
           <span>
             Total guides in library: {{ countSelectedGuides }}
@@ -143,16 +151,11 @@
         <div class="container-fluid" id='container'>
           <div class="row">
             <div class="col-md-12">
-              <div class="designer-gene-title">{{ gene.name }}: <span>{{ selectedGuides(gene.name).length }} guides in library targeting {{ exonsUtilized(gene).length }} of {{ gene.exons.length }} exons</span>
-                <span id="right-designer-gene-title">
-                  Choose different guides <switch id="show_different_guides" name="show_different_guides" ng-model="show_different_guides" ng-disabled="false" class="sm"></switch>
-                </span>
-              </div>
               <guides-bar-chart ng-hide="show_different_guides"></guides-bar-chart>
               <svg width="100%" x="20" height="50" ng-if="guidesReady" id="exon_graph" ng-hide="show_different_guides">
                 <g id="all_exons">
                   <rect class="connector" fill="#000" height="3" stroke="#000" width="100%" x="0" y="25" id="connector_rect"></rect>
-              
+
                   <g drawindividualexon index="{{$index}}" exons-length="{{gene.exons.length}}" exon="exon" modify-svg-unit="modifySvgUnit(unit)" exon-hovered="exonHovered" ng-repeat="exon in gene.exons" y="0">
                   </g>
                 </g>

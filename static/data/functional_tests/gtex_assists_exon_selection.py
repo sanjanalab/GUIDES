@@ -17,12 +17,14 @@ import seq_generator
 genome = {
   "human" : seq_generator.FastGenome()
 }
-tissues = ['Thyroid', 'Testis', 'Cervix Uteri', 'Adipose Tissue', 'Breast', 'Vagina', 'Nerve', 'Pituitary', 'Stomach', 'Fallopian Tube', 'Bone Marrow', 'Bladder', 'Blood', 'Colon', 'Prostate', 'Pancreas', 'Blood Vessel', 'Liver', 'Spleen', 'Small Intestine', 'Uterus', 'Ovary', 'Muscle', 'Heart', 'Adrenal Gland', 'Brain', 'Salivary Gland', 'Lung', 'Skin', 'Esophagus', 'Kidney']
+
+tissues = ['Lung', 'Liver', 'Skin', 'Heart', 'Brain']
 
 ### User selected parameters
 library_size = 5
 num_runs = 1000
 num_genes = 500
+scoring_alg = "Doench"
 
 def overall_gene_expression(ensembl_gene):
   df_gene_filename = ensembl_gene + ".p"
@@ -34,8 +36,8 @@ def gtex_effect(genes):
   sum_normalized_expression_Y = 0
   sum_normalized_expression_N = 0
 
-  ranker_GTEX_Y = computations.Ranker(genome["human"], "human", tissues, True, False)
-  ranker_GTEX_N = computations.Ranker(genome["human"], "human", tissues, False, False)
+  ranker_GTEX_Y = computations.Ranker(genome["human"], "human", tissues, True, False, scoring_alg = scoring_alg)
+  ranker_GTEX_N = computations.Ranker(genome["human"], "human", tissues, False, False, scoring_alg = scoring_alg)
 
   for gene in genes:
     ranker_GTEX_Y.rank(gene['ensembl_id'], gene['name'], library_size)
@@ -81,8 +83,8 @@ if __name__ == "__main__":
       result_Y, result_N = gtex_effect(genes)
       results_Y.append(result_Y)
       results_N.append(result_N)
-
-  with open('gtex_assists_exon_selection.results', 'w') as results:
+  filename = 'gtex_assists_exon_selection.' + str(num_runs) + '.' + scoring_alg + '.5tissues.results'
+  with open(filename, 'w') as results:
     results.write("Average of normalized exon expression across {0} genes, with {1} guides/gene.\nData from {2} runs is summarized below.\n\n".format(num_genes, library_size, num_runs))
     results.write("Guide selection with GTEX:\n")
     for result in results_Y:
