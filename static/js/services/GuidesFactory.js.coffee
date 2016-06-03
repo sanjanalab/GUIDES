@@ -19,6 +19,21 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       expected: 0
       actual: 0
 
+    # Pre-computed results from the server
+    waitTime: () ->
+      idx = this.hasUploadedFile()
+      gene_count = this.data.genes.length
+      if idx != -1
+        gene_count += this.data.genesFromFile.length
+      return 0.13 * gene_count
+
+    waitTimeText: () ->
+      wait = this.waitTime()
+      if wait > 60
+        "#{Math.ceil(wait / 60)} mins"
+      else
+        "#{Math.ceil(wait)} secs"
+
     hasUploadedFile: () ->
       ret = -1
       angular.forEach this.data.genes, (gene, key) ->
@@ -30,7 +45,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       idx = this.hasUploadedFile
       if idx != -1
         this.data.genes.splice(idx, 1)
-        
+
       this.data.genes.push({
         'name': name
         'ensembl_id': "GENES_FROM_FILE"
