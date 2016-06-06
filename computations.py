@@ -74,7 +74,8 @@ class Ranker():
 
     # Sort by exon number, removing first and last exon
 
-    df_gene['median'] = df_gene[self.tissues].median(axis=1)
+    if self.tissues_enabled:
+      df_gene['median'] = df_gene[self.tissues].median(axis=1)
     expression_values = {}
     constitutive_exon_count = 0
     for index, row in df_gene.iterrows():
@@ -100,9 +101,11 @@ class Ranker():
 
     # Only consider first and last exon if we don't have enough constitutive exons.
     if not (self.gtex_enabled and constitutive_exon_count < 4) and len(df_gene) > 2:
-      df_gene = df_gene.sort(['exon_num'], ascending=True).iloc[1:-1]
+      df_gene = df_gene[(df_gene.exon_num != 0) & (df_gene.exon_num != len(df_gene) - 1)]
     df_results = df_gene[['Id', 'median', 'overall', 'exon_num']]
-    df_results = df_results.sort(['median'], ascending=False)
+
+    if self.tissues_enabled:
+      df_results = df_results.sort(['median'], ascending=False)
 
     # For this gene, analyze top 4 exons, at most
     q = PriorityQueue()
@@ -192,7 +195,7 @@ class Ranker():
       for i in range(gene_info['exonCount']):
         expression_value = self.expression_values[ensembl_gene][i]
         expression_value_returned = dict(expression_value)
-        if not self.tissues_enabled:
+        if (not self.tissues_enabled) and ("median" in expression_value_returned):
           del expression_value_returned["median"]
         exon = {
           "start": gene_info['exonStarts'][i] - gene_info['txStart'],
