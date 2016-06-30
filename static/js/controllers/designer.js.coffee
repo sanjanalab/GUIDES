@@ -1,8 +1,14 @@
-FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'Analytics', ($scope, $filter, GuidesFactory, Analytics) ->
+FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$routeParams', 'GuidesFactory', 'Analytics', ($scope, $filter, $location, $routeParams, GuidesFactory, Analytics) ->
   $scope.guidesReady = false
   guidesFactory = new GuidesFactory()
-  $scope.generateGuidesPromise = guidesFactory.generateGuides()
-  $scope.gene_statistics = guidesFactory.gene_statistics
+
+  # Check for task_id
+  if $routeParams.task_id?
+    $scope.getGuidesPromise = guidesFactory.getComputedGuides($routeParams.task_id)
+  else
+    $scope.generateGuidesPromise = guidesFactory.generateGuides()
+
+  $scope.guidesFactoryData = guidesFactory.data
   $scope.tissues = guidesFactory.data.tissues
   $scope.tissues_enabled = not guidesFactory.data.tissues_disabled
 
@@ -114,7 +120,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
   if guidesFactory.data.tissues_disabled
     $scope.chart_config.expression.series = ['All Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
 
-  # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive. 
+  # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive.
   $scope.modifySvgUnit = (unit) ->
     $scope.svg_unit_global = unit / 2
     $scope.chart_config.expression.options.barValueSpacing = $scope.svg_unit_global
@@ -159,33 +165,37 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', 'GuidesFactory', 'An
     # simulate setting up the first gene
     $scope.setGene(0)
 
+  if $routeParams.task_id?
+    $scope.getGuidesPromise.then (guidesData) ->
+      computeGuidesData(guidesData["gene_to_exon"])
+      $scope.gene = $scope.gene_to_exon[0]
+      $scope.guidesReady = true
 
-  $scope.generateGuidesPromise.then (guidesData) ->
-    computeGuidesData(guidesData["gene_to_exon"])
-    $scope.gene = $scope.gene_to_exon[0]
-    $scope.guidesReady = true
+      ## I think this is unnecessary, since we filter by order in the template.
+      # angular.forEach all_gRNAs, (guides_for_gene, gene_name) ->
+      #   all_gRNAs[gene_name] = $filter('orderBy')(guides_for_gene, 'score', true)
 
-    ## I think this is unnecessary, since we filter by order in the template.
-    # angular.forEach all_gRNAs, (guides_for_gene, gene_name) ->
-    #   all_gRNAs[gene_name] = $filter('orderBy')(guides_for_gene, 'score', true)
+      # Server is now doing this, so this has been removed.
+      # guide_count = $scope.countSelectedGuides
+      # merged_gRNAs = $filter('orderBy')(merged_gRNAs, 'score', true)
+      # angular.forEach merged_gRNAs, (guide, key) ->
+      #   if guide_count > 0
+      #     guide.selected = true
+      #     guide_count -= 1
+      #   else
+      #     guide.selected = false
 
-    # Server is now doing this, so this has been removed.
-    # guide_count = $scope.countSelectedGuides
-    # merged_gRNAs = $filter('orderBy')(merged_gRNAs, 'score', true)
-    # angular.forEach merged_gRNAs, (guide, key) ->
-    #   if guide_count > 0
-    #     guide.selected = true
-    #     guide_count -= 1
-    #   else
-    #     guide.selected = false
-
-  # used for table column sorting
-  $scope.orderByField = 'score'
-  $scope.reverseSort = true
+    # used for table column sorting
+    $scope.orderByField = 'score'
+    $scope.reverseSort = true
 
   #$scope.gene_to_exon = gene_to_exon
   #$scope.all_gRNAs = all_gRNAs
-  
+  else
+    $scope.generateGuidesPromise.then (task_id) ->
+      console.log 'generateguidepromise finished with task_id = ' + task_id
+      $location.path('/designer/' + task_id)
+
   $scope.setGene = (idx) ->
     $scope.gene = $scope.gene_to_exon[idx]
     expression_labels = []

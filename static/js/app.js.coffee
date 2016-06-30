@@ -13,7 +13,7 @@ FlaskStart.config ['$routeProvider', '$locationProvider', 'AnalyticsProvider', (
   factoryConfigured = ($location, $q, GuidesFactory) ->
     guidesFactory = new GuidesFactory
     deferred = $q.defer()
-    if guidesFactory.data.genes.length > 0
+    if guidesFactory.data.genes.length > 0 or $location.path().split('?').length > 1
       deferred.resolve()
     else
       deferred.reject()
@@ -24,20 +24,24 @@ FlaskStart.config ['$routeProvider', '$locationProvider', 'AnalyticsProvider', (
     templateUrl: "static/partials/about.html",
     controller: 'AboutCtrl'
   }
+  .when "/designer/:task_id", {
+    templateUrl: "static/partials/designer.html",
+    controller: 'DesignerCtrl'
+  }
   .when "/designer", {
-    templateUrl: "static/partials/designer.html", 
-    controller: 'DesignerCtrl', 
+    templateUrl: "static/partials/designer.html",
+    controller: 'DesignerCtrl',
     resolve: {
       factoryConfigured: factoryConfigured,
     }
   }
   .when "/", {
-    templateUrl: "static/partials/home.html", 
+    templateUrl: "static/partials/home.html",
     controller: 'IndexCtrl'
   }
   .otherwise {
     redirectTo: "/"
-  } 
+  }
 ]
 
 # FlaskStart.run ['$rootScope', '$location', '$window', ($rootScope, $location, $window) ->

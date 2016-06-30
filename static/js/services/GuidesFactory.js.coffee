@@ -1,4 +1,4 @@
-FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filter) ->
+FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($http, $q, $filter, $timeout) ->
   class GuidesFactory
     available: # can select
       'genes': [] # set later by $http in constructor
@@ -12,12 +12,13 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
       'gtex_enabled': true
       'tissues_disabled': true # does the user want to consider *individualized* tissue expression?
       'genesFromFile': []
+      'gene_statistics':
+        'expected': 0
+        'actual': 0
+        'processed': 0
 
     # expected --> how many we would get if user's file is 100% correct.
     # actual   --> how much we could actually derived from the user's file.
-    gene_statistics:
-      expected: 0
-      actual: 0
 
     # Pre-computed results from the server
     waitTime: () ->
@@ -79,8 +80,8 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
             # matchedGenes.sort()
             # if matchedGenes.length > 0
             #   this.data.genes.push(matchedGenes[0])
-        this_.gene_statistics.expected = expected_genes_num
-        this_.gene_statistics.actual = this_.data.genes.length
+        this_.data.gene_statistics.expected = expected_genes_num
+        this_.data.gene_statistics.actual = this_.data.genes.length
         resolve()
 
     generateGuides: () ->
@@ -99,7 +100,46 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
           data: JSON.stringify(this_.data)
         }
         .success (data) ->
+          task_id = data.task_id
+          deferred.resolve task_id
+
+      deferred.promise
+
+    updateProgress: (task_id) ->
+      deferred = $q.defer()
+
+      this_ = this
+      $http {
+        url: '/status/' + task_id
+        method: 'GET'
+      }
+      .success (data) ->
+        # check if we are finished
+        if data.state == 'SUCCESS'
           deferred.resolve data
+        else
+          this_.data.gene_statistics = data.gene_statistics
+          return $timeout (() ->
+            this_.updateProgress(task_id).then (data) ->
+              deferred.resolve data
+            ), 2000, true, task_id
+
+      deferred.promise
+
+    getComputedGuides: (task_id) ->
+      deferred = $q.defer()
+      this_ = this
+
+      this.updateProgress(task_id).then (data) ->
+        this_.data.genes = data.result.genes
+        this_.data.tissues = data.result.tissues
+        this_.data.quantity = data.result.quantity
+        this_.data.gtex_enabled = data.result.gtex_enabled
+        this_.data.tissues_disabled = data.result.tissues_disabled
+        this_.data.gene_statistics = data.gene_statistics
+
+        # return the data itself
+        deferred.resolve data.result
 
       deferred.promise
 
@@ -109,21 +149,3 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', ($http, $q, $filt
     setTissues: (tissues) ->
       this.data.tissues = tissues
 ]
-
-# scope.postTest = function(){
-
-#   var data = [obj1, obj2, obj3];
-#   var jsonData=angular.toJson(data);
-#   var objectToSerialize={'object':jsonData};
-
-#   $http({
-#     url: 'myURL',
-#     method: "POST",
-#     data: $.param(objectToSerialize),
-#     headers: {
-#          'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
-#     }
-#   }).success(function(data){
-#     alert("done");
-#   });
-# }
