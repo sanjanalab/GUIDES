@@ -92,7 +92,7 @@ def start_compute(self, params):
       'tissues_disabled': tissues_disabled,
     }
 
-    print "Spent {0} seconds generating {1} guides/gene for {2} genes.".format(time.time() - t0, quantity, len(genes))
+    # print "Spent {0} seconds generating {1} guides/gene for {2} genes.".format(time.time() - t0, quantity, len(genes))
     return {
       'current': total_gene_count,
       'total': total_gene_count,
@@ -167,7 +167,5 @@ def taskstatus(task_id):
       'current': 1,
       'total': 1,
       'status': str(task.info), # exception raised
-      'gene_statistics': task.info.get('gene_statistics', '')
     }
-  print response
   return jsonify(response)
