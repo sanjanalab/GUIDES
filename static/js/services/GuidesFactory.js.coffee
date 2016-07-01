@@ -16,7 +16,6 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
         'expected': 0
         'actual': 0
         'processed': 0
-
     # expected --> how many we would get if user's file is 100% correct.
     # actual   --> how much we could actually derived from the user's file.
 
@@ -75,11 +74,6 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
               if gene.name.toUpperCase() == geneText.toUpperCase() or gene.ensembl_id == geneText
                 this_.data.genes.push(gene)
                 break
-            # replace (for gene in .... break) with below, if you don't need EXACT comparisons.
-            # matchedGenes = $filter('propsFilter')(this.available.genes, {name: geneText, ensembl_id: geneText})
-            # matchedGenes.sort()
-            # if matchedGenes.length > 0
-            #   this.data.genes.push(matchedGenes[0])
         this_.data.gene_statistics.expected = expected_genes_num
         this_.data.gene_statistics.actual = this_.data.genes.length
         resolve()
@@ -112,6 +106,8 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
       $http {
         url: '/status/' + task_id
         method: 'GET'
+        headers:
+          'Content-Type': 'application/json'
       }
       .success (data) ->
         # check if we are finished
