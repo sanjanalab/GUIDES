@@ -169,4 +169,5 @@ def taskstatus(task_id):
       'status': str(task.info), # exception raised
       'gene_statistics': task.info.get('gene_statistics', '')
     }
+  print response
   return jsonify(response)
