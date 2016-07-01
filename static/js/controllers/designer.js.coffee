@@ -271,10 +271,8 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
     $scope.guidesReady = false
     guidesFactory.data.tissues.splice(idx, 1)
     $scope.generateGuidesPromise = guidesFactory.generateGuides()
-    $scope.generateGuidesPromise.then (guidesData) ->
-      computeGuidesData(guidesData["gene_to_exon"])
-      $scope.gene = $scope.gene_to_exon[0]
-      $scope.guidesReady = true
+    $scope.generateGuidesPromise.then (task_id) ->
+      $location.path('/designer/' + task_id)
 
   # Searching
   $scope.geneTissueQuery = ""
@@ -296,9 +294,8 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
             break
 
     $scope.guidesReady = false
-    $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
-      computeGuidesData(guidesData["gene_to_exon"])
-      $scope.guidesReady = true
+    $scope.generateGuidesPromise = guidesFactory.generateGuides().then (task_id) ->
+      $location.path('/designer/' + task_id)
 
   # individual guide selection
   $scope.show_different_guides = false
@@ -308,16 +305,14 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
   $scope.selectedGene = (gene) ->
     guidesFactory.data.genes.push gene
     $scope.guidesReady = false
-    $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
-      computeGuidesData(guidesData["gene_to_exon"])
-      $scope.guidesReady = true
+    $scope.generateGuidesPromise = guidesFactory.generateGuides().then (task_id) ->
+      $location.path('/designer/' + task_id)
 
   $scope.selectedTissue = (tissue) ->
     guidesFactory.data.tissues.push tissue
     $scope.guidesReady = false
-    $scope.generateGuidesPromise = guidesFactory.generateGuides().then (guidesData) ->
-      computeGuidesData(guidesData["gene_to_exon"])
-      $scope.guidesReady = true
+    $scope.generateGuidesPromise = guidesFactory.generateGuides().then (task_id) ->
+      $location.path('/designer/' + task_id)
 
   # $scope.additionalGene = "" # what the person is typing.
   # $scope.$watch 'additionalGene', () ->
