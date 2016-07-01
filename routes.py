@@ -141,31 +141,38 @@ def generate():
 @app.route('/status/<task_id>')
 def taskstatus(task_id):
   task = start_compute.AsyncResult(task_id)
-  print task
-  if task.state == 'PENDING':
-    response = {
-      'state': task.state,
-      'current': 0,
-      'total': 1,
-      'status': 'Pending...',
-      'gene_statistics': task.info.get('gene_statistics', '')
-    }
-  elif task.state != 'FAILURE':
-    response = {
-      'state': task.state,
-      'current': task.info.get('current', 0),
-      'total': task.info.get('total', 1),
-      'status': task.info.get('status', ''),
-      'gene_statistics': task.info.get('gene_statistics', '')
-    }
-    if 'result' in task.info:
-      response['result'] = task.info['result']
-  else:
-    # something went wrong in the background job
-    response = {
-      'state': task.state,
-      'current': 1,
-      'total': 1,
-      'status': str(task.info), # exception raised
-    }
-  return jsonify(response)
+  try:
+    if task.state == 'PENDING':
+      response = {
+        'state': task.state,
+        'current': 0,
+        'total': 1,
+        'status': 'Pending...',
+        'gene_statistics': task.info.get('gene_statistics', '')
+      }
+    elif task.state != 'FAILURE':
+      response = {
+        'state': task.state,
+        'current': task.info.get('current', 0),
+        'total': task.info.get('total', 1),
+        'status': task.info.get('status', ''),
+        'gene_statistics': task.info.get('gene_statistics', '')
+      }
+      if 'result' in task.info:
+        response['result'] = task.info['result']
+    else:
+      # something went wrong in the background job
+      response = {
+        'state': task.state,
+        'current': 1,
+        'total': 1,
+        'status': str(task.info), # exception raised
+      }
+    return jsonify(response)
+  except AttributeError:
+    return jsonify({
+        'state': task.state,
+        'current': 1,
+        'total': 1,
+        'status': "Unknown..."
+      })
