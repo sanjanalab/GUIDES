@@ -115,6 +115,22 @@
                   <div ng-show="tissuesWarning" class="bottom-warning-text">Please enter a list of tissues.</div>
                 </div>
 
+                <div class="entry_container" style="overflow:auto" tooltip-placement="left" uib-tooltip="When possible, CLD can target functional protein domains based on Pfam data, as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection.">
+                  <span class="entry_label">Target protein domains?</span>
+                  <form>
+                    <switch id="domains_enabled" name="domains_enabled" ng-model="guidesFactory.data.domains_enabled" class="green"></switch>
+                  </form>
+                </div>
+
+                <div class="entry_container" tooltip-placement="left" uib-tooltip="Provide your email address so we can email you a link to access results!" tooltip-trigger="outsideClick" ng-class="{'genes-warning': emailWarning}">
+                  <span class="entry_label">Email Address:</span>
+                  <div class="ui-select-container ui-select-multiple ui-select-bootstrap dropdown form-control ng-valid" theme="bootstrap" style="width: 100%;  background: none; background-color: transparent" aria-disabled="false" aria-invalid="false">
+                    <div>
+                      <input type="text" autocomplete="false" autocorrect="off" autocapitalize="off" spellcheck="false" class="ui-select-search input-xs ng-valid ng-dirty ng-touched ng-valid-parse" placeholder="Start typing..." ng-model="guidesFactory.data.email_address" aria-label="Select box" ondrop="return false;" aria-hidden="false" aria-disabled="false" aria-invalid="false" style="width: 225px;">
+                    </div>
+                  </div>
+                  <div ng-show="emailWarning" class="bottom-warning-text">Please enter a valid email address.</div>
+                </div>
               </div>
             </div>
 

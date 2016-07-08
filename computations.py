@@ -13,18 +13,24 @@ import os
 import itertools
 import json
 
-df_normalized = pickle.load(open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb"))
+with open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb") as infile:
+  df_normalized = pickle.load(infile)
+
+with open(os.path.join(APP_STATIC, 'data/pre_processed', 'strand_info.p'), "rb") as infile:
+  gene_strand_mapping = cPickle.load(infile)
+
 __module__ = os.path.splitext(os.path.basename(__file__))[0]  ### look here ###
 
 # Species info is not yet incorporated
 class Ranker():
   """Finds and ranks gRNAs from a given gene and species"""
-  def __init__(self, genome, species, tissues, gtex_enabled, tissues_enabled, PAM='NGG', prime5=True, protospacer_len=20, scoring_alg="Azimuth"):
+  def __init__(self, genome, species, tissues, gtex_enabled, tissues_enabled, domains_enabled, PAM='NGG', prime5=True, protospacer_len=20, scoring_alg="Azimuth"):
     self.genome = genome
     self.species = species
     self.tissues = tissues
     self.gtex_enabled = gtex_enabled
     self.tissues_enabled = tissues_enabled
+    self.domains_enabled = domains_enabled
     self.PAM_len = len(PAM)
     self.prime5 = prime5
     self.protospacer_len = protospacer_len
@@ -50,6 +56,8 @@ class Ranker():
       filename = gene_exon + ".p"
       if self.scoring_alg == "Doench":
         path = os.path.join(os.path.dirname(__file__), 'static/data/GRCh37_guides_msgpack_Doench/', filename)
+      elif self.domains_enabled:
+        path = os.path.join(os.path.dirname(__file__), 'static/data/GRCh37_guides_msgpack_Azimuth_domains/', filename)
       else:
         path = os.path.join(os.path.dirname(__file__), 'static/data/GRCh37_guides_msgpack_Azimuth/', filename)
       with open(path) as datafile:
@@ -179,8 +187,15 @@ class Ranker():
     # First, setup data as an associative array, to make guide insertion easier
     # Later, we'll transform to ordered array.
     gene_to_exon = {}
+
+    # hold onto exon_counts as they are computed,
+    # so we don't have to look them up again later.
+    exon_counts = {}
+
     for (ensembl_gene, gene_name) in self.genes:
       gene_info = self.genome.gene_info(ensembl_gene)
+      exon_count = gene_info['exonCount']
+      exon_counts[ensembl_gene] = exon_count
 
       gene_to_exon[ensembl_gene] = {
         "name": gene_name,
@@ -192,22 +207,44 @@ class Ranker():
       }
 
       # Prepare each exon and add to gene_to_exon[ensembl_gene].exons
-      for i in range(gene_info['exonCount']):
+      if gene_strand_mapping[ensembl_gene] == '+':
+        gene_to_exon[ensembl_gene]['start'] = gene_info['txStart']
+        gene_to_exon[ensembl_gene]['end'] = gene_info['txEnd']
+        r = xrange(exon_count)
+      else:
+        gene_to_exon[ensembl_gene]['start'] = gene_info['txEnd']
+        gene_to_exon[ensembl_gene]['end'] = gene_info['txStart']
+        r = xrange(exon_count-1, -1, -1)
+
+      for i in r:
         expression_value = self.expression_values[ensembl_gene][i]
         expression_value_returned = dict(expression_value)
         if (not self.tissues_enabled) and ("median" in expression_value_returned):
           del expression_value_returned["median"]
         exon = {
-          "start": gene_info['exonStarts'][i] - gene_info['txStart'],
-          "end": gene_info['exonEnds'][i] - gene_info['txStart'],
           "gRNAs": [], # Gets filled in below
           "expression": expression_value_returned
         }
+
+        # for + strand, start < end
+        # for - strand, end < start
+        if gene_strand_mapping[ensembl_gene] == '+':
+          exon['start'] = gene_info['exonStarts'][i] - gene_info['txStart']
+          exon['end'] = gene_info['exonEnds'][i] - gene_info['txStart']
+        else:
+          exon['start'] = gene_info['exonEnds'][i] - gene_info['txStart']
+          exon['end'] = gene_info['exonStarts'][i] - gene_info['txStart']
+
         gene_to_exon[ensembl_gene]['exons'].append(exon)
+
     # Iterate through guides and add to appropriate exon
     for k, v in self.guides_for_exons.iteritems():
       ensembl_gene, exon = k.split('+')
-      gene_to_exon[ensembl_gene]['exons'][int(exon)]['gRNAs'] = v
+      if gene_strand_mapping[ensembl_gene] == '+':
+        exon_num = int(exon)
+      else:
+        exon_num = exon_counts[ensembl_gene] - 1 - int(exon)
+      gene_to_exon[ensembl_gene]['exons'][exon_num]['gRNAs'] = v
 
     # for guide in self.gRNAs:
     #   gene_to_exon[guide["gene_name"]]['exons'][guide["exon_ranking"]]['gRNAs'].append(guide)

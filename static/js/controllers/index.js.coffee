@@ -17,16 +17,36 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
   # Validations
   $scope.genesWarning = false
   $scope.tissuesWarning = false
+  $scope.emailWarning = false
 
+  emailPattern = /// ^ # beginning of line
+   ([\w.-]+)           # one or more letters, numbers, _ . or -
+   @                   # followed by an @ sign
+   ([\w.-]+)           # then one or more letters, numbers, _ . or -
+   \.                  # followed by a period
+   ([a-zA-Z.]{2,6})    # followed by 2 to 6 letters or periods
+   $ ///i              # end of line and ignore case
+
+  # Should the next page load?
   $scope.$on '$locationChangeStart', (event, newUrl) ->
     urlComps = newUrl.split('/')
     if urlComps[urlComps.length - 1] == "designer"
       if $scope.guidesFactory.data.genes.length < 1
         $scope.genesWarning = true
         event.preventDefault()
+      else
+        $scope.genesWarning = false
       if not $scope.guidesFactory.data.tissues_disabled and $scope.guidesFactory.data.tissues.length < 1
         $scope.tissuesWarning = true
         event.preventDefault()
+      else
+        $scope.tissuesWarning = false
+      console.log $scope.guidesFactory.data.email_address
+      if not $scope.guidesFactory.data.email_address or not $scope.guidesFactory.data.email_address.match emailPattern
+        $scope.emailWarning = true
+        event.preventDefault()
+      else
+        $scope.emailWarning = false
 
   # file upload
   $scope.$watch 'file', () ->

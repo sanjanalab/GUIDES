@@ -13,6 +13,7 @@ import os
 import json
 import time
 from celery import Celery
+from emailing import send_completed_run
 
 genome = {
   "human" : seq_generator.FastGenome()
@@ -63,7 +64,10 @@ def start_compute(self, params):
     tissues = params['tissues']
     gtex_enabled = params['gtex_enabled']
     tissues_disabled = params['tissues_disabled']
+    domains_enabled = params['domains_enabled']
     gene_statistics = params['gene_statistics']
+    email_address = params['email_address']
+    rejected_genes = params['rejected_genes']
 
     if len(genes) == 0:
       result = {'gene_to_exon': {}, 'guide_count': 0}
@@ -71,7 +75,7 @@ def start_compute(self, params):
 
     # Setup ranker
     tissues_enabled = False if len(tissues) == 31 else True # true, unless all tissues are selected (average all)
-    ranker = computations.Ranker(genome["human"], species, tissues, gtex_enabled, tissues_enabled)
+    ranker = computations.Ranker(genome["human"], species, tissues, gtex_enabled, tissues_enabled, domains_enabled)
 
     # Iterate over genes, finding guides for each
     total_gene_count = len(genes)
@@ -90,15 +94,23 @@ def start_compute(self, params):
       'quantity': quantity,
       'gtex_enabled': gtex_enabled,
       'tissues_disabled': tissues_disabled,
+      'domains_enabled': domains_enabled,
+      'email_address': email_address,
+      'rejected_genes': rejected_genes
     }
 
     # print "Spent {0} seconds generating {1} guides/gene for {2} genes.".format(time.time() - t0, quantity, len(genes))
+
+    # Send results to the user
+    send_completed_run(email_address, start_compute.request.id)
+
     return {
       'current': total_gene_count,
       'total': total_gene_count,
       'status': 'Task completed!',
       'gene_statistics': gene_statistics,
-      'result': result
+      'result': result,
+      'email_address': email_address
     }
 
 @app.route('/generate', methods=['POST'])
@@ -112,7 +124,10 @@ def generate():
   tissues = post.get('tissues')
   gtex_enabled = post.get('gtex_enabled')
   tissues_disabled = post.get('tissues_disabled')
+  domains_enabled = post.get('domains_enabled')
   gene_statistics = post.get('gene_statistics')
+  email_address = post.get('email_address')
+  rejected_genes = post.get('rejected_genes')
 
   # Validations
   if genes == None:
@@ -131,7 +146,10 @@ def generate():
     'tissues': tissues,
     'gtex_enabled': gtex_enabled,
     'tissues_disabled': tissues_disabled,
-    'gene_statistics': gene_statistics
+    'domains_enabled': domains_enabled,
+    'gene_statistics': gene_statistics,
+    'email_address': email_address,
+    'rejected_genes': rejected_genes
   }
 
   task = start_compute.apply_async(args=[params])

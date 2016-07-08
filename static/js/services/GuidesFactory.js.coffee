@@ -6,12 +6,15 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
 
     data: # currently selected
       'genes' : []
+      'rejected_genes': []
       'genome': 'hum'
       'tissues' : []
       'quantity': 60
       'gtex_enabled': true
       'tissues_disabled': true # does the user want to consider *individualized* tissue expression?
+      'domains_enabled': true
       'genesFromFile': []
+      'emailAddress': ''
       'gene_statistics':
         'expected': 0
         'actual': 0
@@ -70,10 +73,15 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
           expected_genes_num = expected_genes_num + this_.data.genesFromFile.length - 1 # subtract "GENES_FROM_FILE holder"
           this_.data.genes.splice(idx, 1) # remove the "GENES_FROM_FILE holder"
           for geneText in this_.data.genesFromFile
+            foundMatch = false
             for gene in this_.available.genes
               if gene.name.toUpperCase() == geneText.toUpperCase() or gene.ensembl_id == geneText
                 this_.data.genes.push(gene)
+                foundMatch = true
                 break
+            if not foundMatch
+              this_.data.rejected_genes.push(geneText)
+
         this_.data.gene_statistics.expected = expected_genes_num
         this_.data.gene_statistics.actual = this_.data.genes.length
         resolve()
@@ -133,6 +141,8 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
         this_.data.gtex_enabled = data.result.gtex_enabled
         this_.data.tissues_disabled = data.result.tissues_disabled
         this_.data.gene_statistics = data.gene_statistics
+        this_.data.domains_enabled = data.result.domains_enabled
+        this_.data.rejected_genes = data.result.rejected_genes
 
         # return the data itself
         deferred.resolve data.result

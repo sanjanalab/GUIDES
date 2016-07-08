@@ -5,12 +5,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
   # Check for task_id
   if $routeParams.task_id?
     $scope.getGuidesPromise = guidesFactory.getComputedGuides($routeParams.task_id)
+
   else
     $scope.generateGuidesPromise = guidesFactory.generateGuides()
-
-  $scope.guidesFactoryData = guidesFactory.data
-  $scope.tissues = guidesFactory.data.tissues
-  $scope.tissues_enabled = not guidesFactory.data.tissues_disabled
 
   # Track Analytics
   Analytics.trackEvent('designer', 'begin', 'genes', guidesFactory.data.genes.length, true, { genes: guidesFactory.data.genes })
@@ -35,50 +32,28 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
   }
 
   expression_colors = [
-        {
-          "fillColor": "#2B333B" # dark color from sidebar
-        },
-        {
-          "fillColor": "#a0a0a0"
-        },
-        {
-          "fillColor": "#bdbdbd"
-        },
-        {
-          "fillColor": "#c7c7c7"
-        },
-        {
-          "fillColor": "#dadada"
-        },
-        {
-          "fillColor": "#f2eaea"
-        }
-      ]
-
-  if $scope.tissues_enabled
-    expression_colors = [
-        {
-          "fillColor": "#2B333B" # dark color from sidebar
-        },
-        {
-          "fillColor": "#51D2B7"
-        },
-        {
-          "fillColor": "#a0a0a0"
-        },
-        {
-          "fillColor": "#bdbdbd"
-        },
-        {
-          "fillColor": "#c7c7c7"
-        },
-        {
-          "fillColor": "#dadada"
-        },
-        {
-          "fillColor": "#f2eaea"
-        }
-      ]
+      {
+        "fillColor": "#2B333B"
+      },
+      {
+        "fillColor": "#EDD6F9"
+      },
+      {
+        "fillColor": "#51D2B7"
+      },
+      {
+        "fillColor": "#FED373"
+      },
+      {
+        "fillColor": "#E7454E"
+      },
+      {
+        "fillColor": "#a0a0a0"
+      },
+      {
+        "fillColor": "#f2eaea"
+      }
+    ]
 
   expression_options = base_options
   guide_options = base_options
@@ -116,9 +91,8 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
     }
   }
 
-  # Change series if we are not going to display median
-  if guidesFactory.data.tissues_disabled
-    $scope.chart_config.expression.series = ['All Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
+  console.log $scope.chart_config.guides.options
+  console.log $scope.chart_config.expression.options
 
   # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive.
   $scope.modifySvgUnit = (unit) ->
@@ -126,10 +100,23 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
     $scope.chart_config.expression.options.barValueSpacing = $scope.svg_unit_global
     $scope.chart_config.guides.options.barValueSpacing = $scope.svg_unit_global
 
+    if angular.element('#exon_graph').length > 0
+      chartwidth = angular.element('#exon_graph')[0].getBoundingClientRect().width
+
+      angular.element('.chart-container').css('width', chartwidth - unit - 22)
+      angular.element('.chart-container').css('margin-left', unit / 2 + 10)
+      return
+
   # Initialize
   $scope.modifySvgUnit(15)
+
+  # For highlighting exons on overlay
   $scope.exonHovered = -1
 
+  $scope.setExonHovered = (val) ->
+    $scope.exonHovered = val
+
+  # restructure the received json
   computeGuidesData = (gene_to_exon) ->
     # $scope.guidesData = guidesData["gene_to_exon"]
     # gene_to_exon = guidesData["gene_to_exon"]
@@ -170,6 +157,15 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
       computeGuidesData(guidesData["gene_to_exon"])
       $scope.gene = $scope.gene_to_exon[0]
       $scope.guidesReady = true
+
+      $scope.guidesFactoryData = guidesFactory.data
+      $scope.tissues = guidesFactory.data.tissues
+      $scope.tissues_enabled = not guidesFactory.data.tissues_disabled
+
+      # Change series if we are not going to display median
+      if guidesFactory.data.tissues_disabled
+        $scope.chart_config.expression.series = ['All Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
+        $scope.chart_config.expression.colors.splice(1,1)
 
       ## I think this is unnecessary, since we filter by order in the template.
       # angular.forEach all_gRNAs, (guides_for_gene, gene_name) ->
@@ -267,6 +263,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
     $scope.gene_to_exon.splice(idx, 1)
     computeGuidesData($scope.gene_to_exon)
 
+  $scope.removeRejectedGene = (idx) ->
+    guidesFactory.data.rejected_genes.splice(idx, 1)
+
   $scope.removeTissue = (idx) ->
     $scope.guidesReady = false
     guidesFactory.data.tissues.splice(idx, 1)
@@ -338,12 +337,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
   # not in usage right now
   # colorBar = (exon, color) ->
   #   $scope.chart_config.guides.colors[0]["fillColor"][exon] = color
-
-  $scope.setExonHovered = (val) ->
-    $scope.exonHovered = val
-
-  $scope.guideMouseLeave = () ->
-    $scope.exonHovered = -1
 
   pad = (n, width, z) ->
     z = z or '0'
