@@ -1,5 +1,4 @@
-<div id="home-page-body">
-  <div id="heroBackground"></div>
+<div id="home-page-body" class="whole-page-blue">
     <div class="preloader">
       <div class="bar"></div>
     </div>
@@ -25,21 +24,28 @@
               <div id="about-page">
               	<div class="col-md-12">
                 	<h3>What is the CRISPR Library Designer?</h3>
-                	<p>CRISPR (clustered regularly interspaced short palindromic repeats)-Cas has enabled new methods for interrogating gene function on a genome-wide scale. Libraries of guide sequences can be used to target CRISPR effectors to different genomic locations for modification.</p>
-                	<p>Recently, genome-scale CRISPR-Cas9 knockout libraries have become a popular method for performing loss-of-function screens. In 2015, our GeCKO library for large scale functional screens, lentiCRISPR V2 became the <a href="http://blog.addgene.org/your-top-requested-plasmid-in-2015">most requested plasmid on Addgene</a>. This fantastic research tool has been requested from the repository nearly 1,000 times in 2015, yet we still received nearly daily requests for custom library constructs.</p>
-                	<p>Therefore, we designed the CRISPR Library Designer: a semi-automated, tissue-specific software tool allowing scientists to design CRISPR knockout libraries as effortlessly as possible, without sacrificing control.</p>
+                	<p>The development of CRISPR (clustered regularly interspaced short palindromic repeat)-associated Cas9 nuclease has enabled new methods for interrogating gene function. With just a simple alteration of the single-guide RNA (sgRNA) or direct repeat (DR) sequence, one can reprogram a nuclease to target different sites in the genome [1]. Genome-scale CRISPR-Cas9 knockout libraries have emerged as popular tools for unbiased, phenotypic screening [2], but technologies for library design in more specific applications have lagged behind. Our GeCKO library for large scale functional screens, lentiCRISPR V2, was requested from the repository nearly 1,000 times in 2015, yet we still receive nearly daily requests for custom library constructs.</p>
+                	<p>Therefore, we designed the CRISPR Library Designer (CLD): a web application for automated, tissue-specific library design, so scientists can design CRISPR knockout libraries as effortlessly as possible, without sacrificing control. CRISPR Library Designer (CLD), a web application for automated, tissue-specific library design.</p>
 
               		<h3>How does it work?</h3>
               		<iframe width="560" height="315" src="https://www.youtube.com/embed/3uApP30Q3QU" frameborder="0" allowfullscreen></iframe>
 
                 	<h3>Technical Specifications</h3>
-                	<p>The software tool proceeds by blasting Ensembl transcripts for the PAM of the chosen enzyme, predicting on-target activity using machine learning models and weighting these results by mRNA expression of each exon (using RNA-seq profiles from the <a href="http://gtexportal.org/home/">GTEx consortium</a> and <a href="http://www.ncbi.nlm.nih.gov/geo/">Gene Expression Omnibus</a>). The user can individually reconfigure the targeted guides/exons and export the selected guides as a CSV spreadsheet, in a format suitable for upload to a custom oligo pool manufacturer, such as <a href="https://www.twistbioscience.com/">Twist Biosciences</a> or <a href="http://www.customarrayinc.com/">CustomArray</a>.</p>
+                	<p>CLD provides a complete pipeline for the design of custom single guide RNA libraries for use in a wide variety of applications. CLD utilizes fast algorithms to search for genome-wide sgRNA binding sites across an assortment of genes. Furthermore, it integrates tissue expression data from the GTEx Consortium [3] and on-target scores from Doench, et al. and Microsoft Azimuth [4-5] to optimize guide selection for specific tissue-based experiments. When possible, CLD targets functional protein domains based on Pfam data [6], as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection [7].</p>
                 	<p>To promote scientific accuracy and development of this technology, we have <a href="https://github.com/joshim5/CRISPR-Library-Designer">open-sourced all code</a> for the CRISPR Library Designer at the open-source repository <a href="https://github.com/joshim5/CRISPR-Library-Designer">GitHub</a>.</p>
                 	<p>For further questions or to report problems, please contact <a href="mailto:cld@mit.edu">cld@mit.edu</a>.</p>
+                  <h3>References</h3>
+                  <ol>
+                  <li>Xue, H. Y., Ji, L. J., Gao, A. M., Liu, P., He, J. D. &amp; Lu, X. J. J. Med. Genet. 2, 91-97 (2015).</li>
+                  <li>Shalem, O., Sanjana, N. E. &amp; Zhang, F. Nat. Rev. Genet. 16, 299-311 (2015).</li>
+                  <li>The GTEx Consortium. Nat. Genet. 6, 580-585 (2013).</li>
+                  <li>Doench, J. G., Fusi, N., Sullender, M., Hegde, M., Vaimberg, E. W., Donovan, K. F., Smith, I., Tothova, Z., Wilen, C., Orchard, R., Virgin, H. W., Listgarten, J. &amp; Root, D. E. Nat. Biotechnol. 2, 184-191 (2016).</li>
+                  <li>Doench, J. G., Hartenian, E., Graham, D. B., Tothova, Z., Hegde, M., Smith, I., Sullender, M., Ebert, B. L., Xavier, R. J. &amp; Root, D. E. Nat. Biotechnol. 12, 1262-1267 (2014).</li>
+                  <li>Finn, R. D., Coggill, P., Eberhardt, R. Y., Eddy, S. R., Mistry, J., Mitchell, A. L., Potter, S. C., Punta, M., Qureshi, M., Sangrador-Vegas, A., Salazar, G. A., Tate, J. &amp; Bateman, A. Nucleic Acids Res. 44, D279-D285 (2015).</li>
+                  <li>Shi, J., Wang, E., Milazzo, J. P., Wang, Z., Kinney, J. B. &amp; Vakoc, C. R. Nat. Biotechnol. 33, 661-667 (2015).</li>
               	</div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
