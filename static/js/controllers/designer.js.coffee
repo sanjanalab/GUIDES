@@ -15,7 +15,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
   # Bar chart setup
   base_options = {
     animation: true,
-    barValueSpacing : $scope.svg_unit_global,
+    barDatasetSpacing : 1,
     responsive: true,
     maintainAspectRatio: false,
     scaleShowHorizontalLines: false,

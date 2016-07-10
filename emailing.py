@@ -16,7 +16,7 @@ def send_completed_run(address, link):
 
   content = """Hello {0},
   CRISPR Library Designer has completed processing your library.
-  Results are available here: http://cld.genome-engineering.org/#/designer/{0}
+  Results are available here: http://cld.genome-engineering.org/#/designer/{1}
   """.format(address, link)
 
   try:
