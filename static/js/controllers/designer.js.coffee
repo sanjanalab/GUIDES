@@ -2,6 +2,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
   $scope.guidesReady = false
   guidesFactory = new GuidesFactory()
 
+  # expose metadata to view
+  $scope.guidesFactoryData = guidesFactory.data
+
   # Check for task_id
   if $routeParams.task_id?
     $scope.getGuidesPromise = guidesFactory.getComputedGuides($routeParams.task_id)
@@ -90,9 +93,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
       ]
     }
   }
-
-  console.log $scope.chart_config.guides.options
-  console.log $scope.chart_config.expression.options
 
   # intitalize the svg_unit. It will be modified later by the drawIndividualExon directive.
   $scope.modifySvgUnit = (unit) ->
