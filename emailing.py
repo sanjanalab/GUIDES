@@ -14,7 +14,10 @@ def send_completed_run(address, link):
   text_subtype = 'plain'
   subject = "CLD Run Completed"
 
-  content = "CRISPR Library Designer has completed processing your library. Results are available here: {0}".format(link)
+  content = """Hello {0},
+  CRISPR Library Designer has completed processing your library.
+  Results are available here: http://cld.genome-engineering.org/#/designer/{0}
+  """.format(address, link)
 
   try:
     msg = MIMEText(content, text_subtype)
