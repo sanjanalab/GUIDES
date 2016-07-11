@@ -37,7 +37,8 @@ FlaskStart.config ['$routeProvider', '$locationProvider', 'AnalyticsProvider', (
   }
   .when "/", {
     templateUrl: "static/partials/home.html",
-    controller: 'IndexCtrl'
+    controller: 'IndexCtrl',
+    css: 'beta-ribbon.css'
   }
   .otherwise {
     redirectTo: "/"
