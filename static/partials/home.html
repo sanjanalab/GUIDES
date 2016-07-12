@@ -40,12 +40,12 @@
                 </h2>
               </div>
               <div class="col-md-4">
-                <h2>Step 1) Experimental setup.</h2>
+                <h2>Step 1: Experimental setup.</h2>
 
                 <input id="fileupload" type="file" ngf-select="" ng-model="file" name="file" ngf-accept="text/plain" ngf-pattern="text/plain" required="" style="display:none">
 
                 <div class="entry_container" tooltip-placement="left" uib-tooltip="Which genes are you targeting? You can drag and drop a comma seperated list of genes (.txt). You can add more later." tooltip-trigger="outsideClick">
-                  <span class="entry_label" id="genes_entry_label">Enter genes or <a href=""onclick="document.getElementById('fileupload').click(); return false">drag and drop</a> a list (.txt).</span>
+                  <span class="entry_label" id="genes_entry_label">enter genes or <a href=""onclick="document.getElementById('fileupload').click(); return false">drag and drop</a> a list (.txt).</span>
                   <div ngf-drop ng-model="file" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="false" ngf-accept="text/plain" ngf-pattern="text/plain" id="genes_container">
                     <ui-select multiple ng-model="guidesFactory.data.genes" theme="bootstrap" limit="10" ng-disabled="disabled" style="width: 100%;  background: none; background-color: transparent">
                     <ui-select-match placeholder="Start typing..."> {{$item.name}}</ui-select-match>
@@ -64,9 +64,9 @@
                 </div>
 
                 <div class="entry_container" tooltip-placement="left" uib-tooltip="How many guides per gene? You can add more later. Choose using the slider or by typing into the number field.">
-                  <span class="entry_label">Library size:</span></br>
+                  <span class="entry_label">library size:</span></br>
                   <div class="the_slider">
-                    <md-content style="margin: 16px 0; padding: 0px 16px; background-color: transparent;">
+                    <md-content style="margin: 7px 0; padding: 0px 5px; background-color: transparent;">
                     <div layout>
                       <md-slider flex min="0" max="100" ng-model="md_slider_quantity" aria-label="red" id="red-slider" class>
                       </md-slider>
@@ -84,28 +84,28 @@
                 </div>
 
                 <div class="entry_container" tooltip-placement="left" uib-tooltip="More species coming soon.">
-                  <span class="entry_label">Target genome:</span>
+                  <span class="entry_label">target genome:</span>
                   <select class="form-control genome-select" name="genomeSelect" ng-model="guidesFactory.data.genome">
                     <option value="hum">Human (Homo sapiens GRCh37)</option>
                   </select>
                 </div>
 
-                <div class="entry_container" style="overflow:auto" tooltip-placement="left" uib-tooltip="We use RNA-seq data from the GTEx Consoritum to target the most constitutively expressed exons among your genes.">
-                  <span class="entry_label">Use expression data to pick exons?</span>
+                <div class="entry_container small" style="overflow:auto" tooltip-placement="left" uib-tooltip="We use RNA-seq data from the GTEx Consoritum to target the most constitutively expressed exons among your genes.">
+                  <span class="entry_label small">Use expression data to pick exons?</span>
                   <form>
-                    <switch id="gtex_enabled" name="gtex_enabled" ng-model="guidesFactory.data.gtex_enabled" class="green"></switch>
+                    <switch id="gtex_enabled" name="gtex_enabled" ng-model="guidesFactory.data.gtex_enabled" class="green" size="small"></switch>
                   </form>
                 </div>
 
-                <div class="entry_container" style="overflow:auto" ng-show="guidesFactory.data.gtex_enabled" tooltip-placement="left" uib-tooltip="If designing a library for specific tissues, unselect this option to enter your targeted tissues.">
-                  <span class="entry_label">Average data from all tissues?</span>
+                <div class="entry_container small" style="overflow:auto" ng-show="guidesFactory.data.gtex_enabled" tooltip-placement="left" uib-tooltip="If designing a library for specific tissues, unselect this option to enter your targeted tissues.">
+                  <span class="entry_label small">Average data from all tissues?</span>
                   <form>
-                    <switch id="tissues_enabled" name="tissues_enabled" ng-model="guidesFactory.data.tissues_disabled" class="green"></switch>
+                    <switch id="tissues_enabled" name="tissues_enabled" ng-model="guidesFactory.data.tissues_disabled" class="green" size="small"></switch>
                   </form>
                 </div>
 
-                <div class="entry_container" ng-hide="guidesFactory.data.tissues_disabled" tooltip-placement="left" uib-tooltip="Which tissues are you targeting? You can add more later." tooltip-trigger="outsideClick" ng-class="{'genes-warning': tissuesWarning}">
-                  <span class="entry_label">Tissues:</span>
+                <div class="entry_container small" ng-hide="guidesFactory.data.tissues_disabled" tooltip-placement="left" uib-tooltip="Which tissues are you targeting? You can add more later." tooltip-trigger="outsideClick" ng-class="{'genes-warning': tissuesWarning}">
+                  <span class="entry_label small">Tissues:</span>
                   <ui-select multiple ng-model="guidesFactory.data.tissues" theme="bootstrap" limit="10" style="width: 100%; background: none; background-color: transparent">
                     <ui-select-match placeholder="Select tissues...">{{$item}}</ui-select-match>
                     <ui-select-choices repeat="tissue in guidesFactory.available.tissues | filter: $select.search | limitTo: 10">
@@ -115,18 +115,18 @@
                   <div ng-show="tissuesWarning" class="bottom-warning-text">Please enter a list of tissues.</div>
                 </div>
 
-                <div class="entry_container" style="overflow:auto" tooltip-placement="left" uib-tooltip="When possible, CLD can target functional protein domains based on Pfam data, as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection.">
-                  <span class="entry_label">Target protein domains?</span>
+                <div class="entry_container small" style="overflow:auto" tooltip-placement="left" uib-tooltip="When possible, CLD can target functional protein domains based on Pfam data, as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection.">
+                  <span class="entry_label small">Target protein domains?</span>
                   <form>
-                    <switch id="domains_enabled" name="domains_enabled" ng-model="guidesFactory.data.domains_enabled" class="green"></switch>
+                    <switch id="domains_enabled" name="domains_enabled" ng-model="guidesFactory.data.domains_enabled" class="green" size="small"></switch>
                   </form>
                 </div>
 
-                <div class="entry_container" tooltip-placement="left" uib-tooltip="Provide your email address so we can email you a link to access results!" tooltip-trigger="outsideClick" ng-class="{'genes-warning': emailWarning}">
+                <div class="entry_container" tooltip-placement="left" uib-tooltip="Provide your email address so we can email you a link to access results!" tooltip-trigger="outsideClick">
                   <span class="entry_label">Email Address:</span>
                   <div class="ui-select-container ui-select-multiple ui-select-bootstrap dropdown form-control ng-valid" theme="bootstrap" style="width: 100%;  background: none; background-color: transparent" aria-disabled="false" aria-invalid="false">
                     <div>
-                      <input type="text" autocomplete="false" autocorrect="off" autocapitalize="off" spellcheck="false" class="ui-select-search input-xs ng-valid ng-dirty ng-touched ng-valid-parse" placeholder="Start typing..." ng-model="guidesFactory.data.email_address" aria-label="Select box" ondrop="return false;" aria-hidden="false" aria-disabled="false" aria-invalid="false" style="width: 225px;">
+                      <input type="text" autocomplete="false" autocorrect="off" autocapitalize="off" spellcheck="false" class="ui-select-search input-xs ng-valid ng-dirty ng-touched ng-valid-parse email-box" placeholder="Start typing..." ng-model="guidesFactory.data.email_address" aria-label="Select box" ondrop="return false;" aria-hidden="false" aria-disabled="false" aria-invalid="false">
                     </div>
                   </div>
                   <div ng-show="emailWarning" class="bottom-warning-text">Please enter a valid email address.</div>

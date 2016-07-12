@@ -1,12 +1,12 @@
 FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactory', 'Upload', ($scope, $http, $timeout, GuidesFactory, Upload) ->
 
   # Color change on hover (controlled from directive)
-  $scope.learn_more_fill = "#fff"
+  $scope.learn_more_fill = "#4A4A4A"
   $scope.learn_more_to_black = () ->
     $scope.learn_more_fill = "#000"
 
   $scope.learn_more_to_white = () ->
-    $scope.learn_more_fill = "#fff"
+    $scope.learn_more_fill = "#4A4A4A"
 
   # tissuesAvailable and genesAvailable is prepared here
   # selected results is placed directly back into factory

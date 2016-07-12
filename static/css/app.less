@@ -83,7 +83,7 @@
 
 .ui-select-container input {
   border: none;
-  color: #fff;
+  color: #4A4A4A;
 }
 
 md-content .layout-row input {
@@ -91,7 +91,7 @@ md-content .layout-row input {
 }
 
 .slider-descriptors {
-  color: #fff;
+  color: #4A4A4A;
   width: 100%;
 }
 
@@ -118,10 +118,35 @@ md-content .layout-row input {
   padding-top: 28px;
 }
 
+#genes_container>div:before {
+  content:"";
+  display:block;
+  position:absolute;
+  z-index:-1;
+  top:0px;
+  left:0px;
+  right:0px;
+  bottom:0px;
+  border:2px solid #CDCDCD;
+}
+
 #genes_container > div {
-  outline: 1px dashed #FF4081;
+  outline: 5px solid #EDEDED;
   margin-bottom: 5px;
   padding-bottom: 20px;
+  position: relative;
+  z-index: 10;
+  margin-top: 5px;
+}
+
+.email-box {
+  outline: 2px solid #EDEDED !important;
+  margin-left: 5px;
+  width: 220px;
+}
+
+.email-box:focus {
+  outline-offset: 0;
 }
 
 #genes_entry_label {
@@ -189,16 +214,18 @@ md-content .layout-row input {
 }
 
 .entry_label {
-  color: #fff;
+  color: #4A4A4A;
   font-weight: 300;
-  font-size: 19px;
+  font-size: 18px;
+  display: block;
+  float: left;
+  overflow: hidden;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+}
 
-      display: block;
-    float: left;
-    overflow: hidden;
-    box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-
+.entry_label.small {
+  font-size: 14px;
 }
 
 .entry_text {
@@ -219,9 +246,14 @@ md-content .layout-row input {
   padding-bottom: 2px;
 }
 
+.entry_container.small {
+  margin-right: 92px;
+}
+
 .entry_label a {
   border-bottom: 1px solid #ccc;
-  color: #fff;
+  color: #4A4A4A;
+  font-weight: 400;
 }
 
 .entry_container a, .entry_container a div {
@@ -260,7 +292,7 @@ div.ui-select-container {
 
 .social-links a {
   padding-right: 15px;
-  color: #fff;
+  color: #4A4A4A;
   opacity: 0.5;
 }
 
@@ -282,7 +314,7 @@ div.ui-select-container {
 .logo-desc {
   position: relative;
   margin-left: -8px;
-    color: #fff;
+    color: #4A4A4A;
 }
 
 #hero {
@@ -318,7 +350,7 @@ div.ui-select-container {
   left: 0;
   width: 100%;
   height: calc(100%);
-  background-color: #00b5ec;
+  background-color: #ffffff;
   transition: all .2s ease-in-out;
 }
 
@@ -380,16 +412,16 @@ div.ui-select-container {
 
 #hero .tagline h1 {
   font-size: 62px;
-  font-weight: 300;
-  color: white;
+  font-weight: 400;
+  color: #4A4A4A;
   line-height: 1.2;
   margin-bottom: 74px;
 }
 
 #hero .tagline h2 {
   font-size: 28px;
-  font-weight: 300;
-  color: #b1edff;
+  font-weight: 500;
+  color: #4A4A4A;
 }
 
 svg path, svg polygon {
@@ -400,7 +432,7 @@ svg path, svg polygon {
 
 #hero .tagline h2 a {
   color: white;
-  font-weight: 500;
+  font-weight: 600;
   text-decoration: none;
   transition: color 0.1s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   -webkit-transition: color 0.2s ease-in-out,transform 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55);
@@ -833,19 +865,19 @@ li:hover .sidebar-primary-item-action {
 
 // Placeholder text for genes and tissues
 #hero ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-  color: #b1edff;
+  color: #4A4A4A;
 }
 #hero :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  color: #b1edff;
+  color: #4A4A4A;
 }
 #hero ::-moz-placeholder { /* Mozilla Firefox 19+ */
-  color: #b1edff;
+  color: #4A4A4A;
 }
 #hero :-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #b1edff;
+  color: #4A4A4A;
 }
 #hero :placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
-  color: #b1edff;
+  color: #4A4A4A;
 }
 
 // Tissue switch
