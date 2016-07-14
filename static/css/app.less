@@ -256,7 +256,16 @@ md-content .layout-row input {
   font-weight: 400;
 }
 
-.entry_container a, .entry_container a div {
+.entry_container a {
+  text-decoration: none;
+  z-index: 5000;
+}
+
+.entry_container a:hover {
+  color: #000;
+}
+
+.entry_container a div {
   z-index: 5000;
 }
 
@@ -294,6 +303,7 @@ div.ui-select-container {
   padding-right: 15px;
   color: #4A4A4A;
   opacity: 0.5;
+  text-decoration: none;
 }
 
 .social-links a:hover {
@@ -367,8 +377,8 @@ div.ui-select-container {
 #hero {
   background: transparent;
   min-height: 100%;
-  padding-top: 70px;
-  padding-bottom: 85px;
+  padding-top: 35px;
+  padding-bottom: 65px;
 }
 
 .overlays-wrapper {
@@ -837,18 +847,18 @@ li:hover .sidebar-primary-item-action {
 }
 
 .inner-arrow {
-    position: absolute;
-    top: 0;
-    margin: auto;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    height: 75px;
-    width: 75px;
+  position: absolute;
+  top: 0;
+  margin: auto;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  height: 75px;
+  width: 75px;
 }
 
 #hero .down span.arrow {
-  color: #333;
+  color: #fff;
   width: 75px;
   height: 75px;
   position: relative;
@@ -857,7 +867,7 @@ li:hover .sidebar-primary-item-action {
   line-height: 75px;
   border-radius: 37.5px;
   border-radius: 50%;
-  background: #fff200;
+  background: #000;
   box-shadow: 0 6px 20px 0 rgba(0,0,0,0.09),0 8px 17px 0 rgba(0,0,0,0.08);
   -webkit-transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
   transition: box-shadow .1s ease-in-out, transform .1s ease-in-out;
@@ -865,19 +875,19 @@ li:hover .sidebar-primary-item-action {
 
 // Placeholder text for genes and tissues
 #hero ::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-  color: #4A4A4A;
+  color: #AAA6A6;
 }
 #hero :-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  color: #4A4A4A;
+  color: #AAA6A6;
 }
 #hero ::-moz-placeholder { /* Mozilla Firefox 19+ */
-  color: #4A4A4A;
+  color: #AAA6A6;
 }
 #hero :-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #4A4A4A;
+  color: #AAA6A6;
 }
 #hero :placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
-  color: #4A4A4A;
+  color: #AAA6A6;
 }
 
 // Tissue switch
