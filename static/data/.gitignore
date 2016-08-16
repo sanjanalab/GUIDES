@@ -4,8 +4,14 @@ GRCh37_exons/
 GRCh37_guides/
 GRCh37_guides_cpickle/
 GRCh37_guides_msgpack_Azimuth/
+GRCh37_guides_msgpack_Azimuth_domains/
 GRCh37_guides_msgpack_Doench/
 GRCh38/
+GRCm38/
+GRCm38_exons/
+GRCm38_guides_msgpack_Azimuth/
+GRCm38_guides_msgpack_Azimuth_domains/
+df_gene_normalized_cpickle/
 gtex/
 compare_guides_exons.txt
 GRCH37_exons_list.txt
