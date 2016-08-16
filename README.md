@@ -43,7 +43,7 @@ export SMTPpassword=YOUR_SMTP_PASSWORD
 Then, run the following 3 commands, in this order (one in each window):
 
 1. `./run-redis.sh`
-2. `celery worker -A app.celery -f celery_log.txt --detach —autoreload`
+2. `celery worker -A app.celery -f celery_log.txt --detach --autoreload`
 3. `./run.sh`
 
 Detailed instructions on how to install, configure, and get the project running.

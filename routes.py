@@ -96,7 +96,7 @@ def start_compute_mouse(self, params):
     }
 
     # Send results to the user
-    send_completed_run(email_address, start_compute.request.id)
+    send_completed_run(email_address, start_compute_mouse.request.id)
 
     return {
       'current': total_gene_count,
@@ -188,8 +188,6 @@ def generate():
 
   print species
   if species == "mus":
-    print "hi in mouse"
-    print genes
     params = {
       'genes': genes,
       'species': species,
