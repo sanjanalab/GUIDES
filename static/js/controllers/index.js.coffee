@@ -75,6 +75,16 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
       else
         console.log $scope.file.$error
 
+  # Refresh on genome change
+  $scope.$watch (() -> $scope.guidesFactory.data.genome), (current, original) ->
+    console.log "changed genome to " + current
+    $scope.guidesFactory.data.genes = []
+    $scope.guidesFactory.data.rejected_genes = []
+    if current == 'hum' # human
+      $scope.guidesFactory.available.genes = $scope.guidesFactory.available.human_genes
+    else # mouse
+      $scope.guidesFactory.available.genes = $scope.guidesFactory.available.mouse_genes
+
   # Slider changes
   $scope.md_slider_quantity = 20
   slider_vals = [1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100]

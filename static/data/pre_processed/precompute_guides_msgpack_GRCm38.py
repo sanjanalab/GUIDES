@@ -59,7 +59,7 @@ with open(azimuth_model_file, 'rb') as f:
 # Create interval tree for functional domains
 print "constructing interval tuples"
 interval_tuples_dict = {}
-ucsc_pfam_f = '../functional_domains/ucsc_pfam.txt'
+ucsc_pfam_f = '../functional_domains/ucsc_pfam_GRCm38.txt'
 with open(ucsc_pfam_f, 'r') as pfam_csv:
   csvreader = csv.reader(pfam_csv, delimiter='\t')
   next(csvreader) # skip header
@@ -79,7 +79,7 @@ interval_trees_dict = {}
 for k, v in interval_tuples_dict.iteritems():
   interval_trees_dict[k] = IntervalTree.from_tuples(v)
 
-modPAM = params["PAM"].upper()
+modPAM = params["PAM"]
 modPAM = modPAM.replace('N', '[ATCG]')
 params["modPAM"] = modPAM
 params["PAM_len"] = len(params["PAM"])
@@ -87,18 +87,20 @@ params["PAM_len"] = len(params["PAM"])
 revcompl = lambda x: ''.join([{'A':'T','C':'G','G':'C','T':'A','N':'N'}[B] for B in x][::-1])
 
 print "constructing refGene"
-refGeneFilename = '../gtex/refGene.txt'
+refGeneFilename = '../gtex/refGene_GRCm38.txt'
 refGene = pd.read_csv(refGeneFilename, sep="\t")
 refGene.columns=['','name','chrom','strand','txStart','txEnd','cdsStart','cdsEnd','exonCount','exonStarts','exonEnds','id','name2','cdsStartStat','cdsEndStat','exonFrames']
+
 refGene["exonStarts"] = refGene.apply(lambda x: x['exonStarts'].split(',')[:-1], axis=1)
 refGene["exonEnds"] = refGene.apply(lambda x: x['exonEnds'].split(',')[:-1], axis=1)
 refGene["exonFrames"] = refGene.apply(lambda x: x['exonFrames'].split(',')[:-1], axis=1)
 
-def gene_exon_coords(gene, exon):
+def gene_exon_coords(gene_name, exon):
   try:
-    start = list(refGene.loc[refGene['name'] == gene]['exonStarts'])[0][exon]
-    end = list(refGene.loc[refGene['name'] == gene]['exonEnds'])[0][exon]
-    chrom = list(refGene.loc[refGene['name'] == gene]['chrom'])[0]
+    location = refGene.loc[refGene['name2'] == gene_name]
+    start = list(location['exonStarts'])[-1][exon]
+    end = list(location['exonEnds'])[-1][exon]
+    chrom = list(location['chrom'])[-1]
     return {
       'start': int(start),
       'end': int(end),
@@ -109,33 +111,33 @@ def gene_exon_coords(gene, exon):
 
 def gene_exon_file(gene, exon):
   filename = gene + "_" + str(exon)
-  seq_path = os.path.join('../GRCh37_exons/', filename)
+  seq_path = os.path.join('../GRCm38_exons/', filename)
   if os.path.isfile(seq_path):
     with open(seq_path) as infile:
-      return infile.read()
+      return infile.read().upper()
   else:
     return None
 
-with open('genes_list.json') as genes_list_file:
-  genes_list = json.load(genes_list_file)
+with open('genes_list_GRCm38.txt') as genes_list_file:
+  genes_list = genes_list_file.read().split('\n')
   # gene format: {"ensembl_id": "ENSG00000261122.2", "name": "5S_rRNA", "description": ""}
-  for gene in genes_list:
+  for gene_name in genes_list:
     exon = 0
-    seq = gene_exon_file(gene["ensembl_id"], exon)
-    coords = gene_exon_coords(gene["ensembl_id"], exon)
-    while seq:
+    seq = gene_exon_file(gene_name, exon)
+    coords = gene_exon_coords(gene_name, exon)
+    while seq and coords:
       # Check if we haven't done this in a preivous run of the program
-      outfile_name = gene["ensembl_id"] + "_" + str(exon) + ".p"
-      folder = '../GRCh37_guides_msgpack_' + params["scoring"] + '/'
+      outfile_name = gene_name + "_" + str(exon) + ".p"
+      folder = '../GRCm38_guides_msgpack_' + params["scoring"] + '/'
       if params['functional_domains']:
-        folder = '../GRCh37_guides_msgpack_' + params['scoring'] + '_domains/'
+        folder = '../GRCm38_guides_msgpack_' + params['scoring'] + '_domains/'
       output_path = os.path.join(folder, outfile_name)
 
       if os.path.isfile(output_path):
         # prepare next exon
         exon += 1
-        seq = gene_exon_file(gene["ensembl_id"], exon)
-        coords = gene_exon_coords(gene["ensembl_id"], exon)
+        seq = gene_exon_file(gene_name, exon)
+        coords = gene_exon_coords(gene_name, exon)
         continue
 
       q = PriorityQueue()
@@ -163,7 +165,7 @@ with open('genes_list.json') as genes_list_file:
         else:
           protospacer = seq[PAM_start+params["PAM_len"]:PAM_start+params["PAM_len"]+params["protospacer_len"]]
           PAM = seq[PAM_start:PAM_start+params["PAM_len"]]
-        potential_gRNA = GuideRNA(selected, PAM_start-params["protospacer_len"], protospacer, PAM, score, exon, gene["ensembl_id"], gene["name"], domain)
+        potential_gRNA = GuideRNA(selected, PAM_start-params["protospacer_len"], protospacer, PAM, score, exon, gene_name, gene_name, domain)
 
         if domain:
           domain_q.put(potential_gRNA)
@@ -187,9 +189,9 @@ with open('genes_list.json') as genes_list_file:
         # Functional domains currently only supported for Cas9.
         # This needs to be modified for other genome editing proteins.
         domain = None
-        if params["PAM"] == "NGG": # spCas9
+        if params["PAM"] == "NGG" and params["functional_domains"]: # spCas9
           cut_site = coords['start'] + m.start() - 3
-          chrom = 'chr' + coords['chrom']
+          chrom = coords['chrom']
           if chrom in interval_trees_dict:
             domain_matches = list(interval_trees_dict[chrom][cut_site])
             if len(domain_matches) > 0:
@@ -207,9 +209,9 @@ with open('genes_list.json') as genes_list_file:
         # Functional domains currently only supported for Cas9.
         # This needs to be modified for other genome editing proteins.
         domain = None
-        if params["PAM"] == "NGG": #spCas9
+        if params["PAM"] == "NGG" and params["functional_domains"]: #spCas9
           cut_site = coords['end'] - m.start() + 3
-          chrom = 'chr' + coords['chrom']
+          chrom = coords['chrom']
           if chrom in interval_trees_dict:
             domain_matches = list(interval_trees_dict[chrom][cut_site])
             if len(domain_matches) > 0:
@@ -228,12 +230,12 @@ with open('genes_list.json') as genes_list_file:
         gRNA = q.get()
         gRNAs.append(gRNA.serialize_for_display())
         count = count + 1
-      outfile_name = gene["ensembl_id"] + "_" + str(exon) + ".p"
+      outfile_name = gene_name + "_" + str(exon) + ".p"
       if domain_count > 0:
         print "for {0} we had {1} domain and {2} ordinary guides.".format(outfile_name, domain_count, count - domain_count)
-      folder = '../GRCh37_guides_msgpack_' + params['scoring'] + '/'
+      folder = '../GRCm38_guides_msgpack_' + params['scoring'] + '/'
       if params['functional_domains']:
-        folder = '../GRCh37_guides_msgpack_' + params['scoring'] + '_domains/'
+        folder = '../GRCm38_guides_msgpack_' + params['scoring'] + '_domains/'
       output_path = os.path.join(folder, outfile_name)
       with open(output_path,  'w') as outfile:
         # Reverse gRNAs list.
@@ -242,5 +244,5 @@ with open('genes_list.json') as genes_list_file:
 
       # prepare next exon
       exon += 1
-      seq = gene_exon_file(gene["ensembl_id"], exon)
-      coords = gene_exon_coords(gene["ensembl_id"], exon)
+      seq = gene_exon_file(gene_name, exon)
+      coords = gene_exon_coords(gene_name, exon)

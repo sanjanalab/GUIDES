@@ -189,7 +189,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
   #$scope.all_gRNAs = all_gRNAs
   else
     $scope.generateGuidesPromise.then (task_id) ->
-      console.log 'generateguidepromise finished with task_id = ' + task_id
       $location.path('/designer/' + task_id)
 
   $scope.setGene = (idx) ->
@@ -216,28 +215,30 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
       guides_count = ($filter('filter')(exon.gRNAs, {selected:true}, true)).length
       guides_data.push guides_count
     angular.forEach $scope.gene.exons, (exon, key) ->
-      if guidesFactory.data.tissues_disabled # don't use median
-        expression_data[0].push (exon.expression.overall / max_expression).toFixed(2)
-        expression_data[1].push (exon.expression.brain / max_expression).toFixed(2)
-        expression_data[2].push (exon.expression.heart / max_expression).toFixed(2)
-        expression_data[3].push (exon.expression.kidney / max_expression).toFixed(2)
-        expression_data[4].push (exon.expression.liver / max_expression).toFixed(2)
-        expression_data[5].push (exon.expression.skin / max_expression).toFixed(2)
-      else
-        expression_data[0].push (exon.expression.overall / max_expression).toFixed(2)
-        expression_data[1].push (exon.expression.median / max_expression).toFixed(2)
-        expression_data[2].push (exon.expression.brain / max_expression).toFixed(2)
-        expression_data[3].push (exon.expression.heart / max_expression).toFixed(2)
-        expression_data[4].push (exon.expression.kidney / max_expression).toFixed(2)
-        expression_data[5].push (exon.expression.liver / max_expression).toFixed(2)
-        expression_data[6].push (exon.expression.skin / max_expression).toFixed(2)
+      if exon.expression
+        if guidesFactory.data.tissues_disabled # don't use median
+          expression_data[0].push (exon.expression.overall / max_expression).toFixed(2)
+          expression_data[1].push (exon.expression.brain / max_expression).toFixed(2)
+          expression_data[2].push (exon.expression.heart / max_expression).toFixed(2)
+          expression_data[3].push (exon.expression.kidney / max_expression).toFixed(2)
+          expression_data[4].push (exon.expression.liver / max_expression).toFixed(2)
+          expression_data[5].push (exon.expression.skin / max_expression).toFixed(2)
+        else
+          expression_data[0].push (exon.expression.overall / max_expression).toFixed(2)
+          expression_data[1].push (exon.expression.median / max_expression).toFixed(2)
+          expression_data[2].push (exon.expression.brain / max_expression).toFixed(2)
+          expression_data[3].push (exon.expression.heart / max_expression).toFixed(2)
+          expression_data[4].push (exon.expression.kidney / max_expression).toFixed(2)
+          expression_data[5].push (exon.expression.liver / max_expression).toFixed(2)
+          expression_data[6].push (exon.expression.skin / max_expression).toFixed(2)
       expression_labels.push('Exon ' + (key+1))
       guide_labels.push('') # empty labels
 
     $scope.chart_config.expression.labels = expression_labels
+    $scope.chart_config.expression.data = expression_data
+
     $scope.chart_config.guides.labels = guide_labels
     $scope.chart_config.guides.data = [guides_data]
-    $scope.chart_config.expression.data = expression_data
 
   # returns the actual exons
   $scope.exonsUtilized = (gene) ->

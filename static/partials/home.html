@@ -68,7 +68,7 @@
                   <div class="the_slider">
                     <md-content style="margin: 7px 0; padding: 0px 5px; background-color: transparent;">
                     <div layout>
-                      <md-slider flex min="0" max="100" ng-model="md_slider_quantity" aria-label="red" id="red-slider" class>
+                      <md-slider flex min="1" max="100" ng-model="md_slider_quantity" aria-label="red" id="red-slider" class>
                       </md-slider>
                       <div flex="20" layout layout-align="center center">
                         <input flex type="number" ng-model="guidesFactory.data.quantity" aria-label="red" aria-controls="red-slider">
@@ -87,17 +87,18 @@
                   <span class="entry_label">target genome:</span>
                   <select class="form-control genome-select" name="genomeSelect" ng-model="guidesFactory.data.genome">
                     <option value="hum">Human (Homo sapiens GRCh37)</option>
+                    <option value="mus">Mouse (Mus musculus GRCm38)</option>
                   </select>
                 </div>
 
-                <div class="entry_container small" style="overflow:auto" tooltip-placement="left" uib-tooltip="We use RNA-seq data from the GTEx Consoritum to target the most constitutively expressed exons among your genes.">
+                <div class="entry_container small" style="overflow:auto" ng-show="guidesFactory.data.genome == 'hum'" tooltip-placement="left" uib-tooltip="We use RNA-seq data from the GTEx Consoritum to target the most constitutively expressed exons among your genes.">
                   <span class="entry_label small">Use expression data to pick exons?</span>
                   <form>
                     <switch id="gtex_enabled" name="gtex_enabled" ng-model="guidesFactory.data.gtex_enabled" class="green" size="small"></switch>
                   </form>
                 </div>
 
-                <div class="entry_container small" style="overflow:auto" ng-show="guidesFactory.data.gtex_enabled" tooltip-placement="left" uib-tooltip="If designing a library for specific tissues, unselect this option to enter your targeted tissues.">
+                <div class="entry_container small" style="overflow:auto" ng-show="guidesFactory.data.gtex_enabled && guidesFactory.data.genome == 'hum'" tooltip-placement="left" uib-tooltip="If designing a library for specific tissues, unselect this option to enter your targeted tissues.">
                   <span class="entry_label small">Average data from all tissues?</span>
                   <form>
                     <switch id="tissues_enabled" name="tissues_enabled" ng-model="guidesFactory.data.tissues_disabled" class="green" size="small"></switch>

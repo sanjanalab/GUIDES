@@ -2,6 +2,8 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
   class GuidesFactory
     available: # can select
       'genes': [] # set later by $http in constructor
+      'human_genes': []
+      'mouse_genes': []
       'tissues': ['Thyroid', 'Testis', 'Cervix Uteri', 'Adipose Tissue', 'Breast', 'Vagina', 'Nerve', 'Pituitary', 'Stomach', 'Fallopian Tube', 'Bone Marrow', 'Bladder', 'Blood', 'Colon', 'Prostate', 'Pancreas', 'Blood Vessel', 'Liver', 'Spleen', 'Small Intestine', 'Uterus', 'Ovary', 'Muscle', 'Heart', 'Adrenal Gland', 'Brain', 'Salivary Gland', 'Lung', 'Skin', 'Esophagus', 'Kidney']
 
     data: # currently selected
@@ -61,7 +63,11 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
       if this.available.genes.length == 0 # implies we have not yet preloaded
         this_ = this
         $http.get('/static/data/pre_processed/genes_list.json').then (res) ->
-          this_.available.genes = res.data
+          this_.available.human_genes = res.data
+          this_.available.genes = this_.available.human_genes # only once on constructor
+          this_.data.genes = []
+        $http.get('/static/data/pre_processed/genes_list_GRCm38.txt').then (res) ->
+          this_.available.mouse_genes = res.data
           this_.data.genes = []
 
     prepareGenesFromFile: () ->
@@ -135,14 +141,15 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
       this_ = this
 
       this.updateProgress(task_id).then (data) ->
+        this_.data.genome = data.result.genome
         this_.data.genes = data.result.genes
         this_.data.tissues = data.result.tissues
         this_.data.quantity = data.result.quantity
-        this_.data.gtex_enabled = data.result.gtex_enabled
-        this_.data.tissues_disabled = data.result.tissues_disabled
-        this_.data.gene_statistics = data.gene_statistics
         this_.data.domains_enabled = data.result.domains_enabled
         this_.data.rejected_genes = data.result.rejected_genes
+        this_.data.gene_statistics = data.gene_statistics
+        this_.data.gtex_enabled = data.result.gtex_enabled
+        this_.data.tissues_disabled = data.result.tissues_disabled
 
         # return the data itself
         deferred.resolve data.result

@@ -1,30 +1,80 @@
-# CRISPR Library Designer
+# Graphical User Interface for DNA Editing Screens (GUIDES)
 
-A new workflow for the custom design of CRISPR Libraries.
+**Description**:  Genome-scale CRISPR-Cas9 knockout libraries have emerged as popular tools for unbiased, phenotypic screening but easy-to-use software for designing customized guide RNA libraries has lagged behind. GUIDES is a web application for automated, tissue-specific library design. It integrates on-target scores, expression data, and protein structure into an easily accessible web interface.
 
-To run the server locally, follow these steps.
+  - **Technology stack**: Python/Flask backend with Angular.js front-end.
+  - **Status**:  Beta (1.0)
+  - **Links to production or demo instances**: Hosted on Zhang Lab's [Genome Engineering](guides.genome-engineering.org) website.
+  - Recently, library design tools such as CRISPR Library Designer have used on-target efficiency scoring to help automate guide design. In addition to on-target scores, our tool integrates expression data and protein structure, while also providing a more easily accessible web interface.
 
-1) Execute
-git clone https://github.com/joshim5/CRISPR-Library-Designer.git
 
-2a) Download and unzip the two tarballs from my Dropbox directory, https://www.dropbox.com/sh/pfn4f60wg13sjt5/AADb57WJdkMbWzNZR3Qu_C07a?dl=0. 
+**Screenshots**:
 
-2b) Make sure the resulting directories are called gtex/ and pre_processed/.
+![](https://raw.githubusercontent.com/cfpb/open-source-project-template/master/screenshot.png)
 
-2c) Move gtex/ and pre_processed/ to CRISPR-Library-Designer/static/data/.
 
-3) Download the GRCh37 sequences from ensembl. Put the tarballs inside CRISPR-Library-Designer/static/data/GRCh37/.
+## Dependencies
 
-4) In termainl, naviate to CRISPR-Library-Designer/. Execute
-pip install -r requirements.txt
+Most of the front-end code is written in Coffeescript.
 
-5) Execute these commands:
-export PORT=8000
-export DEV=true
+Redis/Celery are used for local storage.
 
-6)Execute
-./run.sh
+Static data files which are too large for hosting on GitHub must also be added. Installation is described below.
 
-Fainlly, open localhost:8000 in your browser and you'll see the library designer :)
+## Installation
 
-- Joshua Meier, Zhang Lab, 2015
+After pulling this repository, copy `data/` from the [Zhang Lab Dropbox]() and move it to `CRISPR_Library_Design/static`.
+
+Alternatively, run [./install.sh](install.sh).
+
+## Usage
+
+Next, open 3 terminal windows. In each window, run the following commands:
+
+```bash
+source venv/bin/activate
+export DEV=false
+export PORT=YOUR_PORT
+export SMTPserver=YOUR_SMTP_SERVER
+export SMTPsender=donotreply@YOUR_DOMAIN
+export SMTPpassword=YOUR_SMTP_PASSWORD
+```
+
+Then, run the following 3 commands, in this order (one in each window):
+
+1. `./run-redis.sh`
+2. `celery worker -A app.celery -f celery_log.txt --detach —autoreload`
+3. `./run.sh`
+
+Detailed instructions on how to install, configure, and get the project running.
+This should be frequently tested to ensure reliability. Alternatively, link to
+a separate [INSTALL](INSTALL.md) document.
+
+## How to test the software
+
+Code for running the tests in our [manuscript]() is located in `static/data/functional_tests`. Some data analysis is required to produce the plots included in our paper.
+
+## Known issues
+
+None currently.
+
+## Getting help
+
+Feel free to reach out to the Zhang Lab team at [cld@mit.edu](cld@mit.edu).
+
+**Example**
+
+Here is an [example library]() targeting 500 genes involved in chromatin regulation with 6 guides per gene.
+
+## Getting involved
+
+Please [get in touch](cld@mit.edu) if you are interested in contributing, so we can coordinate our efforts. In particular, we are interested in expanding our tool to include more species.
+
+----
+
+## Open source licensing info
+Copyright (c) 2015-2016 Joshua Meier. Released under AGPLv3. See LICENSE.txt for details.
+
+If you're interested in getting access to this system under a different license, please contact me.
+
+----

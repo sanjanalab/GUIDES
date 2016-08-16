@@ -12,11 +12,11 @@ def send_completed_run(address, link):
   destination = [address, "cld.history@gmail.com"]
 
   text_subtype = 'plain'
-  subject = "CLD Run Completed"
+  subject = "GUIDES Run Completed"
 
   content = """Hello {0},
-  CRISPR Library Designer has completed processing your library.
-  Results are available here: http://cld.genome-engineering.org/#/designer/{1}
+  GUIDES (Graphical User Interface for DNA Editing Screens) has completed processing your library.
+  Results are available here: http://guides.genome-engineering.org/#/designer/{1}
   """.format(address, link)
 
   try:
