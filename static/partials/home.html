@@ -15,8 +15,8 @@
                 <div class="social-links">
                   <a href="/#/about" class="top-left-link">About</a>
                   <a href="http://zlab.mit.edu/" class="top-left-link">Team</a>
-                  <a href="mailto:cld@mit.edu" class="top-left-link">Contact Us</a>
-                  <a href="https://github.com/joshim5/CRISPR-Library-Designer/issues" class="top-left-link">Report a Bug</a>
+                  <a href="mailto:guides@mit.edu" class="top-left-link">Contact Us</a>
+                  <a href="https://github.com/fengzhanglab/GUIDES/issues" class="top-left-link">Report a Bug</a>
                 </div>
               </div>
             </div>
@@ -116,7 +116,7 @@
                   <div ng-show="tissuesWarning" class="bottom-warning-text">Please enter a list of tissues.</div>
                 </div>
 
-                <div class="entry_container small" style="overflow:auto" tooltip-placement="left" uib-tooltip="When possible, CLD can target functional protein domains based on Pfam data, as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection.">
+                <div class="entry_container small" style="overflow:auto" tooltip-placement="left" uib-tooltip="When possible, GUIDES can target functional protein domains based on Pfam data, as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection.">
                   <span class="entry_label small">Target protein domains?</span>
                   <form>
                     <switch id="domains_enabled" name="domains_enabled" ng-model="guidesFactory.data.domains_enabled" class="green" size="small"></switch>
@@ -127,7 +127,7 @@
                   <span class="entry_label">email address:</span>
                   <div class="ui-select-container ui-select-multiple ui-select-bootstrap dropdown form-control ng-valid" theme="bootstrap" style="width: 100%;  background: none; background-color: transparent" aria-disabled="false" aria-invalid="false">
                     <div>
-                      <input type="text" autocomplete="false" autocorrect="off" autocapitalize="off" spellcheck="false" class="ui-select-search input-xs ng-valid ng-dirty ng-touched ng-valid-parse email-box" placeholder="cld@mit.edu" ng-model="guidesFactory.data.email_address" aria-label="Select box" ondrop="return false;" aria-hidden="false" aria-disabled="false" aria-invalid="false">
+                      <input type="text" autocomplete="false" autocorrect="off" autocapitalize="off" spellcheck="false" class="ui-select-search input-xs ng-valid ng-dirty ng-touched ng-valid-parse email-box" placeholder="guides@mit.edu" ng-model="guidesFactory.data.email_address" aria-label="Select box" ondrop="return false;" aria-hidden="false" aria-disabled="false" aria-invalid="false">
                     </div>
                   </div>
                   <div ng-show="emailWarning" class="bottom-warning-text">Please enter a valid email address.</div>
