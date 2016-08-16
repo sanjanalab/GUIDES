@@ -11,7 +11,6 @@ GRCm38/
 GRCm38_exons/
 GRCm38_guides_msgpack_Azimuth/
 GRCm38_guides_msgpack_Azimuth_domains/
-df_gene_normalized_cpickle/
 gtex/
 compare_guides_exons.txt
 GRCH37_exons_list.txt
