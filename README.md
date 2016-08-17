@@ -60,7 +60,7 @@ None currently.
 
 ## Getting help
 
-Feel free to reach out to the Zhang Lab team at [cld@mit.edu](cld@mit.edu).
+Feel free to reach out to the Zhang Lab team at [guides@mit.edu](guides@mit.edu).
 
 **Example**
 
