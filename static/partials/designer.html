@@ -189,7 +189,7 @@
                   Customize your guide selection.
                 </span>
               </div>
-              <div class="guide-table-container-container"><div class="guide-table-container">
+              <div class="guide-table-container-container"><div ng-class="(guidesFactoryData.genome == 'hum') ? 'guide-table-container' : 'guide-table-container-no-expression'">
                 <table class="table guide-table">
                   <tr>
                     <th>
