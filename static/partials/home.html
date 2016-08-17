@@ -42,6 +42,14 @@
               <div class="col-md-4">
                 <h2>Step 1: Experimental setup.</h2>
 
+                <div class="entry_container" tooltip-placement="left" uib-tooltip="More species coming soon.">
+                  <span class="entry_label">target genome:</span>
+                  <select class="form-control genome-select" name="genomeSelect" ng-model="guidesFactory.data.genome">
+                    <option value="hum">Human (Homo sapiens GRCh37)</option>
+                    <option value="mus">Mouse (Mus musculus GRCm38)</option>
+                  </select>
+                </div>
+
                 <input id="fileupload" type="file" ngf-select="" ng-model="file" name="file" ngf-accept="text/plain" ngf-pattern="text/plain" required="" style="display:none">
 
                 <div class="entry_container" tooltip-placement="left" uib-tooltip="Which genes are you targeting? You can drag and drop a comma seperated list of genes (.txt). You can add more later." tooltip-trigger="outsideClick">
@@ -81,14 +89,6 @@
                       </div>
                     </div>
                   </div>
-                </div>
-
-                <div class="entry_container" tooltip-placement="left" uib-tooltip="More species coming soon.">
-                  <span class="entry_label">target genome:</span>
-                  <select class="form-control genome-select" name="genomeSelect" ng-model="guidesFactory.data.genome">
-                    <option value="hum">Human (Homo sapiens GRCh37)</option>
-                    <option value="mus">Mouse (Mus musculus GRCm38)</option>
-                  </select>
                 </div>
 
                 <div class="entry_container small" style="overflow:auto" ng-show="guidesFactory.data.genome == 'hum'" tooltip-placement="left" uib-tooltip="We use RNA-seq data from the GTEx Consoritum to target the most constitutively expressed exons among your genes.">
