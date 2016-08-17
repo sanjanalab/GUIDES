@@ -10,7 +10,7 @@
 
 **Screenshots**:
 
-![](https://raw.githubusercontent.com/cfpb/open-source-project-template/master/screenshot.png)
+![](https://raw.githubusercontent.com/fengzhanglab/GUIDES/master/Screenshot.png)
 
 
 ## Dependencies
