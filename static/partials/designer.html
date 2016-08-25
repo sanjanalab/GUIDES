@@ -121,7 +121,7 @@
                 <span class="x-close"><i class="fa fa-download"></i></span>
               </div>
               <div class="sidebar-primary-item-action-text-container">
-                <a class="sidebar-primary-item-action" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start',   'Score', 'Gene', 'Exon', 'UID']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon', 'uid']">
+                <a class="sidebar-primary-item-action" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start', 'Score', 'Gene', 'Exon', 'UID', 'functionial domain']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon', 'uid', 'functional_domain']">
                   <span class="sidebar-primary-item-action-text">
    Export Library (.csv)
                   </span>
@@ -207,7 +207,7 @@
                     <td class="nt-sequence">{{ guide.PAM }}</td>
                     <td>{{ guide.score.toFixed(2) }}</td>
                     <td>{{ guide.exon }}</td>
-                    <td>{{ guide.functional_domain }}</td>
+                    <td ng-show="guidesFactoryData.domains_enabled">{{ guide.functional_domain }}</td>
                   </tr>
                 </table>
               </div></div>
