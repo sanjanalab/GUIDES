@@ -85,7 +85,7 @@ class RankerMouse():
 
     # Discard first and last exons, unless we won't have 4 otherwise
     rangeExons = None # declare
-    if exonCount < 6:
+    if exonCount > 7:
       rangeExons = range(1, exonCount - 1) # skip first and last
     else:
       rangeExons = range(exonCount) # use all exons
