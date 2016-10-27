@@ -105,7 +105,7 @@
                   </form>
                 </div>
 
-                <div class="entry_container small" ng-hide="guidesFactory.data.tissues_disabled" tooltip-placement="left" uib-tooltip="Which tissues are you targeting? You can add more later." tooltip-trigger="outsideClick" ng-class="{'genes-warning': tissuesWarning}">
+                <div class="entry_container small" ng-hide="guidesFactory.data.tissues_disabled && !guidesFactory.data.gtex_enabled" tooltip-placement="left" uib-tooltip="Which tissues are you targeting? You can add more later." tooltip-trigger="outsideClick" ng-class="{'genes-warning': tissuesWarning}">
                   <span class="entry_label small">Tissues:</span>
                   <ui-select multiple ng-model="guidesFactory.data.tissues" theme="bootstrap" limit="10" style="width: 100%; background: none; background-color: transparent">
                     <ui-select-match placeholder="Select tissues...">{{$item}}</ui-select-match>
