@@ -219,15 +219,15 @@ with open('genes_list.json') as genes_list_file:
       # Pop gRNAs into our 'permanent' storage
       count = 0
       gRNAs = []
+      while not q.empty() and count < params["quantity"]:
+        gRNA = q.get()
+        gRNAs.append(gRNA.serialize_for_display())
+        count = count + 1
       while not domain_q.empty() and count < params["quantity"]:
         gRNA = domain_q.get()
         gRNAs.append(gRNA.serialize_for_display())
         count = count + 1
       domain_count = count
-      while not q.empty() and count < params["quantity"]:
-        gRNA = q.get()
-        gRNAs.append(gRNA.serialize_for_display())
-        count = count + 1
       outfile_name = gene["ensembl_id"] + "_" + str(exon) + ".p"
       if domain_count > 0:
         print "for {0} we had {1} domain and {2} ordinary guides.".format(outfile_name, domain_count, count - domain_count)
