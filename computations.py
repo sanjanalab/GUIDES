@@ -150,10 +150,10 @@ class Ranker():
         potential_gRNA = gRNAs[exon_ends[gtex_exon_num]]
         exon_ends[gtex_exon_num] += 1
 
-      functional_presence = False
-      if self.domains_enabled and "functional_domain" in potential_gRNA:
-        functional_presence = True
-      q.put((functional_presence, potential_gRNA["score"], gtex_exon_num))
+        functional_presence = False
+        if self.domains_enabled and "functional_domain" in potential_gRNA:
+          functional_presence = True
+        q.put((functional_presence, potential_gRNA["score"], gtex_exon_num))
 
       # Otherwise, keep going until we are too low.
       while add_more:
