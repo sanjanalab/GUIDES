@@ -149,22 +149,30 @@ class Ranker():
           break
         potential_gRNA = gRNAs[exon_ends[gtex_exon_num]]
         exon_ends[gtex_exon_num] += 1
-
-        q.put((potential_gRNA["score"], gtex_exon_num))
+	
+	functional_presence = False
+	if self.domains_enabled and "functional_domain" in potential_gRNA:
+	  functional_presence = True
+        q.put((functional_presence, potential_gRNA["score"], gtex_exon_num))
 
       # Otherwise, keep going until we are too low.
       while add_more:
         if exon_ends[gtex_exon_num] >= len(gRNAs):
           add_more = False
           break
-        lowest_gRNA_score, lowest_gRNA_exon = q.get()
+        lowest_functional_presence, lowest_gRNA_score, lowest_gRNA_exon = q.get()
         potential_gRNA = gRNAs[exon_ends[gtex_exon_num]]
-        if potential_gRNA["score"] > lowest_gRNA_score:
-          q.put((potential_gRNA["score"], gtex_exon_num))
+	
+	functional_presence = False
+	if self.domains_enabled and "functional_domain" in potential_gRNA:
+	  functional_presence = True
+
+	if (functional_presence and not lowest_functional_presence) or (functional_presence == lowest_functional_presence and potential_gRNA["score"] > lowest_gRNA_score): 
+          q.put((functional_presence, potential_gRNA["score"], gtex_exon_num))
           exon_ends[gtex_exon_num] += 1
           exon_ends[lowest_gRNA_exon] -= 1
         else:
-          q.put((lowest_gRNA_score, lowest_gRNA_exon))
+          q.put((lowest_functional_presence, lowest_gRNA_score, lowest_gRNA_exon))
           add_more = False
 
       i += 1
