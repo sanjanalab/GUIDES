@@ -153,7 +153,7 @@ class Ranker():
       functional_presence = False
       if self.domains_enabled and "functional_domain" in potential_gRNA:
         functional_presence = True
-        q.put((functional_presence, potential_gRNA["score"], gtex_exon_num))
+      q.put((functional_presence, potential_gRNA["score"], gtex_exon_num))
 
       # Otherwise, keep going until we are too low.
       while add_more:
