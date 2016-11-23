@@ -127,7 +127,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
           'Content-Type': 'application/json'
       }
       .success (data) ->
-        this.data.loading = false
+        this_.data.loading = false
         # check if we are finished
         if data.state == 'SUCCESS'
           deferred.resolve data
