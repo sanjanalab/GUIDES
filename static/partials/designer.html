@@ -2,9 +2,9 @@
 
    <div style="text-align:center;font-size:26px;position:absolute;top:45%;width:100%;text-shadow:1px 1px 2px white, -1px -1px 2px white,-4px 4px 4px white,-4px 4px 4px white">
     Step 2) Designing your library...
-    <div class="library-summary" ng-show="!this.data.loading && guidesFactoryData.gene_statistics.actual > 0">Imported {{guidesFactoryData.gene_statistics.actual}} of {{guidesFactoryData.gene_statistics.expected}} genes, of which {{guidesFactoryData.gene_statistics.processed}} have been processed.</div>
-    <div class="library-summary" ng-hide="this.data.loading || guidesFactoryData.gene_statistics.actual > 0">An error has occurred. Please process a new library, <a href="mailto:guides@mit.edu">contact us</a> or <a href="https://github.com/fengzhanglab/GUIDES/issues">report a bug</a>.</div>
-    <div class="library-summary" ng-show="this.data.loading">Loading...</div>
+    <div class="library-summary" ng-show="!guidesFactoryData.loading && guidesFactoryData.gene_statistics.actual > 0">Imported {{guidesFactoryData.gene_statistics.actual}} of {{guidesFactoryData.gene_statistics.expected}} genes, of which {{guidesFactoryData.gene_statistics.processed}} have been processed.</div>
+    <div class="library-summary" ng-hide="guidesFactoryData.loading || guidesFactoryData.gene_statistics.actual > 0">An error has occurred. Please process a new library, <a href="mailto:guides@mit.edu">contact us</a> or <a href="https://github.com/fengzhanglab/GUIDES/issues">report a bug</a>.</div>
+    <div class="library-summary" ng-show="guidesFactoryData.loading">Loading...</div>
 
     <div style="text-align:center; position:absolute; width:50%;left:25%;padding-top:70px;" ng-show="guidesFactoryData.gene_statistics.actual > 0">
       <md-progress-linear md-mode="determinate" value="{{ guidesFactoryData.gene_statistics.processed / guidesFactoryData.gene_statistics.actual * 100 }}"></md-progress-linear>
