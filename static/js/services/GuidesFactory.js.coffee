@@ -118,7 +118,6 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
       deferred = $q.defer()
 
       this.data.loading = true
-      console.log "START loading updateProgress"
 
       this_ = this
       $http {
@@ -129,7 +128,6 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
       }
       .success (data) ->
         this_.data.loading = false
-        console.log "DONE loading updateProgress"
         # check if we are finished
         if data.state == 'SUCCESS'
           deferred.resolve data
