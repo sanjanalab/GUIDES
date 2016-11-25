@@ -41,7 +41,6 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
         event.preventDefault()
       else
         $scope.tissuesWarning = false
-      console.log $scope.guidesFactory.data.email_address
       if not $scope.guidesFactory.data.email_address or not $scope.guidesFactory.data.email_address.match emailPattern
         $scope.emailWarning = true
         event.preventDefault()

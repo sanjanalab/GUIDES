@@ -82,7 +82,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
           for geneText in this_.data.genesFromFile
             foundMatch = false
             for gene in this_.available.genes
-              if gene.name.toUpperCase() == geneText.toUpperCase() or gene.ensembl_id == geneText
+              if gene.name.toUpperCase() == geneText.toUpperCase() or gene.ensembl_id == geneText or (geneText.substring(0,4) == "ENSG" and gene.ensembl_id.includes(geneText.toUpperCase()))
                 this_.data.genes.push(gene)
                 foundMatch = true
                 break
