@@ -79,10 +79,12 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
         if (idx != -1) and this_.data.genesFromFile
           expected_genes_num = expected_genes_num + this_.data.genesFromFile.length - 1 # subtract "GENES_FROM_FILE holder"
           this_.data.genes.splice(idx, 1) # remove the "GENES_FROM_FILE holder"
+          seen = {}
           for geneText in this_.data.genesFromFile
             foundMatch = false
             for gene in this_.available.genes
-              if gene.name.toUpperCase() == geneText.toUpperCase() or gene.ensembl_id == geneText or (geneText.substring(0,4) == "ENSG" and gene.ensembl_id.includes(geneText.toUpperCase()))
+              if (gene.name.toUpperCase() == geneText.toUpperCase() or gene.ensembl_id == geneText or (geneText.substring(0,4) == "ENSG" and gene.ensembl_id.includes(geneText.toUpperCase()))) and not gene.ensembl_id in seen
+                seen[gene.ensembl_id] = true
                 this_.data.genes.push(gene)
                 foundMatch = true
                 break
