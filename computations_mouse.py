@@ -20,6 +20,7 @@ from settings import APP_STATIC
 import os
 import itertools
 import json
+from seq_generator import ExonError
 
 # Load gene_strand_mapping
 with open(os.path.join(APP_STATIC, 'data/pre_processed', 'strand_info_GRCm38.p'), "rb") as infile:
@@ -72,7 +73,8 @@ class RankerMouse():
         gRNAs = msgpack.load(datafile)
         return gRNAs
     except IOError:
-      raise Exception("Could not find gene,exon: {0} with that combination".format(gene_exon))
+      gene, exon = gene_exon.split('_')
+      raise ExonError(gene, exon)
 
   def rank(self, gene_name, quantity):
     # Get the revcompl of a sequence print revcompl("AGTCAGCAT")
