@@ -347,8 +347,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$route
   $scope.getGuidesCSV = ->
     guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
     guidesCSV = $filter('orderBy')(guidesCSV, ['gene','score'], true)
+    padding = floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
     angular.forEach guidesCSV, (guide, idx) ->
-      guide.uid = "customLibrary_guide" + pad(idx, 4)
+      guide.uid = "GUIDES_sg" + pad(idx, 4)
     guidesCSV
 
 ]
