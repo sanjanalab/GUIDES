@@ -1,5 +1,8 @@
 FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactory', 'Upload', ($scope, $http, $timeout, GuidesFactory, Upload) ->
 
+  # Color of step 2 arrow
+  $scope.designer_loading = false
+
   # Color change on hover (controlled from directive)
   $scope.learn_more_fill = "#4A4A4A"
   $scope.learn_more_to_black = () ->
@@ -46,6 +49,8 @@ FlaskStart.controller 'IndexCtrl', ['$scope', '$http', '$timeout', 'GuidesFactor
         event.preventDefault()
       else
         $scope.emailWarning = false
+      if not ($scope.genesWarning or $scope.tissuesWarning or $scope.emailWarning)
+        $scope.designer_loading = true
 
   # file upload
   $scope.$watch 'file', () ->
