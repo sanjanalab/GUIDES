@@ -7,6 +7,12 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
 
   $scope.permalink = $window.location.href
 
+  # going backwards
+  $scope.$on '$routeChangeStart', (scope, next, current) ->
+    if $scope.guidesReady and next.$$route.controller == 'DesignerCtrl'
+      event.preventDefault()
+      $location.path('index.html')
+
   # Check for task_id
   if $routeParams.task_id?
     $scope.getGuidesPromise = guidesFactory.getComputedGuides($routeParams.task_id)
