@@ -1,9 +1,11 @@
-FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$routeParams', 'GuidesFactory', 'Analytics', ($scope, $filter, $location, $routeParams, GuidesFactory, Analytics) ->
+FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$window', '$routeParams', 'GuidesFactory', 'Analytics', ($scope, $filter, $location, $window, $routeParams, GuidesFactory, Analytics) ->
   $scope.guidesReady = false
   guidesFactory = new GuidesFactory()
 
   # expose metadata to view
   $scope.guidesFactoryData = guidesFactory.data
+
+  $scope.permalink = $window.location.href
 
   # Check for task_id
   if $routeParams.task_id?
