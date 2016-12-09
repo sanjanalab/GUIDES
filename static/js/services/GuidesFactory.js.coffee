@@ -90,7 +90,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
               gene.name = gene.name.toUpperCase()
               geneText = geneText.toUpperCase()
               mus_bool = (gene.name == geneText or gene.entrez_id == geneText or gene.ensembl_id_real == geneText or gene.ensembl_id == geneText)
-              hum_bool = (gene.name == geneText or gene.entrez_id == geneText or gene.ensembl_id == geneText or gene.ensembl_id.substring(0, gene.ensembl_id.length - 2) == geneText)
+              hum_bool = (gene.name == geneText or gene.entrez_id == geneText or gene.ensembl_id == geneText or gene.ensembl_id.split('.')[0] == geneText)
               if ((not (gene.ensembl_id in seen)) and ((this_.data.genome == 'mus' and mus_bool) or (this_.data.genome == 'hum' and hum_bool)))
                 seen[gene.ensembl_id] = true
                 this_.data.genes.push(gene)
