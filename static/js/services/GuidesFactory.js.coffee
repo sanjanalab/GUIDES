@@ -83,16 +83,21 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
           for geneText in this_.data.genesFromFile
             foundMatch = false
             for gene in this_.available.genes
-              geneTextUC = geneText.toUpperCase()
-              ensemblUC = gene.ensembl_id.toUpperCase()
-              if ((gene.name.toUpperCase() == geneTextUC or ensemblUC == geneTextUC or ensemblUC.substring(0, ensemblUC.length - 2) == geneTextUC) and not (gene.ensembl_id in seen))
+              # ensembl_id_real
+              # ensembl_id (refseq)
+              # entrez_id
+              # name
+              gene.name = gene.name.toUpperCase()
+              geneText = geneText.toUpperCase()
+              mus_bool = (gene.name == geneText or gene.entrez_id == geneText or gene.ensembl_id_real == geneText or gene.ensembl_id == geneText)
+              hum_bool = (gene.name == geneText or gene.entrez_id == geneText or gene.ensembl_id == geneText or gene.ensembl_id.substring(0, gene.ensembl_id.length - 2) == geneText)
+              if ((not (gene.ensembl_id in seen)) and ((this_.data.genome == 'mus' and mus_bool) or (this_.data.genome == 'hum' and hum_bool)))
                 seen[gene.ensembl_id] = true
                 this_.data.genes.push(gene)
                 foundMatch = true
                 break
-            if not foundMatch
+             if not foundMatch
               this_.data.rejected_genes.push(geneText)
-
         this_.data.gene_statistics.expected = expected_genes_num
         this_.data.gene_statistics.actual = this_.data.genes.length
         resolve()

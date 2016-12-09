@@ -1,7 +1,7 @@
 Filters.filter 'propsFilter', ->
   (items, props) ->
     out = []
-    if angular.isArray(items)
+    if angular.isArray (items)
       items.forEach (item) ->
         itemMatches = false
         keys = Object.keys(props)
@@ -10,7 +10,7 @@ Filters.filter 'propsFilter', ->
           prop = keys[i]
           text = props[prop].toLowerCase()
           # Check if the property starts with the query
-          if item[prop].toString().toLowerCase().indexOf(text) == 0
+          if item[prop] and item[prop].toString().toLowerCase().indexOf(text) == 0
             itemMatches = true
             break
           i++
@@ -20,7 +20,7 @@ Filters.filter 'propsFilter', ->
     else
       # Let the output be the input untouched
       out = items
-    
+
     out
 
 # Used for our Angular select library

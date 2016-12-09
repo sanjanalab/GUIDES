@@ -57,7 +57,7 @@
                   <div ngf-drop ng-model="file" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="false" ngf-accept="text/plain" ngf-pattern="text/plain" id="genes_container">
                     <ui-select multiple ng-model="guidesFactory.data.genes" theme="bootstrap" limit="10" ng-disabled="disabled" style="width: 100%;  background: none; background-color: transparent">
                     <ui-select-match placeholder="Your favorite genes here..."> {{$item.name}}</ui-select-match>
-                     <ui-select-choices repeat="gene in guidesFactory.available.genes | propsFilter: {name: $select.  search, ensembl_id: $select.search} | limitTo:  10">
+                     <ui-select-choices repeat="gene in guidesFactory.available.genes | propsFilter: {name: $select.search, ensembl_id: $select.search, entrez_id: $select.search, ensembl_id_real: $select.search} | limitTo:  10">
                         <div ng-bind-html="gene.name | highlight: $select.search"></div>
                         <small>
               <!--
