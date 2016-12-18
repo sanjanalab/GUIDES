@@ -40,7 +40,7 @@
                 </h2>
               </div>
               <div class="col-md-4">
-                <h2>Step 1: Experimental setup.</h2>
+                <h2>Step 1: Enter genes.</h2>
 
                 <div class="entry_container" tooltip-placement="left" uib-tooltip="More species coming soon.">
                   <span class="entry_label">target genome:</span>
@@ -52,7 +52,7 @@
 
                 <input id="fileupload" type="file" ngf-select="" ng-model="file" name="file" ngf-accept="text/plain" ngf-pattern="text/plain" required="" style="display:none">
 
-                <div class="entry_container" tooltip-placement="left" uib-tooltip="Which genes are you targeting? You can drag and drop a comma seperated list of genes (.txt). You can add more later." tooltip-trigger="outsideClick">
+                <div class="entry_container" tooltip-placement="left" uib-tooltip="Which genes are you targeting? You can drag and drop a comma separated list of genes (.txt). You can add more later." tooltip-trigger="outsideClick">
                   <span class="entry_label" id="genes_entry_label">enter genes or <a href=""onclick="document.getElementById('fileupload').click(); return false">drag and drop</a> a list (.txt).</span>
                   <div ngf-drop ng-model="file" class="drop-box" ngf-drag-over-class="'dragover'" ngf-multiple="false" ngf-allow-dir="false" ngf-accept="text/plain" ngf-pattern="text/plain" id="genes_container">
                     <ui-select multiple ng-model="guidesFactory.data.genes" theme="bootstrap" limit="10" ng-disabled="disabled" style="width: 100%;  background: none; background-color: transparent">
@@ -91,6 +91,13 @@
                   </div>
                 </div>
 
+                <div class="entry_container small first" style="overflow:auto" tooltip-placement="left" uib-tooltip="When possible, GUIDES can target functional protein domains based on Pfam data, as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection.">
+                  <span class="entry_label small">Target protein domains?</span>
+                  <form>
+                    <switch id="domains_enabled" name="domains_enabled" ng-model="guidesFactory.data.domains_enabled" class="green" size="small"></switch>
+                  </form>
+                </div>
+
                 <div class="entry_container small" style="overflow:auto" ng-show="guidesFactory.data.genome == 'hum'" tooltip-placement="left" uib-tooltip="We use RNA-seq data from the GTEx Consoritum to target the most constitutively expressed exons among your genes.">
                   <span class="entry_label small">Use expression data to pick exons?</span>
                   <form>
@@ -114,13 +121,6 @@
                     </ui-select-choices>
                   </ui-select>
                   <div ng-show="tissuesWarning" class="bottom-warning-text">Please enter a list of tissues.</div>
-                </div>
-
-                <div class="entry_container small" style="overflow:auto" tooltip-placement="left" uib-tooltip="When possible, GUIDES can target functional protein domains based on Pfam data, as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection.">
-                  <span class="entry_label small">Target protein domains?</span>
-                  <form>
-                    <switch id="domains_enabled" name="domains_enabled" ng-model="guidesFactory.data.domains_enabled" class="green" size="small"></switch>
-                  </form>
                 </div>
 
                 <div class="entry_container" tooltip-placement="left" uib-tooltip="Provide your email address so we can email you a link to access results!" tooltip-trigger="outsideClick">
