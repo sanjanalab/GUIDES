@@ -374,5 +374,5 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
       padding = Math.floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
       angular.forEach guidesCSV, (guide, idx) ->
         guide.uid = "GUIDES_sg" + pad(idx, 4)
-      guidesCSV.concat non_targeting[0..$scope.non_targeting_guides_info.count]
+      guidesCSV.concat non_targeting[0..($scope.non_targeting_guides_info.count - 1)]
 ]
