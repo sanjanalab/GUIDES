@@ -361,7 +361,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
 
 
     # non-targeting guides count
-    $scope.non_targeting_guides_count = countSelectedGuides / 10
+    $scope.non_targeting_guides_count = Math.ceil(countSelectedGuides / 10)
     $scope.non_targeting_guides_min = 0
     $scope.non_targeting_guides_max = 1000
 
@@ -376,9 +376,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
       $scope.non_targeting_guides_count = 1000
 
   $scope.getGuidesCSV = ->
-    non_targeting_guides_href = '/static/data/pre_processed/hum_non_targeting.json'
+    non_targeting_guides_href = '/static/data/pre_processed/non_targeting_hum.json'
     if guidesFactory.data.genome == 'mus'
-      non_targeting_guides_href = '/static/data/pre_processed/mus_non_targeting.json'
+      non_targeting_guides_href = '/static/data/pre_processed/non_targeting_mus.json'
 
     $http.get(non_targeting_guides_href).then (res) ->
       non_targeting = res.data
