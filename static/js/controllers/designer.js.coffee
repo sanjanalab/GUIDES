@@ -384,7 +384,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
       non_targeting = res.data
       guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
       guidesCSV = $filter('orderBy')(guidesCSV, ['gene','score'], true)
-      padding = floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
+      padding = Math.floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
       angular.forEach guidesCSV, (guide, idx) ->
         guide.uid = "GUIDES_sg" + pad(idx, 4)
       guidesCSV.concat non_targeting[0..$scope.non_targeting_guides_count]
