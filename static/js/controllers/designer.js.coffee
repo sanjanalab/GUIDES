@@ -358,9 +358,8 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     if n.length >= width then n else new Array(width - n.length + 1).join(z) + n
 
   # slider for modal
-  $scope.md_slider_quantity = 20
-  slider_vals = [1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100]
-  slider_vals = [1, 6, 20, 50, 60, 80, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+  $scope.md_slider_quantity = 50
+  slider_vals = [1, 6, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000]
   $scope.$watch 'md_slider_quantity', (value) ->
     if value < 1000
       $scope.non_targeting_guides_count = slider_vals[Math.floor(value/40)]
@@ -373,7 +372,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
       non_targeting_guides_href = '/static/data/pre_processed/non_targeting_mus.json'
 
     $http.get(non_targeting_guides_href).then (res) ->
-      non_targeting = res.data
+      non_targeting = res.data.data
       guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
       guidesCSV = $filter('orderBy')(guidesCSV, ['gene','score'], true)
       padding = Math.floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
