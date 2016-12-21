@@ -7,6 +7,13 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
 
   $scope.permalink = $window.location.href
 
+  # non-targeting guides info
+  $scope.non_targeting_guides_info = {
+    'count': 500
+    'min': 1
+    'max': 1000
+  }
+
   # going backwards
   $scope.$on '$routeChangeStart', (scope, next, current) ->
     if $scope.guidesReady and next.$$route.controller == 'DesignerCtrl'
@@ -158,9 +165,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     $scope.merged_gRNAs = merged_gRNAs
 
     # non-targeting guides count
-    $scope.non_targeting_guides_count = Math.ceil($scope.countSelectedGuides / 10)
-    $scope.non_targeting_guides_min = 0
-    $scope.non_targeting_guides_max = 1000
+    $scope.non_targeting_guides_info.count = Math.ceil($scope.countSelectedGuides / 10)
 
     # simulate setting up the first gene
     $scope.setGene(0)
@@ -369,5 +374,5 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
       padding = Math.floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
       angular.forEach guidesCSV, (guide, idx) ->
         guide.uid = "GUIDES_sg" + pad(idx, 4)
-      guidesCSV.concat non_targeting[0..$scope.non_targeting_guides_count]
+      guidesCSV.concat non_targeting[0..$scope.non_targeting_guides_info.count]
 ]
