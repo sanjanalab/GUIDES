@@ -1,4 +1,4 @@
-FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$window', '$routeParams', 'GuidesFactory', 'Analytics', ($scope, $filter, $location, $window, $routeParams, GuidesFactory, Analytics) ->
+FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$window', '$routeParams', '$http', 'GuidesFactory', 'Analytics', ($scope, $filter, $location, $window, $routeParams, $http, GuidesFactory, Analytics) ->
   $scope.guidesReady = false
   guidesFactory = new GuidesFactory()
 
@@ -156,6 +156,11 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     $scope.countSelectedGuides = countSelectedGuides
     $scope.all_gRNAs = all_gRNAs
     $scope.merged_gRNAs = merged_gRNAs
+
+    # non-targeting guides count
+    $scope.non_targeting_guides_count = countSelectedGuides / 10
+    $scope.non_targeting_guides_min = 0
+    $scope.non_targeting_guides_max = 1000
 
     # simulate setting up the first gene
     $scope.setGene(0)
@@ -352,12 +357,35 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     n = n + ''
     if n.length >= width then n else new Array(width - n.length + 1).join(z) + n
 
-  $scope.getGuidesCSV = ->
-    guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
-    guidesCSV = $filter('orderBy')(guidesCSV, ['gene','score'], true)
-    padding = floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
-    angular.forEach guidesCSV, (guide, idx) ->
-      guide.uid = "GUIDES_sg" + pad(idx, 4)
-    guidesCSV
+  # slider for modal
 
+
+    # non-targeting guides count
+    $scope.non_targeting_guides_count = countSelectedGuides / 10
+    $scope.non_targeting_guides_min = 0
+    $scope.non_targeting_guides_max = 1000
+
+
+  $scope.md_slider_quantity = 20
+  slider_vals = [1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100]
+  slider_vals = [1, 6, 20, 50, 60, 80, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
+  $scope.$watch 'md_slider_quantity', (value) ->
+    if value < 1000
+      $scope.non_targeting_guides_count = slider_vals[Math.floor(value/40)]
+    else
+      $scope.non_targeting_guides_count = 1000
+
+  $scope.getGuidesCSV = ->
+    non_targeting_guides_href = '/static/data/pre_processed/hum_non_targeting.json'
+    if guidesFactory.data.genome == 'mus'
+      non_targeting_guides_href = '/static/data/pre_processed/mus_non_targeting.json'
+
+    $http.get(non_targeting_guides_href).then (res) ->
+      non_targeting = res.data
+      guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
+      guidesCSV = $filter('orderBy')(guidesCSV, ['gene','score'], true)
+      padding = floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
+      angular.forEach guidesCSV, (guide, idx) ->
+        guide.uid = "GUIDES_sg" + pad(idx, 4)
+      guidesCSV.concat non_targeting[0..$scope.non_targeting_guides_count]
 ]

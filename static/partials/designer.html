@@ -38,7 +38,7 @@
           <span>
             Total guides in library: {{ countSelectedGuides }}
           </span>
-          <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq', 'On-target Efficiency Score', 'Gene', 'Exon', 'Protein Domain', 'UID']" csv-column-order="['seq', 'score', 'gene', 'exon', 'functional_domain', 'uid']"> Export Library (.csv)</button>
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#mymodal"> Export Library (.csv)</button>
         </div>
       </div>
     </div>
@@ -229,3 +229,39 @@
       </div>
     </div>
   </div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Non-targeting Guides</h4>
+      </div>
+      <div class="modal-body">
+        <h4>How many non-targeting guides would you like to add?</h4>
+        These non-targeting guides are sourced from the GeCKO v2.0 library A (Sanjana, et al. 2014). These control sgRNAs are designed not to target in the genome.
+        <div class="the_slider">
+          <md-content style="margin: 7px 0; padding: 0px 5px; background-color: transparent;">
+          <div layout>
+            <md-slider flex min="1" max="100" ng-model="md_slider_quantity" aria-label="red" id="red-slider" class>
+            </md-slider>
+            <div flex="20" layout layout-align="center center">
+              <input flex type="number" ng-model="non_targeting_guides_count" aria-label="red" aria-controls="red-slider">
+            </div>
+          </div>
+          <div layout>
+            <div class="slider-descriptors">
+              <span class="under-slider"></span>
+              <span class="under-count">total sgRNAs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq', 'On-target Efficiency Score', 'Gene', 'Exon', 'Protein Domain', 'UID']" csv-column-order="['seq', 'score', 'gene', 'exon', 'functional_domain', 'uid']"> Export Library (.csv)</button>
+      </div>
+    </div>
+  </div>
+</div>
