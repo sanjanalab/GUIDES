@@ -158,7 +158,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     $scope.merged_gRNAs = merged_gRNAs
 
     # non-targeting guides count
-    $scope.non_targeting_guides_count = countSelectedGuides / 10
+    $scope.non_targeting_guides_count = Math.ceil($scope.countSelectedGuides / 10)
     $scope.non_targeting_guides_min = 0
     $scope.non_targeting_guides_max = 1000
 
@@ -358,14 +358,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     if n.length >= width then n else new Array(width - n.length + 1).join(z) + n
 
   # slider for modal
-
-
-    # non-targeting guides count
-    $scope.non_targeting_guides_count = Math.ceil(countSelectedGuides / 10)
-    $scope.non_targeting_guides_min = 0
-    $scope.non_targeting_guides_max = 1000
-
-
   $scope.md_slider_quantity = 20
   slider_vals = [1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 15, 20, 25, 30, 35, 40, 45, 50, 60, 70, 80, 90, 100]
   slider_vals = [1, 6, 20, 50, 60, 80, 100, 200, 300, 400, 500, 600, 700, 800, 900, 1000]
