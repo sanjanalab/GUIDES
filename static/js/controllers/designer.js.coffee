@@ -357,15 +357,6 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     n = n + ''
     if n.length >= width then n else new Array(width - n.length + 1).join(z) + n
 
-  # slider for modal
-  $scope.md_slider_quantity = 50
-  slider_vals = [1, 6, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 250, 300, 350, 400, 450, 500, 600, 700, 800, 900, 1000]
-  $scope.$watch 'md_slider_quantity', (value) ->
-    if value < 1000
-      $scope.non_targeting_guides_count = slider_vals[Math.floor(value/40)]
-    else
-      $scope.non_targeting_guides_count = 1000
-
   $scope.getGuidesCSV = ->
     non_targeting_guides_href = '/static/data/pre_processed/non_targeting_hum.json'
     if guidesFactory.data.genome == 'mus'
