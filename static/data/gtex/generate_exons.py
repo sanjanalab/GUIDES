@@ -32,13 +32,6 @@ with open('../pre_processed/CDS/ENSG-CCDS_hum.txt', 'r') as ensg_ccds:
           prev_start, prev_start = ensg_ccds_map[ensg]
           ensg_ccds_map[ensg] = (min(prev_start, start), max(prev_stop, stop))
 
-def start_l(x):
-  starts_list = x['exonStarts'].split(',')[:-1]
-  for i in range(len(starts_list)):
-    if x['name'] in ensg_ccds_map:
-      cds_start, cds_stop = ensg_ccds_map[x['name']]
-      starts_list[i] = max(starts_list[i], cds_start)
-
 if __name__ == "__main__":
   filename = "refGene.txt"
   df = pd.read_csv(filename, sep="\t")
