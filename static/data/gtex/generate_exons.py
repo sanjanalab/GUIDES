@@ -39,15 +39,15 @@ if __name__ == "__main__":
 
   # process the dataframe
   for i, row in df.iterrows():
-    starts_list = x['exonStarts'].split(',')[:-1]
-    ends_list = x['exonEnds'].split(',')[:-1]
+    starts_list = row['exonStarts'].split(',')[:-1]
+    ends_list = row['exonEnds'].split(',')[:-1]
 
     # if we have ccds info...
-    if x['name'] in ensg_ccds_map:
+    if row['name'] in ensg_ccds_map:
       starts_list_processed = []
       ends_list_processed = []
 
-      cds_start, cds_stop = ensg_ccds_map[x['name']]
+      cds_start, cds_stop = ensg_ccds_map[row['name']]
 
       assert(len(starts_list) == len(ends_list))
       for i in range(len(starts_list)):
@@ -56,11 +56,11 @@ if __name__ == "__main__":
           continue # don't add this exon
         starts_list_processed.append(max(start, cds_start))
         ends_list_processed.append(min(end, cds_end))
-      df.loc[i, 'exonStarts'] = starts_list_processed
-      df.loc[i, 'exonEnds'] = ends_list_processed
+      df.set_value(i, 'exonStarts', starts_list_processed)
+      df.set_value(i, 'exonEnds', ends_list_processed)
     else: # we dont' have ccds... keep default
-      df.loc[i, 'exonStarts'] = starts_list
-      df.loc[i, 'exonEnds'] = ends_list
+      df.set_value(i, 'exonStarts', starts_list)
+      df.set_value(i, 'exonEnds', ends_list)
 
   exon_info = df[["name", "chrom", "strand", "exonCount", "exonStarts", "exonEnds"]]
 
