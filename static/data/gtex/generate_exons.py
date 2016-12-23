@@ -53,6 +53,8 @@ if __name__ == "__main__":
       for j in range(len(starts_list)):
         start, end = starts_list[j], ends_list[j]
         if end < cds_start or start > cds_stop: # whole exon outside cds
+          starts_list_processed.append(start)
+          ends_list_processed.append(start + 1)
           continue # don't add this exon
         starts_list_processed.append(max(start, cds_start))
         ends_list_processed.append(min(end, cds_stop))
