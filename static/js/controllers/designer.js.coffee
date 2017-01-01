@@ -10,8 +10,10 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
   # non-targeting guides info
   $scope.non_targeting_guides_info = {
     'count': 500
+    'default': 500
     'min': 1
     'max': 1000
+    'text': "Default: Make non-targeting sgRNAs 5% of final library size"
   }
 
   # going backwards
@@ -165,7 +167,12 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     $scope.merged_gRNAs = merged_gRNAs
 
     # non-targeting guides count
-    $scope.non_targeting_guides_info.count = Math.ceil($scope.countSelectedGuides / 10)
+    $scope.non_targeting_guides_info.count = Math.ceil($scope.countSelectedGuides / 20)
+    if $scope.non_targeting_guides_info.count < 10
+      $scope.non_targeting_guides_info.text = "Default: Make non-targeting sgRNAs 5% of final library size (min 10 sgRNAs)"
+      $scope.non_targeting_guides_info.default = 10
+    else
+      $scope.non_targeting_guides_info.default = $scope.non_targeting_guides_info.count
 
     # simulate setting up the first gene
     $scope.setGene(0)

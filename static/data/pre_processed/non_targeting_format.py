@@ -11,7 +11,7 @@ def main(inp_filename, out_filename):
         'gene': '',
         'exon': '',
         'functional_domain': '',
-        'uid': 'GUIDES_nt_sg' + str(idx).zfill(4)
+        'uid': 'Non-targeting' + str(idx).zfill(4)
       })
 
   # write data
