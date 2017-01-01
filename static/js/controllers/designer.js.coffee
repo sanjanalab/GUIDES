@@ -169,8 +169,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     # non-targeting guides count
     $scope.non_targeting_guides_info.count = Math.ceil($scope.countSelectedGuides / 20)
     if $scope.non_targeting_guides_info.count < 10
-      $scope.non_targeting_guides_info.text = "Default: Make non-targeting sgRNAs 5% of final library size (min 10 sgRNAs)"
+      $scope.non_targeting_guides_info.count = 10
       $scope.non_targeting_guides_info.default = 10
+      $scope.non_targeting_guides_info.text = "Default: Make non-targeting sgRNAs 5% of final library size (min 10 sgRNAs)"
     else
       $scope.non_targeting_guides_info.default = $scope.non_targeting_guides_info.count
 
