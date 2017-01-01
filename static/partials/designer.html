@@ -254,7 +254,7 @@
             <div class="slider-descriptors">
               <span class="under-slider">
                 <div class="checkbox">
-                  <label ng-click="non_targeting_guides_info.count = non_targeting_guides_info.default"><input type="checkbox" ng-checked="non_targeting_guides_info.count == non_targeting_guides_info.default">{{ non_targeting_guides_info.text }}</label>
+                  <label><input type="checkbox" ng-checked="non_targeting_guides_info.count == non_targeting_guides_info.default" ng-change="non_targeting_guides_info.count = non_targeting_guides_info.default">{{ non_targeting_guides_info.text }}</label>
                 </div>
               </span>
               <span class="under-count"></span>
