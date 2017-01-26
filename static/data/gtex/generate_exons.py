@@ -40,7 +40,7 @@ if __name__ == "__main__":
   for i, row in df.iterrows():
     starts_list = [int(num) for num in row['exonStarts'].split(',')[:-1]]
     ends_list = [int(num) for num in row['exonEnds'].split(',')[:-1]]
-    df.set_value(i, 'exonStarts', [0,0,0] + starts_list)
+    df.set_value(i, 'exonStarts', [0,0,0] + starts_list) # hacky - will force an error if 'exonStarts' never changed below.
 
     # if we have ccds info...
     if row['name'] in ensg_ccds_map:
@@ -55,6 +55,7 @@ if __name__ == "__main__":
         if end < cds_start or start > cds_stop: # whole exon outside cds
           starts_list_processed.append(start)
           ends_list_processed.append(start + 1)
+          print "removed exon " + str(j) + " of " + str(len(starts_list))
           continue # don't add this exon
         starts_list_processed.append(max(start, cds_start))
         ends_list_processed.append(min(end, cds_stop))
