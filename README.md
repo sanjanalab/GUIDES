@@ -1,4 +1,4 @@
-# Graphical User Interface for DNA Editing Screens (GUIDES)
+# Graphical User Interface for DNA Editing Screens (GUIDES) 
 
 **Description**:  Genome-scale CRISPR-Cas9 knockout libraries have emerged as popular tools for unbiased, phenotypic screening but easy-to-use software for designing customized guide RNA libraries has lagged behind. GUIDES is a web application for automated, tissue-specific library design. It integrates on-target scores, expression data, and protein structure into an easily accessible web interface.
 
