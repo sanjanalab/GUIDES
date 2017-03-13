@@ -4,7 +4,7 @@
     Step 2) Designing your library...
     <div class="library-summary" ng-show="!guidesFactoryData.loading && guidesFactoryData.gene_statistics.actual > 0">Imported {{guidesFactoryData.gene_statistics.actual}} of {{guidesFactoryData.gene_statistics.expected}} genes, of which {{guidesFactoryData.gene_statistics.processed}} have been processed.</div>
     <div class="library-summary" ng-hide="guidesFactoryData.loading || guidesFactoryData.gene_statistics.actual > 0">An error has occurred. Please process a new library, <a href="mailto:guides@mit.edu">contact us</a> or <a href="https://github.com/fengzhanglab/GUIDES/issues">report a bug</a>.</div>
-    <div class="library-summary" ng-show="guidesFactoryData.loading">Loading server response...</div>
+    <div class="library-summary" ng-show="guidesFactoryData.loading">Creating GUIDES graphical workspace...</div>
     <div class="library-summary">Permalink: <a href="{{ permalink }}">{{ permalink }}</a></div>
 
     <div style="text-align:center; position:absolute; width:50%;left:25%;padding-top:70px;" ng-show="guidesFactoryData.gene_statistics.actual > 0">
@@ -133,7 +133,7 @@
                 <span class="x-close"><i class="fa fa-download"></i></span>
               </div>
               <div class="sidebar-primary-item-action-text-container">
-                <a class="sidebar-primary-item-action" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['Seq',  'Start', 'Score', 'Gene', 'Exon', 'UID', 'functionial domain']" csv-column-order="['seq', 'start', 'score', 'gene', 'exon', 'uid', 'functional_domain']">
+                <a class="sidebar-primary-item-action" data-toggle="modal" data-target="#mymodal">
                   <span class="sidebar-primary-item-action-text">
    Export Library (.csv)
                   </span>
@@ -209,7 +209,8 @@
                     </th>
                    <th><a href="" ng-click="orderByField='seq'; reverseSort = !reverseSort">Guide Sequence (5' <i class="fa fa-long-arrow-right">  </i> 3') </a><span ng-show="orderByField == 'seq'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span  ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                     <th><a href="" ng-click="orderByField='PAM'; reverseSort = !reverseSort">PAM </a><span ng-show="orderByField == 'PAM'"><span  ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span ></span></th>
-                    <th><a tooltip-placement="left" uib-tooltip="Efficiency scores are computed using the techniques described by (1) Doench, et  al., 2014; and (2) Fusi, et al., 2016., and presented as (1)/(2)." ng-click="orderByField='score'; reverseSort = !reverseSort" >On-target Efficiency </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i>  </span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
+                    <th><a tooltip-placement="bottom" uib-tooltip="Efficiency scores are computed using the techniques described by (1) Doench, et  al., 2014; and (2) Fusi, et al., 2016., and presented as (1)/(2)." ng-click="orderByField='score'; reverseSort = !reverseSort" >On-target Efficiency </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i>  </span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
+                    <th><a tooltip-placement="bottom" uib-tooltip="For a given sgRNA, GUIDES finds all potential off-targets with up to 3 mismatches in the human/mouse exome (and followed by a NGG motif) and calculates the CFD between the given sgRNA and the potential off-target. The sum of these scores is linearly weighted by the number of times the potential off-target occurs in the exome. A lower G-score means the guide is more specific." ng-click="orderByField='off_target_score'; reverseSort = !reverseSort" >G-score (off-target specificity) </a><span ng-show="orderByField == 'off_target_score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i>  </span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                     <th><a href="" ng-click="orderByField='exon'; reverseSort = !reverseSort">Exon targeted by guide </a><span ng-show="  orderByField == 'exon'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class  ="fa fa-angle-down"></i></span></span></th>
                     <th ng-show="guidesFactoryData.domains_enabled"><a href="" ng-click="orderByField='functional_domain'; reverseSort =  !reverseSort">Functional domain </a><span ng-show="orderByField == 'functional_domain'"><span ng-show="!reverseSort"><i class= "fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                   </tr>
@@ -218,6 +219,7 @@
                     <td class="nt-sequence">{{ guide.seq }}</td>
                     <td class="nt-sequence">{{ guide.PAM }}</td>
                     <td>{{ guide.score.toFixed(2) }}</td>
+                    <td>{{ guide.off_target_score }}</td>
                     <td>{{ guide.exon }}</td>
                     <td ng-show="guidesFactoryData.domains_enabled">{{ guide.functional_domain }}</td>
                   </tr>
@@ -264,7 +266,7 @@
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['UID', 'Gene', 'Sequence', 'Protein domain', 'On-target efficiency', 'Exon', '10bp off-target match']" csv-column-order="['uid', 'gene', 'seq', 'functional_domain', 'score', 'exon', 'has_exome_repeat']"> Export Library (.csv)</button>
+        <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']" csv-column-order="['uid', 'gene', 'ensembl_gene', 'seq', 'functional_domain', 'score', 'exon', 'targets_last_exon', 'has_exome_repeat', 'off_target_score']"> Export Library (.csv)</button>
       </div>
     </div>
   </div>

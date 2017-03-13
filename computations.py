@@ -12,6 +12,7 @@ from settings import APP_STATIC
 import os
 import itertools
 import json
+import operator
 
 with open(os.path.join(APP_STATIC, 'data/pre_processed', 'pd_by_tissue_normalized.p'), "rb") as infile:
   df_normalized = pickle.load(infile)
@@ -105,78 +106,124 @@ class Ranker():
 
     self.expression_values[ensembl_gene] = expression_values
 
-    total_exons = len(df_gene)
-
-    # Only consider first and last exon if we don't have enough constitutive exons.
-    if not (self.gtex_enabled and constitutive_exon_count < 4) and len(df_gene) > 2:
-      df_gene = df_gene[(df_gene.exon_num != 0) & (df_gene.exon_num != len(df_gene) - 1)]
+    # sort by expression values (if tissues enabled)
+    # note that, by default, this is already sorted by overall.
     df_results = df_gene[['Id', 'median', 'overall', 'exon_num']]
-
     if self.tissues_enabled:
       df_results = df_results.sort(['median'], ascending=False)
 
-    # For this gene, analyze top 4 exons, at most
-    q = PriorityQueue()
+    # regardless of expression scores, rank first/last exons on the bottom
+    num_exons = len(df_results)
 
-    # Focus on top 4 exons if gtex_enabled...otherwise use all.
-    exon_entries = len(df_results) # we might have removed first and last
-    exons_to_analyze = exon_entries
-    if self.gtex_enabled == True:
-      exons_to_analyze = min(4, constitutive_exon_count, exon_entries)
+    if gene_strand_mapping[ensembl_gene] == '+':
+      first = df_results[df_results.exon_num == 0]
+      last = df_results[df_results.exon_num == num_exons - 1]
+    else:
+      last = df_results[df_results.exon_num == 0]
+      first = df_results[df_results.exon_num == num_exons - 1]
+    middle = df_results[(df_results.exon_num != 0) & (df_results.exon_num != num_exons - 1)]
+    df_results = pd.concat([middle, first, last])
 
-    # for i in range(min(4, len(df_results))):
-    i = 0
-    exon_ends = [0] * total_exons # how many guides in the array do you want to take?
-
+    # preload all the guides
     storedGuides = {}
-
-    for i in range(total_exons):
+    for i in range(num_exons):
       # Get precomputed gRNAs from pickle
       gtex_gene_exon = ensembl_gene + "_" + str(i)
       storedGuides[i] = self.getGuides(gtex_gene_exon)
 
-    i = 0
-    while (i < exon_entries) and (i < total_exons) and (i < exons_to_analyze or q.qsize() < quantity):
-      gtex_gene_exon = str(df_results.iloc[i]['Id'])
-      gtex_exon_num = int(df_results.iloc[i]['exon_num'])
-      gRNAs = storedGuides[gtex_exon_num]
+    # choose which guides we want.
+    # this is represented by the exon_ends list.
+    exon_ends = [0] * num_exons # how many guides in the array do you want to take?
 
-      # If there's enough room, add it, no question.
-      add_more = True
-      while q.qsize() < quantity:
-        if exon_ends[gtex_exon_num] >= len(gRNAs):
-          add_more = False
-          break
-        potential_gRNA = gRNAs[exon_ends[gtex_exon_num]]
-        exon_ends[gtex_exon_num] += 1
-        functional_presence = 0
-        if "functional_domain" in potential_gRNA:
-          functional_presence = 1
-        q.put((functional_presence, potential_gRNA["score"], gtex_exon_num))
+    # maintain 3 lists of exons
+    def range_with_guide_containing_exons(r):
+      result = []
+      for i in r:
+        gtex_exon_num = int(df_results.iloc[i]['exon_num'])
+        if len(storedGuides[gtex_exon_num]) > 0:
+          result.append(i)
+      return result
 
-      # Otherwise, keep going until we are too low.
-      while add_more:
-        if exon_ends[gtex_exon_num] >= len(gRNAs):
-          add_more = False
-          break
-        lowest_functional_presence, lowest_gRNA_score, lowest_gRNA_exon = q.get()
-        potential_gRNA = gRNAs[exon_ends[gtex_exon_num]]
-        functional_presence = 0
-        if "functional_domain" in potential_gRNA:
-          functional_presence = 1
-        if (functional_presence and not lowest_functional_presence) or (functional_presence == lowest_functional_presence and potential_gRNA["score"] > lowest_gRNA_score):
-          q.put((functional_presence, potential_gRNA["score"], gtex_exon_num))
-          exon_ends[gtex_exon_num] += 1
-          exon_ends[lowest_gRNA_exon] -= 1
-        else:
-          q.put((lowest_functional_presence, lowest_gRNA_score, lowest_gRNA_exon))
-          add_more = False
+    # primary --> where we would like to take exons from
+    # secondary --> when primary is empty, choose from here.
+    if self.gtex_enabled and num_exons >= 6:
+      primary = range_with_guide_containing_exons(range(0,4)) # 0,1,2,3
+      secondary = range_with_guide_containing_exons(range(4, num_exons)) # all but first 4
+    else:
+      primary = range_with_guide_containing_exons(range(0, num_exons - 2))
+      secondary = range_with_guide_containing_exons(range(max(num_exons - 2, 0), num_exons)) # last two exons
 
-      i += 1
+    # now execute the data structure
+    total_guides_selected = 0
+    while total_guides_selected < quantity and (len(primary) > 0 or len(secondary) > 0):
+      # get the list of guides
+      potential_guides = []
+      if len(primary) == 0:
+        primary = [secondary[0]]
+        secondary = secondary[1:]
+      for i in primary:
+        gtex_exon_num = int(df_results.iloc[i]['exon_num'])
+        guides_for_exon = storedGuides[gtex_exon_num]
+        potential_guide = guides_for_exon[exon_ends[gtex_exon_num]]
+        potential_guides.append(potential_guide)
+
+      # potential_guides is an array of the best guide from each exon in primary
+      def cmp_key(x):
+        _, guide = x
+        if not 'has_functional_domain' in guide:
+          guide['has_functional_domain'] = False
+        return (-guide['off_target_score'], guide['has_functional_domain'], guide['score'])
+
+      # find which guide is best
+      max_index, max_value = max(enumerate(potential_guides), key=cmp_key)
+      exon_chosen = primary[max_index] # which row in the dataframe
+
+      # if our best possible guide has an off-target score of 100000,
+      # then we should search secondary for a guide with lower off-target score.
+      # If we find one, use that guide instead!
+      # Then, go back to the beginning of the while loop (continue)
+      # Otherwise, work with the info we've gotten above
+
+      ###################### - should not affect any variables we need below
+      got_new_guide = False
+      if max_value['off_target_score'] == 100000:
+        for idx,i in enumerate(secondary):
+          gtex_exon_num = int(df_results.iloc[i]['exon_num'])
+          guides_for_exon = storedGuides[gtex_exon_num]
+          if exon_ends[gtex_exon_num] >= len(guides_for_exon): # we've used up all of these.
+            del secondary[idx]
+            continue
+          potential_guide = guides_for_exon[exon_ends[gtex_exon_num]]
+          if potential_guide['off_target_score'] < 100000:
+            # use this guide!
+            got_new_guide = True
+            exon_ends[gtex_exon_num] += 1
+            total_guides_selected += 1
+            break
+        # if we pulled a guide above, continue in the while loop (don't execute below)
+        if got_new_guide:
+          continue
+      ######################
+
+      # convert to actual exon num
+      gtex_exon_num = int(df_results.iloc[exon_chosen]['exon_num'])
+      exon_ends[gtex_exon_num] += 1
+      total_guides_selected += 1
+
+      # If we're out of guides, remove this
+      guides_for_exon = storedGuides[gtex_exon_num]
+      if exon_ends[gtex_exon_num] == len(guides_for_exon): # exon_ends is exclusive --> i.e., don't include the value listed in exon_ends
+        del primary[max_index]
+
+      # enforce sparsity: don't let a single exon account for more than 50% of guides
+      # move the exon from primary to back of secondary
+      elif exon_ends[gtex_exon_num] >= quantity / 2:
+        secondary.append(primary[max_index]) # exon_chosen
+        del primary[max_index]
 
     # Mark k = 10 after quantity as unselected
     # add those and beginning ones to guides_for_exons
-    for exon_num in xrange(total_exons):
+    for exon_num in xrange(num_exons):
       gRNAs = storedGuides[exon_num]
       for guide in gRNAs[:exon_ends[exon_num]]:
         guide["selected"] = True
@@ -205,20 +252,14 @@ class Ranker():
       gene_to_exon[ensembl_gene] = {
         "name": gene_name,
         "ensembl_gene": ensembl_gene,
-        "length": gene_info['txEnd'] - gene_info['txStart'],
-        "start": gene_info['txStart'],
         "end": gene_info['txEnd'],
         "exons": [] # Gets filled in below
       }
 
       # Prepare each exon and add to gene_to_exon[ensembl_gene].exons
       if gene_strand_mapping[ensembl_gene] == '+':
-        gene_to_exon[ensembl_gene]['start'] = gene_info['txStart']
-        gene_to_exon[ensembl_gene]['end'] = gene_info['txEnd']
         r = xrange(exon_count)
       else:
-        gene_to_exon[ensembl_gene]['start'] = gene_info['txEnd']
-        gene_to_exon[ensembl_gene]['end'] = gene_info['txStart']
         r = xrange(exon_count-1, -1, -1)
 
       for i in r:

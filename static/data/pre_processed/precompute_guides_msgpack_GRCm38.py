@@ -87,7 +87,7 @@ params["PAM_len"] = len(params["PAM"])
 revcompl = lambda x: ''.join([{'A':'T','C':'G','G':'C','T':'A','N':'N'}[B] for B in x][::-1])
 
 print "constructing refGene"
-refGeneFilename = '../gtex/refGene_GRCm38.txt'
+refGeneFilename = '../gtex/gtex_mouse/refGene_mouse.txt'
 refGene = pd.read_csv(refGeneFilename, sep="\t")
 refGene.columns=['','name','chrom','strand','txStart','txEnd','cdsStart','cdsEnd','exonCount','exonStarts','exonEnds','id','name2','cdsStartStat','cdsEndStat','exonFrames']
 

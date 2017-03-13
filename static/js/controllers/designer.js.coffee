@@ -11,7 +11,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
   $scope.non_targeting_guides_info = {
     'count': 500
     'default': 500
-    'min': 1
+    'min': 0
     'max': 1000
     'text': "Default: Make non-targeting sgRNAs 5% of final library size"
   }
@@ -157,9 +157,14 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
           # guide.selected = false # Change later to only include best guides -> might even come from server
           if guide.selected
             countSelectedGuides += 1
+          if key2 == gene.exons.length - 1
+            guide.targets_last_exon = true
+          else
+            guide.targets_last_exon = false
           guide.p_start = guide.start / gene.length * pixel_width
           guide.exon = key2 + 1
           guide.gene = gene.name
+          guide.ensembl_gene = gene.ensembl_gene
           all_gRNAs[gene.name].push(guide)
           merged_gRNAs.push(guide)
     $scope.countSelectedGuides = countSelectedGuides
@@ -378,9 +383,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     $http.get(non_targeting_guides_href).then (res) ->
       non_targeting = res.data.data
       guidesCSV = $filter('filter')($scope.merged_gRNAs, {selected:true}, true)
-      guidesCSV = $filter('orderBy')(guidesCSV, ['gene','score'], true)
+      guidesCSV = $filter('orderBy')(guidesCSV, ['-gene','score'], true)
       padding = Math.floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
       angular.forEach guidesCSV, (guide, idx) ->
-        guide.uid = "GUIDES_sg" + pad(idx, 4)
+        guide.uid = "GUIDES_sg" + pad(idx, padding)
       guidesCSV.concat non_targeting[0..($scope.non_targeting_guides_info.count - 1)]
 ]

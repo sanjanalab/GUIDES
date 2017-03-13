@@ -11,7 +11,7 @@
     "angular-sanitize": "^1.4.8",
     "angular-ui-switch": "git://github.com/EskoCruz/angular-ui-switch",
     "chart.js": "^1.0.2",
-    "coffee-script": "^1.7.1",
+    "coffee-script": "~1.11.1",
     "less": "^1.7.5",
     "ng-csv": "^0.3.6",
     "ng-file-upload": "^11.2.0"

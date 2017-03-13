@@ -67,7 +67,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
           this_.available.human_genes = res.data
           this_.available.genes = this_.available.human_genes # only once on constructor
           this_.data.genes = []
-        $http.get('/static/data/pre_processed/genes_list_GRCm38.txt').then (res) ->
+        $http.get('/static/data/pre_processed/genes_list_GRCm38_processed.txt').then (res) ->
           this_.available.mouse_genes = res.data
           this_.data.genes = []
 
@@ -89,7 +89,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
               # name
               gene.name = gene.name.toUpperCase()
               geneText = geneText.toUpperCase()
-              mus_bool = (gene.name == geneText or gene.entrez_id == geneText or gene.ensembl_id_real == geneText or gene.ensembl_id == geneText)
+              mus_bool = (gene.name == geneText or gene.entrez_id == geneText or gene.ensembl_id == geneText)
               hum_bool = (gene.name == geneText or gene.entrez_id == geneText or gene.ensembl_id == geneText or gene.ensembl_id.split('.')[0] == geneText)
               if ((not (gene.ensembl_id in seen)) and ((this_.data.genome == 'mus' and mus_bool) or (this_.data.genome == 'hum' and hum_bool)))
                 seen[gene.ensembl_id] = true

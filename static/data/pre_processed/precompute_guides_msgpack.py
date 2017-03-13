@@ -46,7 +46,7 @@ params = {
   "prime5": True,
   "scoring": "Azimuth",
   "quantity": 100,
-  "functional_domains": True
+  "functional_domains": False
 }
 
 # azimuth mdoel

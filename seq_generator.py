@@ -46,7 +46,7 @@ class Genome():
             end = int(gene_data["exonEnds"].tolist()[0][exon])
             full_sequenece = self.chrom_sequence(chrom)
             full_sequenece_seq = self.chrom_sequence(chrom).seq
-            return full_sequenece_seq[start:end]
+            return full_sequenece_seq[start:end].upper()
         except IndexError:
             raise ExonError(gene, exon)
 
@@ -54,9 +54,10 @@ class Genome():
     def gene_info(self, gene):
         """Wrap information regarding a certain gene."""
         gene_data = self.df.loc[self.df['name'] == gene]
+        print gene_data
         gene_info = {
-            'txStart': int(gene_data['txStart']), #tx - transcription
-            'txEnd': int(gene_data['txEnd']),
+            'txStart': 0, #tx - transcription
+            'txEnd': 0,
             'exonCount': int(gene_data['exonCount']),
             'exonStarts': map(int, gene_data['exonStarts'].tolist()[0]),
             'exonEnds': map(int, gene_data['exonEnds'].tolist()[0])

@@ -7,6 +7,7 @@ import numpy as np
 import pickle
 import urllib2
 import seq_generator
+import seq_generator_mus
 import computations
 import computations_mouse
 from settings import APP_STATIC
@@ -17,7 +18,9 @@ from celery import Celery
 from emailing import send_completed_run
 
 genome = {
-  "human" : seq_generator.FastGenome()
+  "human" : seq_generator.FastGenome(),
+  "mouse": seq_generator_mus.FastGenome()
+
 }
 
 # setup password protection
@@ -69,12 +72,12 @@ def start_compute_mouse(self, params):
       result = {'gene_to_exon': {}, 'guide_count': 0, 'genome': 'mouse'}
       return {'current': 0, 'total': 0, 'status': 'Task completed!', 'result': result, 'gene_statistics': gene_statistics}
 
-    ranker = computations_mouse.RankerMouse(domains_enabled)
+    ranker = computations_mouse.RankerMouse(genome["mouse"], species, domains_enabled)
 
     # Iterate over genes finding guides for each
     total_gene_count = len(genes)
     for idx, g in enumerate(genes):
-      ranker.rank(g['name'], quantity)
+      ranker.rank(g['ensembl_id'], g['name'], quantity)
       gene_statistics['processed'] = idx
       self.update_state(state='PROGRESS', meta={'current': idx, 'total': total_gene_count, 'gene_statistics': gene_statistics})
 
@@ -186,7 +189,6 @@ def generate():
   rejected_genes = post.get('rejected_genes')
   gene_statistics = post.get('gene_statistics')
 
-  print species
   if species == "mus":
     params = {
       'genes': genes,
