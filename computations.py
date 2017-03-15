@@ -6,7 +6,6 @@ import numpy as np
 import pickle
 import cPickle
 import msgpack
-from seq_generator import ExonError
 import seq_generator
 from settings import APP_STATIC
 import os
@@ -66,7 +65,8 @@ class Ranker():
         return gRNAs
     except IOError:
       gene, exon = gene_exon.split('_')
-      raise ExonError(gene, exon)
+      print 'IOError in getGuides', gene, exon
+      raise seq_generator.ExonError(gene, exon)
 
   # ensembl_gene - ensembl encocoding for the gene (grCH37)
   # gene_name - user-friendly name for the gene

@@ -41,7 +41,7 @@ class Genome():
     def sequence(self, gene, exon):
         try:
             gene_data = self.df.loc[self.df['name'] == gene]
-            chrom = gene_data["chrom"].tolist()[0]
+            chrom = str(gene_data["chrom"].tolist()[0]).split('.0')[0]
             start = int(gene_data["exonStarts"].tolist()[0][exon])
             end = int(gene_data["exonEnds"].tolist()[0][exon])
             full_sequenece = self.chrom_sequence(chrom)
