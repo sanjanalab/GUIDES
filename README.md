@@ -60,7 +60,7 @@ None currently.
 
 ## Getting help
 
-Feel free to reach out to the GUIDES team at [guides-tech@googlegroups.com](guides-tech@googlegroups.com).
+Feel free to reach out to the GUIDES team at [guides-tech@googlegroups.com](mailto:guides-tech@googlegroups.com).
 
 **Example**
 
@@ -68,7 +68,7 @@ Here is an [example library]() targeting 500 genes involved in chromatin regulat
 
 ## Getting involved
 
-Please [get in touch](guides-tech@googlegroups.com) if you are interested in contributing, so we can coordinate our efforts. In particular, we are interested in expanding our tool to include more species.
+Please [get in touch](mailto:guides-tech@googlegroups.com) if you are interested in contributing, so we can coordinate our efforts. In particular, we are interested in expanding our tool to include more species.
 
 ----
 
