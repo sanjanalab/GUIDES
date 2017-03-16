@@ -4,7 +4,7 @@
 
   - **Technology stack**: Python/Flask backend with Angular.js front-end.
   - **Status**:  Release (1.0)
-  - **Links to production or demo instances**: Hosted on the [Sanjana Lab's](guides.sanjanalab.org) website.
+  - **Links to production or demo instances**: Hosted on the [Sanjana Lab's](http://guides.sanjanalab.org) website.
   - Recently, library design tools such as CRISPR Library Designer have used on-target efficiency scoring to help automate guide design. In addition to on-target scores, our tool integrates expression data and protein structure, while also providing a more easily accessible web interface.
 
 
