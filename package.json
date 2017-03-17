@@ -6,14 +6,14 @@
     "Joshua Meier <jmeier@college.harvard.edu>"
   ],
   "dependencies": {
-    "angular-chart.js": "^0.8.8",
-    "angular-google-analytics": "^1.1.5",
-    "angular-sanitize": "^1.4.8",
+    "angular-chart.js": "0.8.8",
+    "angular-google-analytics": "1.1.5",
+    "angular-sanitize": "1.4.8",
     "angular-ui-switch": "git://github.com/EskoCruz/angular-ui-switch",
-    "chart.js": "^1.0.2",
+    "chart.js": "1.0.2",
     "coffee-script": "~1.11.1",
     "less": "^1.7.5",
-    "ng-csv": "^0.3.6",
-    "ng-file-upload": "^11.2.0"
+    "ng-csv": "0.3.6",
+    "ng-file-upload": "11.2.0"
   }
 }
