@@ -3,14 +3,14 @@
 **Description**:  Genome-scale CRISPR-Cas9 knockout libraries have emerged as popular tools for unbiased, phenotypic screening but easy-to-use software for designing customized guide RNA libraries has lagged behind. GUIDES is a web application for automated, tissue-specific library design. It integrates on-target scores, expression data, and protein structure into an easily accessible web interface.
 
   - **Technology stack**: Python/Flask backend with Angular.js front-end.
-  - **Status**:  Beta (1.0)
-  - **Links to production or demo instances**: Hosted on Zhang Lab's [Genome Engineering](guides.genome-engineering.org) website.
+  - **Status**:  Release (1.0)
+  - **Links to production or demo instances**: Hosted on the [Sanjana Lab's](http://guides.sanjanalab.org) website.
   - Recently, library design tools such as CRISPR Library Designer have used on-target efficiency scoring to help automate guide design. In addition to on-target scores, our tool integrates expression data and protein structure, while also providing a more easily accessible web interface.
 
 
 **Screenshots**:
 
-![](https://raw.githubusercontent.com/fengzhanglab/GUIDES/master/Screenshot.png)
+![](https://raw.githubusercontent.com/sanjanalab/GUIDES/master/Screenshot.png)
 
 
 ## Dependencies
@@ -23,7 +23,7 @@ Static data files which are too large for hosting on GitHub must also be added. 
 
 ## Installation
 
-After pulling this repository, copy `data/` from the [Zhang Lab Dropbox]() and move it to `CRISPR_Library_Design/static`.
+After pulling this repository, copy `data/` from the [Sanjana Lab Dropbox]() and move it to `CRISPR_Library_Design/static`.
 
 Alternatively, run [./install.sh](install.sh).
 
@@ -60,7 +60,7 @@ None currently.
 
 ## Getting help
 
-Feel free to reach out to the Zhang Lab team at [guides@mit.edu](guides@mit.edu).
+Feel free to reach out to the GUIDES team at [guides-tech@googlegroups.com](mailto:guides-tech@googlegroups.com).
 
 **Example**
 
@@ -68,12 +68,12 @@ Here is an [example library]() targeting 500 genes involved in chromatin regulat
 
 ## Getting involved
 
-Please [get in touch](cld@mit.edu) if you are interested in contributing, so we can coordinate our efforts. In particular, we are interested in expanding our tool to include more species.
+Please [get in touch](mailto:guides-tech@googlegroups.com) if you are interested in contributing, so we can coordinate our efforts. In particular, we are interested in expanding our tool to include more species.
 
 ----
 
 ## Open source licensing info
-Copyright (c) 2015-2016 Joshua Meier. Released under AGPLv3. See LICENSE.txt for details.
+Copyright (c) 2015-2017 Joshua Meier, Feng Zhang and Neville Sanjana. Released under AGPLv3. See LICENSE.txt for details.
 
 If you're interested in getting access to this system under a different license, please contact me.
 
