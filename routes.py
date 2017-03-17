@@ -99,7 +99,9 @@ def start_compute_mouse(self, params):
     }
 
     # Send results to the user
-    send_completed_run(email_address, start_compute_mouse.request.id)
+    SMTPenabled = True if os.environ.get('SMTPenabled', False) == 'True' else False
+    if SMTPenabled:
+      send_completed_run(email_address, start_compute_mouse.request.id)
 
     return {
       'current': total_gene_count,
