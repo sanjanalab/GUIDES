@@ -73,6 +73,8 @@ if __name__ == "__main__":
   df.columns=['','name','chrom','strand','txStart','txEnd','cdsStart','cdsEnd','exonCount','exonStarts','exonEnds','id','name2','cdsStartStat','cdsEndStat','exonFrames']
   # process the dataframe
   print len(df)
+  results_df = pd.DataFrame(columns=['','name','chrom','strand','txStart','txEnd','cdsStart','cdsEnd','exonCount','exonStarts','exonEnds','id','name2','cdsStartStat','cdsEndStat','exonFrames'])
+  res_idx = 0
   for i, row in df.iterrows():
     if i % len(df) / 1000 == 0: print i
     starts_list = [int(num) for num in row['exonStarts'].split(',')[:-1]]
@@ -108,28 +110,33 @@ if __name__ == "__main__":
       df.set_value(i, 'exonEnds', list(ends_list_processed))
       df.set_value(i, 'cdsStart', cds_intervals[0][0])
       df.set_value(i, 'cdsEnd', cds_intervals[-1][1])
-    else: # we dont' have ccds... keep default
+
+      new_row = df.iloc[i]
+      results_df.loc[res_idx] = new_row
+      res_idx += 1
+      
+    #else: # we dont' have ccds... keep default
       # Expand to include intronic sequences (5 each side)
-      for k in range(len(starts_list)):
-        starts_list[k] -= 5
+      #for k in range(len(starts_list)):
+      #  starts_list[k] -= 5
 
-      for k in range(len(ends_list)):
-        ends_list[k] += 5
+      #for k in range(len(ends_list)):
+      #  ends_list[k] += 5
 
-      df.set_value(i, 'exonStarts', starts_list)
-      df.set_value(i, 'exonEnds', ends_list)
+      #df.set_value(i, 'exonStarts', starts_list)
+      #df.set_value(i, 'exonEnds', ends_list)
 
   # write exon_info
-  exon_info = df[["name", "chrom", "strand", "exonCount", "exonStarts", "exonEnds"]]
+  exon_info = results_df[["name", "chrom", "strand", "exonCount", "exonStarts", "exonEnds"]]
 
   with open("../pre_processed/exon_info.p", "wb") as f:
     pickle.dump(exon_info, f)
 
   # write new refGene
-  df['exonStarts'] = df.apply(lambda x: (','.join([str(n) for n in x['exonStarts']]) + ','), axis=1)
-  df['exonEnds'] = df.apply(lambda x: (','.join([str(n) for n in x['exonEnds']]) + ','), axis=1)
+  results_df['exonStarts'] = results_df.apply(lambda x: (','.join([str(n) for n in x['exonStarts']]) + ','), axis=1)
+  results_df['exonEnds'] = results_df.apply(lambda x: (','.join([str(n) for n in x['exonEnds']]) + ','), axis=1)
 
-  df.to_csv('refGene.txt', sep="\t", index=False, header=False)
+  results_df.to_csv('refGene.txt', sep="\t", index=False, header=False)
 
 end_time = time.time()
 hours, rem = divmod(end_time-t0, 3600)
