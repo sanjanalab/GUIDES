@@ -219,7 +219,7 @@
                     <td class="nt-sequence">{{ guide.seq }}</td>
                     <td class="nt-sequence">{{ guide.PAM }}</td>
                     <td>{{ guide.score.toFixed(2) }}</td>
-                    <td>{{ guide.off_target_score }}</td>
+                    <td>{{ guide.off_target_score.toFixed(2) }}</td>
                     <td>{{ guide.exon }}</td>
                     <td ng-show="guidesFactoryData.domains_enabled">{{ guide.functional_domain }}</td>
                   </tr>
