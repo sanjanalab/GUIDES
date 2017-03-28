@@ -123,11 +123,11 @@
                   <div ng-show="tissuesWarning" class="bottom-warning-text">Please enter a list of tissues.</div>
                 </div>
 
-                <div class="entry_container" tooltip-placement="left" uib-tooltip="Provide your email address so we can email you a link to access results!" tooltip-trigger="outsideClick">
+                <div class="entry_container" tooltip-placement="left" uib-tooltip="Optional: By providing an email address, we can email you a link to access results!" tooltip-trigger="outsideClick">
                   <span class="entry_label">email address:</span>
                   <div class="ui-select-container ui-select-multiple ui-select-bootstrap dropdown form-control ng-valid" theme="bootstrap" style="width: 100%;  background: none; background-color: transparent" aria-disabled="false" aria-invalid="false">
                     <div>
-                      <input type="text" autocomplete="false" autocorrect="off" autocapitalize="off" spellcheck="false" class="ui-select-search input-xs ng-valid ng-dirty ng-touched ng-valid-parse email-box" placeholder="guides@mit.edu" ng-model="guidesFactory.data.email_address" aria-label="Select box" ondrop="return false;" aria-hidden="false" aria-disabled="false" aria-invalid="false">
+                      <input type="text" autocomplete="false" autocorrect="off" autocapitalize="off" spellcheck="false" class="ui-select-search input-xs ng-valid ng-dirty ng-touched ng-valid-parse email-box" placeholder="(optional)" ng-model="guidesFactory.data.email_address" aria-label="Select box" ondrop="return false;" aria-hidden="false" aria-disabled="false" aria-invalid="false">
                     </div>
                   </div>
                   <div ng-show="emailWarning" class="bottom-warning-text">Please enter a valid email address.</div>

@@ -110,6 +110,8 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
       promise.then () ->
         if this_.data.tissues.length == 0 or this_.data.tissues_disabled
           this_.data.tissues = this_.available.tissues
+        if this_.data.emailAddress == ''
+          this_.data.emailAddress = 'default-email@GUIDES-email.com'
         $http {
           url: '/generate'
           method: 'POST'
