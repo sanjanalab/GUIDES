@@ -13,6 +13,7 @@ from intervaltree import IntervalTree
 from multiprocessing import Process
 import os
 import time
+import sys
 
 start_time = time.time()
 
@@ -79,7 +80,7 @@ params = {
   "protospacer_len": 20,
   "prime5": True,
   "scoring": "Azimuth",
-  "quantity": 100,
+  "quantity": sys.maxint,
   "functional_domains": True,
   "mer_len": 20
 }
@@ -92,7 +93,7 @@ azimuth_model_file = os.path.join(azimuth_saved_model_dir, model_name)
 with open(azimuth_model_file, 'rb') as f:
   azimuth_model = pickle.load(f)
 
-azimuth_scores_file = 'azimuth_scores_mus.p'
+azimuth_scores_file = 'azimuth_scores.p'
 with open(azimuth_scores_file, 'rb') as inp:
   azimuth_scores = pickle.load(inp)
 
@@ -107,12 +108,12 @@ def get_azimuth_score(mer30):
 
 # load in exome
 APP_STATIC = "/home/joshm/GUIDES/CRISPR-Library-Designer/static"
-exome_seq_path = os.path.join(APP_STATIC, 'data', 'GRCm38_exons')
+exome_seq_path = os.path.join(APP_STATIC, 'data', 'GRCh37_exons')
 mer_len = params['mer_len']
 
 # process kmers
 # consider all kmers which are followed by NGG
-print "preparing mus kmers", time.time() - start_time
+print "preparing hum kmers", time.time() - start_time
 exome_mers = {}
 for file in os.listdir(exome_seq_path):
   file_loc = os.path.join(exome_seq_path, file)
@@ -192,7 +193,7 @@ def get_pot_off_targets(seq):
     return results.keys()
 
 # load preprocessed info
-with open("off_target_scores_mus.p", "rb") as inp:
+with open("off_target_scores.p", "rb") as inp:
   off_target_scores = pickle.load(inp)
 
 print 'len(off_target_scores) = ', len(off_target_scores), time.time() - start_time
@@ -215,7 +216,7 @@ def get_off_target_score(protospacer):
 # Create interval tree for functional domains
 print "constructing interval tuples", time.time() - start_time
 interval_tuples_dict = {}
-ucsc_pfam_f = '../functional_domains/ucsc_pfam_GRCm38.txt'
+ucsc_pfam_f = '../functional_domains/ucsc_pfam.txt'
 with open(ucsc_pfam_f, 'r') as pfam_csv:
   csvreader = csv.reader(pfam_csv, delimiter='\t')
   next(csvreader) # skip header
@@ -243,7 +244,7 @@ params["PAM_len"] = len(params["PAM"])
 revcompl = lambda x: ''.join([{'A':'T','C':'G','G':'C','T':'A','N':'N'}[B] for B in x][::-1])
 
 print "constructing refGene", time.time() - start_time
-refGeneFilename = '../gtex/gtex_mouse/refGene_mouse.txt'
+refGeneFilename = '../gtex/refGene.txt'
 refGene = pd.read_csv(refGeneFilename, sep="\t")
 refGene.columns=['','name','chrom','strand','txStart','txEnd','cdsStart','cdsEnd','exonCount','exonStarts','exonEnds','id','name2','cdsStartStat','cdsEndStat','exonFrames']
 refGene["exonStarts"] = refGene.apply(lambda x: x['exonStarts'].split(',')[:-1], axis=1)
@@ -261,19 +262,18 @@ def gene_exon_coords(gene, exon):
       'chrom': str(chrom)
     }
   except IndexError:
-    print 'IndexError', gene, exon
     return None
 
 def gene_exon_file(gene, exon):
   filename = gene + "_" + str(exon)
-  seq_path = os.path.join('../GRCm38_exons/', filename)
+  seq_path = os.path.join('../GRCh37_exons/', filename)
   if os.path.isfile(seq_path):
     with open(seq_path) as infile:
       return infile.read()
   else:
     return None
 
-with open("/home/joshm/GUIDES/CRISPR-Library-Designer/static/data/pre_processed/exon_info_mus.p", "rb") as f:
+with open("/home/joshm/GUIDES/CRISPR-Library-Designer/static/data/pre_processed/exon_info.p", "rb") as f:
     exon_info = pickle.load(f)
 
 def get_exon_start_chrom(gene, exon):
@@ -285,8 +285,13 @@ def get_exon_start_chrom(gene, exon):
 
   # find the chromosome this falls in
   chrom = str(row['chrom'])
-  if chrom.isdigit():
-    chrom = str(int(chrom)) # get rid of decimal place
+  #if chrom.isdigit():
+  #  chrom = str(int(chrom)) # get rid of decimal place
+
+  try:
+    chrom = str(int(float(chrom)))
+  except ValueError:
+    pass
 
   return start, chrom
 
@@ -296,14 +301,12 @@ def run(genes_list):
     exon = 0
     seq = gene_exon_file(gene["ensembl_id"], exon)
     coords = gene_exon_coords(gene["ensembl_id"], exon)
-    if gene["ensembl_id"] == "ENSMUSG00000024002":
-      print "FOUND BRD4!!!!"
     while seq:
       # Check if we haven't done this in a previous run of the program
       outfile_name = gene["ensembl_id"] + "_" + str(exon) + ".p"
-      folder = '../cfdGRCm38_guides_msgpack_' + params["scoring"] + '/'
+      folder = '../allGRCh37_guides_msgpack_' + params["scoring"] + '/'
       if params['functional_domains']:
-        folder = '../cfdGRCm38_guides_msgpack_' + params['scoring'] + '_domains/'
+        folder = '../allGRCh37_guides_msgpack_' + params['scoring'] + '_domains/'
       output_path = os.path.join(folder, outfile_name)
 
       if os.path.isfile(output_path):
@@ -373,11 +376,18 @@ def run(genes_list):
         domain = None
         if params["PAM"] == "NGG": # spCas9
           cut_site = coords['start'] + m.start() - 3
-          chrom = 'chr' + coords['chrom']
+          chrom_num_str = coords['chrom']
+          try:
+            chrom_num_str = str(int(float(chrom_num_str)))
+          except ValueError:
+            pass
+          chrom = 'chr' + chrom_num_str
+          print chrom
           if chrom in interval_trees_dict:
             domain_matches = list(interval_trees_dict[chrom][cut_site])
             if len(domain_matches) > 0:
               domain = domain_matches[0].data
+              print domain
         process_guide(m, True, params["quantity"], seq, domain)
 
       seq_rc = revcompl(seq)
@@ -393,7 +403,12 @@ def run(genes_list):
         domain = None
         if params["PAM"] == "NGG": #spCas9
           cut_site = coords['end'] - m.start() + 3
-          chrom = 'chr' + coords['chrom']
+          chrom_num_str = coords['chrom']
+          try:
+            chrom_num_str = str(int(float(chrom_num_str)))
+          except ValueError:
+            pass
+          chrom = 'chr' + chrom_num_str
           if chrom in interval_trees_dict:
             domain_matches = list(interval_trees_dict[chrom][cut_site])
             if len(domain_matches) > 0:
@@ -406,9 +421,9 @@ def run(genes_list):
         gRNA = q.get()
         gRNAs.append(gRNA.serialize_for_display())
       outfile_name = gene["ensembl_id"] + "_" + str(exon) + ".p"
-      folder = '../cfdGRCm38_guides_msgpack_' + params['scoring'] + '/'
+      folder = '../allGRCh37_guides_msgpack_' + params['scoring'] + '/'
       if params['functional_domains']:
-        folder = '../cfdGRCm38_guides_msgpack_' + params['scoring'] + '_domains/'
+        folder = '../allGRCh37_guides_msgpack_' + params['scoring'] + '_domains/'
       output_path = os.path.join(folder, outfile_name)
       with open(output_path,  'w') as outfile:
         # Reverse gRNAs list.
@@ -422,22 +437,43 @@ def run(genes_list):
 
 NUM_CORES = 16
 print "beginning gene by gene processing", time.time() - start_time
-with open('genes_list_GRCm38_processed.txt') as genes_list_file:
-  full_genes_list = json.load(genes_list_file)
-  # gene format: {"ensembl_id": "ENSG00000261122.2", "name": "5S_rRNA", "description": ""}
-  processes = []
-  unit = len(full_genes_list) / NUM_CORES + 1
-  print 'unit is', unit, time.time() - start_time
-  for i in range(NUM_CORES):
-    start = unit * i
-    end = min(unit * (i + 1), len(full_genes_list))
-    genes_list = full_genes_list[start:end]
-    p = Process(target = run, args=(genes_list,))
-    processes.append(p)
-  for process in processes:
-    process.start()
-  for process in processes:
-    process.join()
+
+
+entrez_gene = {}
+with open('/home/joshm/GUIDES/CRISPR-Library-Designer/static/data/pre_processed/genes_list_GRCh37_processed.txt', 'r') as genes_list_f:
+    genes_list = json.loads(genes_list_f.read())
+for gene in genes_list:
+    entrez_gene[gene['entrez_id']] = gene
+
+full_genes_list = genes_list
+
+### Switch for this code if you want just the TF genes
+#with open('/home/joshm/GUIDES_genome_crispr_exp/entrez_human_fantom_INPUT.txt') as #tf_genes_f:
+#    tf_genes = tf_genes_f.read().split(' \n')[:-1]
+#full_genes_list = []
+#for gene in tf_genes:
+#    if gene in entrez_gene:
+#        full_genes_list.append(entrez_gene[gene])
+
+# full_genes_list is what we're going to run on
+
+# gene format: {"ensembl_id": "ENSG00000261122.2", "name": "5S_rRNA", "description"""}
+processes = []
+unit = len(full_genes_list) / NUM_CORES + 1
+print 'unit is', unit, time.time() - start_time
+for i in range(NUM_CORES):
+  start = unit * i
+  end = min(unit * (i + 1), len(full_genes_list))
+  genes_list = full_genes_list[start:end]
+  p = Process(target = run, args=(genes_list,))
+  processes.append(p)
+for process in processes:
+  process.start()
+for process in processes:
+  process.join()
+
+with open('azimuth_scores.p', 'wb') as output:
+  pickle.dump(azimuth_scores, output)
 
 end_time = time.time()
 hours, rem = divmod(end_time-start_time, 3600)

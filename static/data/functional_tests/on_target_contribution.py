@@ -21,13 +21,13 @@ tissues = ['Thyroid', 'Testis', 'Cervix Uteri', 'Adipose Tissue', 'Breast', 'Vag
 
 ### Experimental parameters
 library_size = 5
-num_runs = 1000
+num_runs = 10
 num_genes = 500
 scoring_alg = "Azimuth"
 
 def compute_average_effeciency_with_on_target(genes, library_size):
   # Call into computations.py, using GTEx_enabled = False, and take results.
-  ranker = computations.Ranker(genome["human"], "human", tissues, False, False, scoring_alg = scoring_alg)
+  ranker = computations.Ranker(genome["human"], "human", tissues, False, False, False, scoring_alg = scoring_alg)
   for gene in genes:
     ranker.rank(gene['ensembl_id'], gene['name'], library_size)
   guides_by_exon = ranker.get_guides_by_exon()
@@ -64,6 +64,7 @@ if __name__ == "__main__":
   with open('../pre_processed/genes_list.json', 'r') as genes_list_file:
     genes_list = json.load(genes_list_file)
     for i in xrange(num_runs):
+      print "run", i
       genes = random.sample(genes_list, num_genes)
       result_Y = compute_average_effeciency_with_on_target(genes, library_size)
       result_N = compute_average_effeciency_without_on_target(genes, library_size)

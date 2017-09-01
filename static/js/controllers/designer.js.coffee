@@ -16,6 +16,21 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     'text': "Default: Make non-targeting sgRNAs 5% of final library size"
   }
 
+  # synthesis ready compounds
+  $scope.synthesis_ready = {
+    'enabled': false
+    'type': 'standard' # or EF
+    'csv_header_normal': ['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'Guide with flanking sequence (10bp before and after the guide + PAM)','Chromosome', 'PAM position in chromosome', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']
+    'csv_column_order_normal': ['uid', 'gene', 'ensembl_gene', 'seq', 'full_seq', 'chrom', 'cut_pos', 'score', 'exon', 'targets_last_exon', 'has_exome_repeat', 'off_target_score', 'functional_domain']
+    'csv_header_scaffold_standard': ['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'Guide with flanking sequence (10bp before and after the guide + PAM)','Full-length sgRNA scaffold oligo for synthesis','Chromosome', 'PAM position in chromosome', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']
+    'csv_column_order_scaffold_standard':['uid', 'gene', 'ensembl_gene', 'seq', 'full_seq', 'scaffold_standard', 'chrom', 'cut_pos', 'score', 'exon', 'targets_last_exon', 'has_exome_repeat', 'off_target_score', 'functional_domain']
+    'csv_header_scaffold_EF': ['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'Guide with flanking sequence (10bp before and after the guide + PAM)','E+F modified sgRNA scaffold oligo for synthesis','Chromosome', 'PAM position in chromosome', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']
+    'csv_column_order_scaffold_EF':['uid', 'gene', 'ensembl_gene', 'seq', 'full_seq', 'scaffold_EF', 'chrom', 'cut_pos', 'score', 'exon', 'targets_last_exon', 'has_exome_repeat', 'off_target_score', 'functional_domain']
+  }
+  $scope.synthesis_ready.csv_header = $scope.synthesis_ready.csv_header_normal
+  $scope.synthesis_ready.csv_column_order = $scope.synthesis_ready.csv_column_order_normal
+
+
   # going backwards
   $scope.$on '$routeChangeStart', (scope, next, current) ->
     if $scope.guidesReady and next.$$route.controller == 'DesignerCtrl'
@@ -53,10 +68,10 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
 
   expression_colors = [
       {
-        "fillColor": "#2B333B"
+        "fillColor": "#EDD6F9"
       },
       {
-        "fillColor": "#EDD6F9"
+        "fillColor": "#2B333B"
       },
       {
         "fillColor": "#51D2B7"
@@ -165,6 +180,9 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
           guide.exon = key2 + 1
           guide.gene = gene.name
           guide.ensembl_gene = gene.ensembl_gene
+          guide.full_seq = guide.seq_before + guide.seq + guide.PAM + guide.seq_after
+          guide.scaffold_standard = "GGAAAGGACGAAACACCG" + guide.seq + "GTTTTAGAGCTAGAAATAGCAAGTTAAAATAAGGC"
+          guide.scaffold_EF = "GGAAAGGACGAAACACCG" + guide.seq + "GTTTAAGAGCTATGCTGGAAACAGC"
           all_gRNAs[gene.name].push(guide)
           merged_gRNAs.push(guide)
     $scope.countSelectedGuides = countSelectedGuides
@@ -172,7 +190,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     $scope.merged_gRNAs = merged_gRNAs
 
     # non-targeting guides count
-    $scope.non_targeting_guides_info.count = Math.ceil($scope.countSelectedGuides / 20)
+    $scope.non_targeting_guides_info.count = Math.min(Math.ceil($scope.countSelectedGuides / 20), $scope.non_targeting_guides_info.max)
     if $scope.non_targeting_guides_info.count < 10
       $scope.non_targeting_guides_info.count = 10
       $scope.non_targeting_guides_info.default = 10
@@ -185,18 +203,33 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
 
   if $routeParams.task_id?
     $scope.getGuidesPromise.then (guidesData) ->
-      computeGuidesData(guidesData["gene_to_exon"])
-      $scope.gene = $scope.gene_to_exon[0]
-      $scope.guidesReady = true
-
       $scope.guidesFactoryData = guidesFactory.data
       $scope.tissues = guidesFactory.data.tissues
       $scope.tissues_enabled = not guidesFactory.data.tissues_disabled
 
       # Change series if we are not going to display median
       if guidesFactory.data.tissues_disabled
-        $scope.chart_config.expression.series = ['All Tissues', 'Brain', 'Heart', 'Kidney', 'Liver', 'Skin']
+        $scope.chart_config.expression.series = ['All Tissues', 'Brain', 'Heart', 'Kidney', 'Liver']
         $scope.chart_config.expression.colors.splice(1,1)
+
+      else
+        $scope.chart_config.expression.series = []
+        if guidesFactory.data.tissues.length > 1
+          $scope.chart_config.expression.series = ['All Tissues', 'Selected Tissues']
+
+        tissue_index = 0
+        while $scope.chart_config.expression.series.length < 6 and tissue_index < guidesFactory.data.tissues.length
+          tissue_name = guidesFactory.data.tissues[tissue_index]
+          $scope.chart_config.expression.series.push tissue_name
+          tissue_index += 1
+
+      $scope.chart_config.expression.colors = $scope.chart_config.expression.colors[...$scope.chart_config.expression.series.length]
+
+      computeGuidesData(guidesData["gene_to_exon"])
+      $scope.gene = $scope.gene_to_exon[0]
+      $scope.guidesReady = true
+
+
 
       ## I think this is unnecessary, since we filter by order in the template.
       # angular.forEach all_gRNAs, (guides_for_gene, gene_name) ->
@@ -234,7 +267,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
     # Setup the correct number of arrays to store our data later.
     # Assumption: Every exon has same number of expression values.
     # ...but this is required anyway by our chart library.
-    angular.forEach $scope.gene.exons[0].expression, (tissue_value, key) ->
+    angular.forEach $scope.chart_config.expression.series, (tissue_value, key) ->
       expression_data.push []
     # find normalizing constant
     # Normalize by max(max(expression_overalls), max(expression_median))
@@ -247,21 +280,24 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
       guides_data.push guides_count
     angular.forEach $scope.gene.exons, (exon, key) ->
       if exon.expression
-        if guidesFactory.data.tissues_disabled # don't use median
-          expression_data[0].push (exon.expression.overall / max_expression).toFixed(2)
-          expression_data[1].push (exon.expression.brain / max_expression).toFixed(2)
-          expression_data[2].push (exon.expression.heart / max_expression).toFixed(2)
-          expression_data[3].push (exon.expression.kidney / max_expression).toFixed(2)
-          expression_data[4].push (exon.expression.liver / max_expression).toFixed(2)
-          expression_data[5].push (exon.expression.skin / max_expression).toFixed(2)
-        else
-          expression_data[0].push (exon.expression.overall / max_expression).toFixed(2)
-          expression_data[1].push (exon.expression.median / max_expression).toFixed(2)
-          expression_data[2].push (exon.expression.brain / max_expression).toFixed(2)
-          expression_data[3].push (exon.expression.heart / max_expression).toFixed(2)
-          expression_data[4].push (exon.expression.kidney / max_expression).toFixed(2)
-          expression_data[5].push (exon.expression.liver / max_expression).toFixed(2)
-          expression_data[6].push (exon.expression.skin / max_expression).toFixed(2)
+        cur_index = 0
+
+        if guidesFactory.data.tissues.length > 1
+          expression_data[cur_index].push (exon.expression.overall / max_expression).toFixed(2)
+          cur_index += 1
+
+          if not guidesFactory.data.tissues_disabled # include median
+            expression_data[cur_index].push (exon.expression.median / max_expression).toFixed(2)
+            cur_index += 1
+
+        tissue_index = 0
+        while cur_index < $scope.chart_config.expression.series.length and tissue_index < guidesFactory.data.tissues.length
+          tissue_name = guidesFactory.data.tissues[tissue_index]
+
+          expression_data[cur_index].push (exon.expression[tissue_name] / max_expression).toFixed(2)
+          tissue_index += 1
+          cur_index += 1
+
       expression_labels.push('Exon ' + (key+1))
       guide_labels.push('') # empty labels
 
@@ -386,7 +422,7 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
       guidesCSV = $filter('orderBy')(guidesCSV, ['-gene','score'], true)
       padding = Math.floor(Math.log(guidesCSV.length) / Math.log(10)) + 1
       angular.forEach guidesCSV, (guide, idx) ->
-        guide.uid = "GUIDES_sg" + pad(idx, padding)
+        guide.uid = "GUIDES_sg" + pad(idx + 1, padding)
       stop_pos = $scope.non_targeting_guides_info.count - 1
       if stop_pos > 0
         guidesCSV.concat non_targeting[0..stop_pos]

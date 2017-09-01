@@ -147,7 +147,7 @@
                 <span class="x-close"><i class="fa fa-comment"></i></span>
               </div>
               <div class="sidebar-primary-item-action-text-container">
-                <a href="mailto:cld@mit.edu" class="sidebar-primary-item-action">
+                <a href="mailto:guides-tech@googlegroups.com" class="sidebar-primary-item-action">
                   <span class="sidebar-primary-item-action-text">
    Send Feedback
                   </span>
@@ -207,9 +207,9 @@
                     <th>
                       <select-all-checkbox checkboxes="all_gRNAs[gene.name]" counter="countSelectedGuides" ng-show="show_different_guides"  chartdata="chart_config.guides.data[0]" guidechange="guideSelected(guide)"></select-all-checkbox>
                     </th>
-                   <th><a href="" ng-click="orderByField='seq'; reverseSort = !reverseSort">Guide Sequence (5' <i class="fa fa-long-arrow-right">  </i> 3') </a><span ng-show="orderByField == 'seq'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span  ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
+                   <th><a href="" ng-click="orderByField='seq'; reverseSort = !reverseSort">Guide sequence (5' <i class="fa fa-long-arrow-right">  </i> 3') </a><span ng-show="orderByField == 'seq'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span  ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                     <th><a href="" ng-click="orderByField='PAM'; reverseSort = !reverseSort">PAM </a><span ng-show="orderByField == 'PAM'"><span  ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span ></span></th>
-                    <th><a tooltip-placement="bottom" uib-tooltip="Efficiency scores are computed using the techniques described by (1) Doench, et  al., 2014; and (2) Fusi, et al., 2016., and presented as (1)/(2)." ng-click="orderByField='score'; reverseSort = !reverseSort" >On-target Efficiency </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i>  </span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
+                    <th><a tooltip-placement="bottom" uib-tooltip="Efficiency scores are computed using the techniques described by Doench, et al., 2016." ng-click="orderByField='score'; reverseSort = !reverseSort" >On-target efficiency </a><span ng-show="orderByField == 'score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i>  </span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                     <th><a tooltip-placement="bottom" uib-tooltip="For a given sgRNA, GUIDES finds all potential off-targets with up to 3 mismatches in the human/mouse exome (and followed by a NGG motif) and calculates the CFD between the given sgRNA and the potential off-target. The sum of these scores is linearly weighted by the number of times the potential off-target occurs in the exome. A lower G-score means the guide is more specific." ng-click="orderByField='off_target_score'; reverseSort = !reverseSort" >G-score (off-target specificity) </a><span ng-show="orderByField == 'off_target_score'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i>  </span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
                     <th><a href="" ng-click="orderByField='exon'; reverseSort = !reverseSort">Exon targeted by guide </a><span ng-show="  orderByField == 'exon'"><span ng-show="!reverseSort"><i class="fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class  ="fa fa-angle-down"></i></span></span></th>
                     <th ng-show="guidesFactoryData.domains_enabled"><a href="" ng-click="orderByField='functional_domain'; reverseSort =  !reverseSort">Functional domain </a><span ng-show="orderByField == 'functional_domain'"><span ng-show="!reverseSort"><i class= "fa fa-angle-up"></i></span><span ng-show="reverseSort"><i class="fa fa-angle-down"></i></span></span></th>
@@ -238,7 +238,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Non-targeting guides</h4>
+        <h4 class="modal-title" id="myModalLabel">Non-targeting guides and sgRNA scaffolds</h4>
       </div>
       <div class="modal-body">
         <h4>How many non-targeting guides would you like to add?</h4>
@@ -262,11 +262,30 @@
               <span class="under-count"></span>
             </div>
           </div>
+
+        <h4>Prepare synthesis ready constructs?</h4>
+        GUIDES can prepare synthesis ready constructs, for direct upload to a custom oligo pool manufacturer. We provide full-length sgRNA scaffolds as well as the E+F scaffold modification (Chen, et al. 2013).
+
+          <div layout>
+            <div class="slider-descriptors">
+              <span class="under-slider">
+                <div class="checkbox">
+                  <label><input type="checkbox" ng-model="synthesis_ready.enabled">Prepare synthesis ready constructs?</label>
+                </div>
+                <select ng-show="synthesis_ready.enabled" ng-model="synthesis_ready.type">
+                  <option value="standard">Full-length sgRNA scaffold oligo for synthesis</option>
+                  <option value="EF">E+F modified sgRNA scaffold oligo for synthesis</option>
+                </select>
+              </span>
+              <span class="under-count"></span>
+            </div>
+          </div>
+
         </div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header="['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']" csv-column-order="['uid', 'gene', 'ensembl_gene', 'seq', 'score', 'exon', 'targets_last_exon', 'has_exome_repeat', 'off_target_score', 'functional_domain']"> Export Library (.csv)</button>
+        <button type="button" class="btn btn-primary" ng-csv="getGuidesCSV()" filename="guides.csv" csv-header=" synthesis_ready.enabled ? (synthesis_ready.type == 'standard' ? synthesis_ready.csv_header_scaffold_standard : synthesis_ready.csv_header_scaffold_EF) : synthesis_ready.csv_header_normal " csv-column-order="synthesis_ready.enabled ? (synthesis_ready.type == 'standard' ? synthesis_ready.csv_column_order_scaffold_standard : synthesis_ready.csv_column_order_scaffold_EF) : synthesis_ready.csv_column_order_normal "> Export Library (.csv)</button>
       </div>
     </div>
   </div>

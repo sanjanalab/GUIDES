@@ -13,7 +13,7 @@
     "chart.js": "1.0.2",
     "coffee-script": "~1.11.1",
     "less": "^1.7.5",
-    "ng-csv": "0.3.6",
+    "ng-csv": "github:jeonghwan-kim/ng-csv#120577cdfb1ee44f4b0c4934c489acb08065df2e",
     "ng-file-upload": "11.2.0"
   }
 }

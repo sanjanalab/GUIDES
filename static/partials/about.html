@@ -14,7 +14,7 @@
                 <div class="social-links">
                   <a href="/#/about" class="top-left-link">About</a>
                   <a href="http://zlab.mit.edu/" class="top-left-link" style="display:none">Team</a>
-                  <a href="mailto:guides@mit.edu" class="top-left-link">Contact Us</a>
+                  <a href="mailto:guides-tech@googlegroups.com" class="top-left-link">Contact Us</a>
                   <a href="https://github.com/sanjanalab/GUIDES/issues" class="top-left-link">Report a Bug</a>
                 </div>
               </div>
@@ -24,19 +24,17 @@
               <div id="about-page">
               	<div class="col-md-12">
                 	<h3>What is Graphical User Interface for DNA Editing Screens (GUIDES)?</h3>
-                	<p>The development of CRISPR (clustered regularly interspaced short palindromic repeat)-associated Cas9 nuclease has enabled new methods for interrogating gene function. With just a simple alteration of the single-guide RNA (sgRNA) or direct repeat (DR) sequence, one can reprogram a nuclease to target different sites in the genome [1]. Genome-scale CRISPR-Cas9 knockout libraries have emerged as popular tools for unbiased, phenotypic screening [2], but technologies for library design in more specific applications have lagged behind. Our GeCKO library for large scale functional screens, lentiCRISPR V2, was requested from the repository nearly 1,000 times in 2015, yet we still receive nearly daily requests for custom library constructs.</p>
-                	<p>Therefore, we designed Graphical User Interface for DNA Editing Screens (GUIDES): a web application for automated, tissue-specific library design, so scientists can design CRISPR knockout libraries as effortlessly as possible, without sacrificing control.</p>
+                	<p>The development of CRISPR (clustered regularly interspaced short palindromic repeat)-associated Cas9 nuclease has enabled new methods for interrogating gene function. Given the simple programmability of CRISPR nucleases through short RNA guides, genome-scale knockout libraries have emerged as popular tools for phenotypic screens [1]. Other screening applications may require libraries that target particular sets of genes, have deeper coverage with more guide RNAs per gene, or target specific cell types or tissues. GUIDES (Graphical User Interface for DNA Editing Screens) is a web application to design customized CRISPR knockout libraries as easily as possible without sacrificing control.</p>
 
               		<h3>How does it work?</h3>
               		<iframe width="560" height="315" src="https://www.youtube.com/embed/9_kASzIlLHI" frameborder="0" allowfullscreen></iframe>
 
                 	<h3>Technical Specifications</h3>
-                	<p>GUIDES provides a complete pipeline for the design of custom single guide RNA libraries for use in a wide variety of applications. GUIDES utilizes fast algorithms to search for genome-wide sgRNA binding sites across an assortment of genes. Furthermore, it integrates tissue expression data from the GTEx Consortium [3] and on-target scores from Doench, et al. and Microsoft Azimuth [4-5] to optimize guide selection for specific tissue-based experiments. When possible, GUIDES targets functional protein domains based on Pfam data [6], as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection [7].</p>
-                	<p>To promote scientific accuracy and development of this technology, we have <a href="https://github.com/sanjanalab/GUIDES">open-sourced all code</a> for the CRISPR Library Designer at the open-source repository <a href="https://github.com/sanjanalab/GUIDES">GitHub</a>.</p>
-                	<p>For further questions or to report problems, please contact <a href="mailto:guides@mit.edu">guides@mit.edu</a>.</p>
+                	<p>GUIDES provides a complete pipeline for the design of custom single-guide RNA (sgRNA) libraries for use in a wide variety of applications. Briefly, GUIDES first finds sgRNAs within the consensus coding sequences of a user-specific list of genes. To prioritize sgRNAs for each gene, it integrates tissue-specific exon expression from the GTEx Consortium [2], on-target scores for higher activity (Doench et al. and Microsoft Azimuth) and also off-target avoidance [3-4] to optimize guide selection. When possible, GUIDES also targets functional protein domains based on Pfam data [6], as mutagenesis of functional protein domains leads to a higher proportion of null mutations and enhanced severity of negative selection [6].</p>
+                  <p>This website provides a ready-to-use version of GUIDES and, to promote further development and improvement of this tool, we also provide source code for GUIDES in our <a href="https://github.com/sanjanalab/GUIDES">GitHub repository</a>.</p>
+                	<p>For further questions or to report problems, please contact us at <a href="mailto:guides-tech@googlegroups.com">guides-tech@googlegroups.com</a>.</p>
                   <h3>References</h3>
                   <ol>
-                  <li>Xue, H. Y., Ji, L. J., Gao, A. M., Liu, P., He, J. D. &amp; Lu, X. J. J. Med. Genet. 2, 91-97 (2015).</li>
                   <li>Shalem, O., Sanjana, N. E. &amp; Zhang, F. Nat. Rev. Genet. 16, 299-311 (2015).</li>
                   <li>The GTEx Consortium. Nat. Genet. 6, 580-585 (2013).</li>
                   <li>Doench, J. G., Fusi, N., Sullender, M., Hegde, M., Vaimberg, E. W., Donovan, K. F., Smith, I., Tothova, Z., Wilen, C., Orchard, R., Virgin, H. W., Listgarten, J. &amp; Root, D. E. Nat. Biotechnol. 2, 184-191 (2016).</li>

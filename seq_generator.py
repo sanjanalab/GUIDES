@@ -54,7 +54,6 @@ class Genome():
     def gene_info(self, gene):
         """Wrap information regarding a certain gene."""
         gene_data = self.df.loc[self.df['name'] == gene]
-        print gene_data
         gene_info = {
             'txStart': 0, #tx - transcription
             'txEnd': 0,

@@ -33,6 +33,7 @@ app.config['PROPOGATE_EXCEPTIONS'] = True
 # Celery configuration
 app.config['CELERY_BROKER_URL'] = 'redis://localhost:6379/0'
 app.config['CELERY_RESULT_BACKEND'] = 'redis://localhost:6379/0'
+app.config['CELERY_TASK_RESULT_EXPIRES'] = 604800
 
 # Initialize Celery
 celery = Celery(app.name, broker=app.config['CELERY_BROKER_URL'])
@@ -100,7 +101,7 @@ def start_compute_mouse(self, params):
 
     # Send results to the user
     SMTPenabled = True if os.environ.get('SMTPenabled', False) == 'True' else False
-    if SMTPenabled:
+    if True:
       send_completed_run(email_address, start_compute_mouse.request.id)
 
     return {
@@ -166,7 +167,9 @@ def start_compute(self, params):
     # print "Spent {0} seconds generating {1} guides/gene for {2} genes.".format(time.time() - t0, quantity, len(genes))
 
     # Send results to the user
-    send_completed_run(email_address, start_compute.request.id)
+    SMTPenabled = True if os.environ.get('SMTPenabled', False) == 'True' else False
+    if True:# SMTPenabled:
+      send_completed_run(email_address, start_compute.request.id)
 
     return {
       'current': total_gene_count,

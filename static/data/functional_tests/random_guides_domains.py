@@ -18,9 +18,10 @@ rootdir = os.path.dirname(os.path.dirname(os.path.dirname(currentdir)))
 os.sys.path.insert(0,rootdir)
 import azimuth.model_comparison
 
+
 class GuideRNA():
   """Holder of gRNA information"""
-  def __init__(self, selected, start, seq, PAM, score, exon_ranking, ensembl_gene, gene_name):
+  def __init__(self, selected, start, seq, PAM, score, exon_ranking, ensembl_gene, gene_name, functional_domain, has_exome_repeat, off_target_score):
     self.start = start
     self.seq = seq
     self.PAM = PAM
@@ -29,6 +30,15 @@ class GuideRNA():
     self.ensembl_gene = ensembl_gene
     self.gene_name = gene_name
     self.selected = selected
+    self.functional_domain = functional_domain
+    if functional_domain:
+      self.has_functional_domain = True
+    else:
+      self.has_functional_domain = False
+    self.has_exome_repeat = has_exome_repeat
+    self.off_target_score = off_target_score
+    if off_target_score == 'inf':
+      self.off_target_score = 10000
 
   def serialize_for_display(self):
     """Serialize for the way we are returning json"""
@@ -38,10 +48,16 @@ class GuideRNA():
       "seq": self.seq,
       "PAM": self.PAM,
       "selected": self.selected,
+      "has_exome_repeat": self.has_exome_repeat,
+      "off_target_score": self.off_target_score,
+      "has_functional_domain": self.has_functional_domain
     }
 
+  def cmp_scheme(self, g):
+    return (-g.off_target_score, g.has_functional_domain, g.score)
+
   def __cmp__(self, other):
-    return cmp(self.score, other.score)
+    return cmp(self.cmp_scheme(self), self.cmp_scheme(other))
 
 params = {
   "PAM": "NGG",
@@ -66,7 +82,7 @@ def get_azimuth_score(mer30):
     return azimuth_scores[mer30]
   else:
     score = azimuth.model_comparison.predict(np.array([mer30]), aa_cut=None, percent_peptide=None, model=azimuth_model, model_file=azimuth_model_file)[0]
-    # print "generating Azimuth", mer30, score
+    print "generating Azimuth", mer30, score
     azimuth_scores[mer30] = score
     return score
 

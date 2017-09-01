@@ -89,15 +89,13 @@ class Ranker():
     constitutive_exon_count = 0
     for index, row in df_gene.iterrows():
       # Remember expression values
-      expression_value = {
-        'median': row['median'],
-        'overall': row['overall'],
-        'brain': row['Brain'],
-        'heart': row['Heart'],
-        'kidney': row['Kidney'],
-        'liver': row['Liver'],
-        'skin':  row['Skin']
-      }
+      expression_value = {}
+      for tissue_name in (self.tissues + ['overall', 'median']):
+        if pd.isnull(row[tissue_name]):
+          expression_value[tissue_name] = 0
+        else:
+          expression_value[tissue_name] = row[tissue_name]
+
       expression_values[int(row['exon_num'])] = expression_value
 
       # Count number of constitutive exons

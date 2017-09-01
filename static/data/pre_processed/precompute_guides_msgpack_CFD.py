@@ -25,10 +25,14 @@ def revcom(s):
 
 class GuideRNA():
   """Holder of gRNA information"""
-  def __init__(self, selected, start, seq, PAM, score, exon_ranking, ensembl_gene, gene_name, functional_domain, has_exome_repeat, off_target_score):
+  def __init__(self, selected, start, seq, PAM, seq_before, seq_after, chrom, cut_pos, score, exon_ranking, ensembl_gene, gene_name, functional_domain, has_exome_repeat, off_target_score):
     self.start = start
     self.seq = seq
     self.PAM = PAM
+    self.seq_before = seq_before # 10bp before the sgRNA
+    self.seq_after = seq_after # 10bp after the sgRNA
+    self.chrom = chrom
+    self.cut_pos = cut_pos
     self.score = score
     self.exon_ranking = exon_ranking
     self.ensembl_gene = ensembl_gene
@@ -51,6 +55,10 @@ class GuideRNA():
       "start": self.start,
       "seq": self.seq,
       "PAM": self.PAM,
+      "seq_before": self.seq_before,
+      "seq_after": self.seq_after,
+      "chrom": self.chrom,
+      "cut_pos": self.cut_pos,
       "selected": self.selected,
       "has_exome_repeat": self.has_exome_repeat,
       "off_target_score": self.off_target_score,
@@ -264,6 +272,23 @@ def gene_exon_file(gene, exon):
   else:
     return None
 
+with open("/home/joshm/GUIDES/CRISPR-Library-Designer/static/data/pre_processed/exon_info.p", "rb") as f:
+    exon_info = pickle.load(f)
+
+def get_exon_start_chrom(gene, exon):
+  # get the row from the exon_info dataframe
+  row = exon_info[exon_info['name'] == gene].iloc[0]
+
+  # find where the exon starts
+  start = row['exonStarts'][exon]
+
+  # find the chromosome this falls in
+  chrom = str(row['chrom'])
+  if chrom.isdigit():
+    chrom = str(int(chrom)) # get rid of decimal place
+
+  return start, chrom
+
 # this is run on multiprocessing workflow
 def run(genes_list):
   for gene in genes_list:
@@ -305,16 +330,20 @@ def run(genes_list):
         PAM = ""
         if params["prime5"]:
           protospacer = seq[PAM_start-params["protospacer_len"]:PAM_start]
+          protospacer_before = seq[PAM_start-params["protospacer_len"]-10:PAM_start-params["protospacer_len"]]
+          protospacer_after = seq[PAM_start:PAM_start+10]
           PAM = seq[PAM_start:PAM_start+params["PAM_len"]]
         else:
           protospacer = seq[PAM_start+params["PAM_len"]:PAM_start+params["PAM_len"]+params["protospacer_len"]]
+          protospacer_before = seq[PAM_start+params["PAM_len"]-10:PAM_start+params["PAM_len"]]
+          protospacer_after = seq[PAM_start+params["PAM_len"]+params["protospacer_len"]:PAM_start+params["PAM_len"]+params["protospacer_len"]+10]
           PAM = seq[PAM_start:PAM_start+params["PAM_len"]]
         if protospacer not in exome_mers:
           print protospacer, 'NOT in exome_mers', gene["ensembl_id"], exon
           print 'PAM is', seq[PAM_start:PAM_start+params["PAM_len"]]
         has_exome_repeat = hasExomeRepeat(protospacer)
         off_target_score = get_off_target_score(protospacer)
-        potential_gRNA = GuideRNA(selected, PAM_start-params["protospacer_len"], protospacer, PAM, score, exon, gene["ensembl_id"], gene["name"], domain, has_exome_repeat, off_target_score)
+        potential_gRNA = GuideRNA(selected, PAM_start-params["protospacer_len"], protospacer, PAM, protospacer_before, protospacer_after, score, exon, gene["ensembl_id"], gene["name"], domain, has_exome_repeat, off_target_score)
 
         # If there's enough room, add it, no question.
         if q.qsize() < max_queue_size:

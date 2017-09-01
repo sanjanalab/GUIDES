@@ -31,7 +31,7 @@ FlaskStart.factory 'GuidesFactory', ['$http', '$q', '$filter', '$timeout', ($htt
       gene_count = this.data.genes.length
       if idx != -1
         gene_count += this.data.genesFromFile.length
-      return 0.13 * gene_count
+      return 0.016 * gene_count
 
     waitTimeText: () ->
       wait = this.waitTime()
