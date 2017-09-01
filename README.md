@@ -85,7 +85,7 @@ Please [get in touch](mailto:guides-tech@googlegroups.com) if you are interested
 ----
 
 ## Open source licensing info
-Copyright (c) 2015-2017 Joshua Meier, Feng Zhang and Neville Sanjana. Released under AGPLv3. See LICENSE.txt for details.
+Copyright (c) 2015-2017 Joshua Meier, Feng Zhang and Neville Sanjana. Released under BSD 3. See LICENSE file for details.
 
 If you're interested in getting access to this system under a different license, please contact us.
 
