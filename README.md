@@ -31,7 +31,7 @@ Then, install the required Python modules by running `pip install -r requirement
 
 Next, install node modules by executing `npm install` from the GUIDES root folder.
 
-Next, substitute the folder `static/data` with the `data` folder from the [Sanjana Lab Dropbox]().
+Next, substitute the folder `static/data` with the `data` folder from the [Zhang Lab Dropbox](https://www.dropbox.com/s/sp59h2m6vjrsr1c/GUIDES_DATA.zip?dl=0).
 
 Alternatively, run [./install.sh](install.sh) from the GUIDES root folder.
 
@@ -68,7 +68,7 @@ On the [Sanjana Lab](http://guides.sanjanalab.org) website, these commands are r
 
 ## How to test the software
 
-Code for running the tests in our [manuscript]() is located in `static/data/functional_tests`. Some data analysis is required to produce the plots included in our paper.
+Code for running the tests in our [manuscript](http://www.nature.com/nmeth/journal/v14/n9/full/nmeth.4423.html) is located in `static/data/functional_tests`. Some data analysis is required to produce the plots included in our paper.
 
 ## Known issues
 
