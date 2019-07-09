@@ -20,11 +20,11 @@ FlaskStart.controller 'DesignerCtrl', ['$scope', '$filter', '$location', '$windo
   $scope.synthesis_ready = {
     'enabled': false
     'type': 'standard' # or EF
-    'csv_header_normal': ['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'Guide with flanking sequence (10bp before and after the guide + PAM)','Chromosome', 'PAM position in chromosome', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']
+    'csv_header_normal': ['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'Guide with flanking sequence (10bp before and after the guide + PAM)','Chromosome', 'cut position in chromosome', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']
     'csv_column_order_normal': ['uid', 'gene', 'ensembl_gene', 'seq', 'full_seq', 'chrom', 'cut_pos', 'score', 'exon', 'targets_last_exon', 'has_exome_repeat', 'off_target_score', 'functional_domain']
-    'csv_header_scaffold_standard': ['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'Guide with flanking sequence (10bp before and after the guide + PAM)','Full-length sgRNA scaffold oligo for synthesis','Chromosome', 'PAM position in chromosome', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']
+    'csv_header_scaffold_standard': ['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'Guide with flanking sequence (10bp before and after the guide + PAM)','Full-length sgRNA scaffold oligo for synthesis','Chromosome', 'cut position in chromosome', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']
     'csv_column_order_scaffold_standard':['uid', 'gene', 'ensembl_gene', 'seq', 'full_seq', 'scaffold_standard', 'chrom', 'cut_pos', 'score', 'exon', 'targets_last_exon', 'has_exome_repeat', 'off_target_score', 'functional_domain']
-    'csv_header_scaffold_EF': ['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'Guide with flanking sequence (10bp before and after the guide + PAM)','E+F modified sgRNA scaffold oligo for synthesis','Chromosome', 'PAM position in chromosome', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']
+    'csv_header_scaffold_EF': ['GUIDE ID', 'Gene', 'Ensembl ID', 'Sequence', 'Guide with flanking sequence (10bp before and after the guide + PAM)','E+F modified sgRNA scaffold oligo for synthesis','Chromosome', 'cut position in chromosome', 'On-target efficiency', 'Exon', 'Targets last exon', '10bp off-target match', 'Off-target score', 'Protein domain']
     'csv_column_order_scaffold_EF':['uid', 'gene', 'ensembl_gene', 'seq', 'full_seq', 'scaffold_EF', 'chrom', 'cut_pos', 'score', 'exon', 'targets_last_exon', 'has_exome_repeat', 'off_target_score', 'functional_domain']
   }
   $scope.synthesis_ready.csv_header = $scope.synthesis_ready.csv_header_normal
