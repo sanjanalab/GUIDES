@@ -317,7 +317,7 @@ def run(genes_list):
         continue
 
       q = PriorityQueue()
-      def process_guide(m, selected, max_queue_size, seq, domain):
+      def process_guide(m, selected, max_queue_size, seq, domain, cut_site):
         if 'N' in seq:
           return
         PAM_start = m.start()
@@ -351,7 +351,8 @@ def run(genes_list):
         off_target_score = get_off_target_score(protospacer)
 
         exon_start, chrom = get_exon_start_chrom(gene["ensembl_id"], exon)
-        cut_pos = exon_start + PAM_start
+        # cut_pos = exon_start + PAM_start
+        cut_pos = cut_site
         potential_gRNA = GuideRNA(selected, PAM_start-params["protospacer_len"], protospacer, PAM, protospacer_before, protospacer_after, chrom, cut_pos, score, exon, gene["ensembl_id"], gene["name"], domain, has_exome_repeat, off_target_score)
 
         # If there's enough room, add it, no question.
@@ -388,7 +389,7 @@ def run(genes_list):
             if len(domain_matches) > 0:
               domain = domain_matches[0].data
               print domain
-        process_guide(m, True, params["quantity"], seq, domain)
+        process_guide(m, True, params["quantity"], seq, domain, cut_site)
 
       seq_rc = revcompl(seq)
 
@@ -413,7 +414,7 @@ def run(genes_list):
             domain_matches = list(interval_trees_dict[chrom][cut_site])
             if len(domain_matches) > 0:
               domain = domain_matches[0].data
-        process_guide(m, True, params["quantity"], seq_rc, domain)
+        process_guide(m, True, params["quantity"], seq_rc, domain, cut_site)
 
       # Pop gRNAs into our 'permanent' storage
       gRNAs = []
