@@ -23,7 +23,7 @@ httplib2==0.8
 intervaltree==2.1.0
 ipython==1.2.1
 itsdangerous==0.24
-Jinja2==2.8
+Jinja2==2.11.3
 joblib==0.7.1
 kombu==4.0.0
 librabbitmq==1.0.3
