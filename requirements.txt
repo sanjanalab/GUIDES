@@ -4,7 +4,7 @@ anyjson==0.3.3
 beautifulsoup4==4.2.1
 billiard==3.5.0.2
 biopython==1.66
-celery==4.0.0
+celery==5.2.2
 cl==0.0.3
 click==6.6
 colorama==0.2.5
