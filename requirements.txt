@@ -21,7 +21,7 @@ gunicorn==19.6.0
 html5lib==0.999
 httplib2==0.8
 intervaltree==2.1.0
-ipython==1.2.1
+ipython==7.16.3
 itsdangerous==0.24
 Jinja2==2.8
 joblib==0.7.1
