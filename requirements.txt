@@ -24,7 +24,7 @@ intervaltree==2.1.0
 ipython==1.2.1
 itsdangerous==0.24
 Jinja2==2.8
-joblib==0.7.1
+joblib==1.2.0
 kombu==4.0.0
 librabbitmq==1.0.3
 lockfile==0.8
